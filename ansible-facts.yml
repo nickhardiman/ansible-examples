@@ -1,6 +1,6 @@
 ---
 # run
-#   ansible-playbook -i inventory-localhost.yml ansible-facts.yml
+#   ansible-playbook ansible-facts.yml
 #
 - name: ansible_facts
   hosts: localhost 

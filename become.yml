@@ -1,23 +1,28 @@
 ---
-#  become
-#  requires root privilege, which requires a sudo password.
-#  There are a few ways of providing a password. 
+# an example with ansible_become_password in the inventory.
+# run
+# ansible-playbook -i become-inventory.yml  become.yml
+#
+# become
+# requires root privilege, which often requires a sudo password.
+# There are a few ways of providing a password. 
 #  
-#  edit ansible.cfg. Add this.
+# 1. Edit ansible.cfg and wait for an interactive prompt. 
 #    [privilege_escalation]
 #    become_ask_pass=True
 #  Don't try adding become_password=MyPassword to this ini file, it won't work.
 # 
-#  Use command line flag. Interactive, so no good for unattended automation. 
+# 2. Use a command line flag. 
+#  Again, this is interactive, so no good for unattended automation. 
 #    --ask-become-pass or -K
 #
-#  Edit the inventory. Add this.
+# 3. Add a plain-text password to the inventory. Add this.
 #    ansible_become_password: MyPassword
 #
-#  Edit the inventory. 
-#  Add a password that is encrypted by ansible vault. 
-#  (I haven't tried this)
-#  Trickier, and you have an extra vault password to deal with.
+# 4. Add an encrypted password to the inventory. 
+#  The password is encrypted by ansible vault. 
+#  This is the safest way, but it's trickier. 
+#  And you have an extra vault password to deal with.
 #  see https://docs.ansible.com/ansible/2.8/user_guide/playbooks_vault.html
 #    ansible_become_password: !vault |
 #          $ANSIBLE_VAULT;1.1;AES256
@@ -27,9 +32,6 @@
 #          3430613539666330390a313736323265656432366236633330313963326365653937323833366536
 #          34623731376664623134383463316265643436343438623266623965636363326136
 #  
-#
-# run
-# ansible-playbook -i become-inventory.yml  become.yml
 #
 - name: become with password
   hosts: localhost 

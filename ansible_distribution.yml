@@ -1,6 +1,11 @@
+# run 
+#   ansible-playbook ansible_distribution.yml  
 ---
 - hosts: localhost 
   gather_facts: yes 
+  become: no
+  connection: local
+  
   tasks:
     - debug:
         msg: 
