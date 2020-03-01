@@ -1,14 +1,19 @@
 # ansible-examples
+
 These are my little playbooks, to remind me how Ansible tasks behave.
-These are more brain-dump than structured, so quite possibly a complete mess.
+
+Read it, run it, edit it, play with it. 
+
+"It's a pile of junk" disclaimer - 
+The files are more brain-dump than structured, so quite possibly a complete mess.
 
 ## What are these?
 
 These are tiny playbooks that run locally, to see how ansible behaves. 
-These playbooks are simple - no roles, SSH, remote hosts, or privilege escalation. 
+The playbooks are simple - no roles, SSH, remote hosts, or privilege escalation. 
 
-I wrote these on Fedora and OS X. My cross-platform testing is a big fat zero. 
-So I have no idea how they behave on Windows or other platforms.
+I wrote these on Fedora. My cross-platform testing is a big fat zero. 
+I have no idea how they behave on Windows or other platforms.
 
 ### getting started 
 
@@ -19,14 +24,17 @@ So I have no idea how they behave on Windows or other platforms.
 ### playbook 
 
 Each file name provides a clue about what the playbook does. 
-The filter-union.yaml file has a few tasks using the 'union' filter. 
+The `filter-union.yaml` file has a few tasks using the 'union' filter. 
 Run it like this. 
-ansible-playbook filter-union.yml 
+`ansible-playbook filter-union.yml` 
+
+Each playbook starts with a description of how you run it and what it does.
+Or at least some do. I got distracted, it's not my fault. 
 
 ### inventory 
 
 Most playbooks read the inventory file inventory=inventory-localhost.yml
-This is set by the line 'inventory=inventory-localhost.yml' in ansible.cfg.
+This is set by the line `inventory=inventory-localhost.yml` in ansible.cfg.
 
 ### configuration
 

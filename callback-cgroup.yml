@@ -1,12 +1,10 @@
----
+# run 
+#   sudo dnf install libcgroup-tools
+#   sudo cgcreate -a nick:nick -t nick:nick -g cpuacct,memory,pids:ansible_profile
+#   cgexec -g cpuacct,memory,pids:ansible_profile ansible-playbook callback-cgroup.yml 
 # 
-# install
 #
-# sudo dnf install libcgroup-tools
-# 
 # config 
-#
-# sudo cgcreate -a nick:nick -t nick:nick -g cpuacct,memory,pids:ansible_profile
 #
 # ansible.cfg
 # [defaults]
@@ -15,41 +13,38 @@
 # [callback_cgroup_perf_recap]
 # control_group=ansible_profile
 #
-# run 
-#
-# cgexec -g cpuacct,memory,pids:ansible_profile ansible-playbook callback-cgroup.yml 
 # 
 # doc
 # ansible-doc -t callback cgroup_perf_recap
 #
 #
-# errors on fedora31 VM
+# errors 
+# on a fedora31 VM
 #
-# [nhardima@fedora31 ansible]$ sudo cgcreate -a nhardima:nhardima -t nhardima:nhardima -g cpuacct,memory,pids:ansible_profile
-# [sudo] password for nhardima:
+# [ansible]$ sudo cgcreate -a nick:nick -t nick:nick -g cpuacct,memory,pids:ansible_profile
+# [sudo] password for nick:
 # cgcreate: libcgroup initialization failed: Cgroup is not mounted
-# [nhardima@fedora31 ansible]$
+# [ansible]$
 #
-# [nhardima@fedora31 ansible]$ cgexec -g cpuacct,memory,pids:ansible_profile  ansible-playbook -i inv-list-inventory.yml inv-list.yml
+# [ansible]$ cgexec -g cpuacct,memory,pids:ansible_profile  ansible-playbook -i inv-list-inventory.yml inv-list.yml
 # libcgroup initialization failed: Cgroup is not mounted
-# [nhardima@fedora31 ansible]$
+# [ansible]$
 # 
-# [nhardima@fedora31 ansible]$ ansible-playbook -i inv-list-inventory.yml inv-list.yml
+# [ansible]$ ansible-playbook -i inv-list-inventory.yml inv-list.yml
 # [WARNING]: Cannot open /sys/fs/cgroup/memory/ansible_profile/memory.max_usage_in_bytes for reading ([Errno 2] No such file or
 # directory: b'/sys/fs/cgroup/memory/ansible_profile/memory.max_usage_in_bytes'). Disabling cgroup_perf_recap
 #
 #
-#
+---
 - name: cgroup test
   hosts: localhost 
   gather_facts: no
   become: no
-  #delegate_to: localhost
   connection: local
   tasks:
 
 
-  - name: erm...
+  - name: The task is not important. It's the performance stats we want to see.
     debug:
       msg: "hello world"
 

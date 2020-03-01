@@ -1,9 +1,8 @@
----
-# an example with ansible_become_password in the inventory.
 # run
 # ansible-playbook -i become-inventory.yml  become.yml
 #
 # become
+# an elevated privilege example with ansible_become_password in the inventory.
 # requires root privilege, which often requires a sudo password.
 # There are a few ways of providing a password. 
 #  
@@ -33,6 +32,7 @@
 #          34623731376664623134383463316265643436343438623266623965636363326136
 #  
 #
+---
 - name: become with password
   hosts: localhost 
   gather_facts: no

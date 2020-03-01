@@ -1,10 +1,10 @@
 ---
+# run
+#   ansible-playbook lookup-dict.yml
+#
 # dict, a lookup plug-in
 # A lookup plug-in is an Ansible extension to the Jinja2 templating language. 
 # https://role.rhu.redhat.com/rol-rhu/app/courses/do447-2.8/pages/ch04s03
-#
-# run
-#   ansible-playbook lookup-dict.yml
 #
 
 - name: dict, a lookup plugin

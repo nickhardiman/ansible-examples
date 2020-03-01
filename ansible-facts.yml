@@ -2,6 +2,8 @@
 # run
 #   ansible-playbook ansible-facts.yml
 #
+# Gather facts and display a few.
+#
 - name: ansible_facts
   hosts: localhost 
   gather_facts: yes
