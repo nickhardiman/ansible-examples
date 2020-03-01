@@ -10,7 +10,7 @@ The files are more brain-dump than structured, so quite possibly a complete mess
 ## What are these?
 
 These are tiny playbooks that run locally, to see how ansible behaves. 
-The playbooks are simple - no roles, SSH, remote hosts, or privilege escalation. 
+The playbooks are simple - no roles, SSH, or remote hosts. Mostly no privilege escalation.
 
 I wrote these on Fedora. My cross-platform testing is a big fat zero. 
 I have no idea how they behave on Windows or other platforms.
