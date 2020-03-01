@@ -1,21 +1,21 @@
----
+# run
+#   ansible-playbook tags.yml
+#   ansible-playbook tags.yml --tags=tag1
+#   ansible-playbook tags.yml --tags=tag2
+#
 # tags
-# tags are tag1 and tag2
+# Tasks are tagged with tag1 and tag2
 # Includes special tags never and untagged
 # 
 # docs
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html
 #
-# run
-# ansible-playbook tags.yml
-# ansible-playbook tags.yml --tags=tag1
-# ansible-playbook tags.yml --tags=tag2
 #
+---
 - name: default values
   hosts: localhost 
   gather_facts: no
   become: no
-  #delegate_to: localhost
   connection: local
   vars:
   - var_with_val: some_value
