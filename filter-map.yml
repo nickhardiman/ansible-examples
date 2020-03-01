@@ -1,0 +1,99 @@
+---
+# use map to extract an array of values from a list of dicts.
+# In this example, the list is buried in a bigger data structure, in an attribute called 'files'.
+# Each item in the 'files' list is a dict. 
+# The dict attribute I want is named 'path'.
+# map finds all the 'path' dictionary attributes and returns their values.
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml  filter-map.yml  
+#
+# My test directory looks like this. 
+#  filter-map-dirs/
+#    mydir1/myfile1
+#    mydir1/mydir2/myfile2
+#    mydir1/mydir2/mydir5/myfile5
+#    mydir1/mydir2/mydir4/myfile4
+#    mydir1/mydir3/myfile3
+#
+# The find module returns JSON like this.
+# The 'files' attibute holds a list of dicts.
+#
+#    "mydirfiles": {
+#        "ansible_facts": {
+#            "discovered_interpreter_python": "/usr/bin/python"
+#        },
+#        "changed": false,
+#        "examined": 9,
+#        "failed": false,
+#        "files": [
+#            {
+#                "atime": 1579720487.9892495,
+#                "ctime": 1579720487.9892495,
+#                "dev": 16777220,
+#    ...lots more file attributes...
+#                "xgrp": false,
+#                "xoth": false,
+#                "xusr": false
+#            },
+#            {
+#    ...lots more files...
+#            }
+#        ],
+#        "matched": 5,
+#        "msg": "",
+#        "warnings": [
+#            "Bla bla bla."
+#        ]
+#    }
+
+- name: extract file names 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+  - my_test_dir: ./filter-map-files
+
+  tasks:
+
+  - name: list_files
+    find: 
+      path: "{{ my_test_dir }}"
+      recurse: yes
+    register: mydirfiles
+
+  # if you want to see everything in mydirfiles, uncomment this. 
+  #- name: display mydirfiles
+  #  debug:
+  #    var: mydirfiles 
+
+  - name: make a list of path values
+    set_fact: 
+      list_of_paths: "{{ mydirfiles['files'] | map(attribute='path') | list }}"
+  - name: display list_of_paths
+    debug:
+      var: list_of_paths
+
+  - name: Using 'map' without 'list' is not much use.
+    set_fact: 
+      map_without_list: "{{ mydirfiles['files'] | map(attribute='path')  }}"
+  - name: You get an odd-looking reference to a Python object.
+    debug:
+      var: map_without_list
+
+  - name: list of dicts
+    set_fact:
+      public_key_lists:
+      - username: johnd
+        public_keys:
+        - pubkeys/johnd/id_rsa.pub
+        - pubkeys/johnd/laptop_rsa.pub
+      - username: janed
+        public_keys:
+        - pubkeys/janed/id_rsa.pub
+
+  - name: flatten two lists into one
+    debug:
+      var: item
+    loop: "{{ public_key_lists | map(attribute='public_keys') | flatten }}"

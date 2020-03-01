@@ -1,0 +1,53 @@
+---
+# default filter
+#
+# run
+# ansible-playbook -i inventory-localhost.yml filter-default.yml 
+# ansible-playbook -i inventory-localhost.yml -e "extra_var='a cli value'" filter-default.yml 
+#
+- name: default values
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  #delegate_to: localhost
+  connection: local
+  vars:
+  - var_with_val: some_value
+  - var_without_val: ''
+  #- var_undefined is not set here, but it is set by default below.
+  tasks:
+
+  # experiment with an extra variable passed in from the command line
+
+  - name: "If extra_var exists, copy it. If not, leave it undefined. Don't put quotes around the keyword omit." 
+    set_fact: 
+      my_copy: "{{ extra_var | default(omit) }}"
+
+  - name: This is skipped if extra_var didn't get set. 
+    debug:
+      msg: "I got this: {{ my_copy }}"
+    when: my_copy is defined
+
+  - name: If extra_var exists, copy it. If not, make something up.
+    set_fact: 
+      my_copy: "{{ extra_var | default('I made this up') }}"
+  - name: extra_var definitely set to something.
+    debug:
+      msg: "The value of my_copy is '{{ my_copy }}'"
+
+
+
+  # experiment with variables defined in this playbook
+
+  - name: the variable has a value - default does nothing 
+    debug: 
+      msg: "'var_with_val' and default: {{ var_with_val | default('default set this value') }}"
+
+  - name: variable exists but the value is an empty string - default does nothing
+    debug: 
+      msg: "'var_without_val' and default: {{ var_without_val | default('default set this value') }}"
+
+  - name: variable does not exist - default sets a value
+    debug: 
+      msg: "'var_undefined' and default: {{ var_undefined | default('default set this value') }}"
+

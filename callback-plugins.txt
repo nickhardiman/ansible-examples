@@ -1,0 +1,40 @@
+actionable           shows only items that need attention                                             
+aws_resource_actions summarizes all "resource:actions" completed                                      
+cgroup_memory_recap  Profiles maximum memory usage of tasks and full execution using cgroups          
+cgroup_perf_recap    Profiles system activity of tasks and full execution using cgroups               
+context_demo         demo callback that adds play/task context                                        
+counter_enabled      adds counters to the output items (tasks and hosts/task)                         
+debug                formatted stdout/stderr display                                                  
+default              default Ansible screen output                                                    
+dense                minimal stdout output                                                            
+foreman              Sends events to Foreman                                                          
+full_skip            suppresses tasks if all hosts skipped                                            
+grafana_annotations  send ansible events as annotations on charts to grafana over http api            
+hipchat              post task events to hipchat                                                      
+jabber               post task events to a jabber server                                              
+json                 Ansible screen output as JSON                                                    
+junit                write playbook output to a JUnit file                                            
+log_plays            write playbook output to log file                                                
+logdna               Sends playbook logs to LogDNA                                                    
+logentries           Sends events to Logentries                                                       
+logstash             Sends events to Logstash                                                         
+mail                 Sends failure events via email                                                   
+minimal              minimal Ansible screen output                                                    
+nrdp                 post task result to a nagios server through nrdp                                 
+null                 Don't display stuff to screen                                                    
+oneline              oneline Ansible screen output                                                    
+osx_say              notify using software speech synthesizer                                         
+profile_roles        adds timing information to roles                                                 
+profile_tasks        adds time information to tasks                                                   
+say                  notify using software speech synthesizer                                         
+selective            only print certain tasks                                                         
+skippy               Ansible screen output that ignores skipped status                                
+slack                Sends play events to a Slack channel                                             
+splunk               Sends task result events to Splunk HTTP Event Collector                          
+stderr               Splits output, sending failed tasks to stderr                                    
+sumologic            Sends task result events to Sumologic                                            
+syslog_json          sends JSON events to syslog                                                      
+timer                Adds time to play stats                                                          
+tree                 Save host events to files                                                        
+unixy                condensed Ansible output                                                         
+yaml                 yaml-ized Ansible screen output                                                  

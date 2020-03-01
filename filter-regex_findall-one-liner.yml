@@ -1,0 +1,35 @@
+---
+# regex_findall, join, and regex_replace
+# https://stackoverflow.com/questions/48512527/how-to-use-regex-findall-in-ansible-playbook-properly
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-regex_findall-one-liner.yml
+#
+
+- name: regex_findall filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: file list
+    set_fact: 
+      file_list: 
+      - filter-regex_findall-blob
+      - filter-regex_findall-none
+      - filter-regex_findall-hosts
+      - filter-regex_findall-ifcfg-eth0
+      - filter-regex_findall-ifcfg-eth1
+
+  # replace an empty list with a message. 
+  # default does not work here. Default only works on undefined variables.
+
+  - name: "{{ item }}: copy IP addresses from this file to a variable"
+    vars:
+      ip_list: "{{ lookup('file', item ) | regex_findall( '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}' ) | join(',') | regex_replace('^$', 'none') }}"
+    debug:
+       msg: "IP addresses: {{ ip_list }}"
+    loop: "{{ file_list }}"
+
+

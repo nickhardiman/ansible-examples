@@ -1,0 +1,27 @@
+---
+# urlencode filter
+# urlencoding is for web URLs. 
+# It has nothing to do with encryption.
+#
+# run
+# ansible-playbook -i inventory-localhost.yml filter-urlencode.yml 
+#
+- name: urlencode
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  #delegate_to: localhost
+  connection: local
+  vars:
+  - string_with_spaces: 'value with whitespace'
+  - urlencoded_spaces: 'value%20with%20whitespace'
+  tasks:
+
+  - name: urlencode a string containing spaces.
+    debug:
+      msg: "'{{ string_with_spaces }}' urlencode: {{ string_with_spaces | urlencode }}"
+
+  - name: urldecode this encoded string
+    debug:
+      msg: "'{{ urlencoded_spaces }}' urldecode: {{ urlencoded_spaces | urldecode }}"
+

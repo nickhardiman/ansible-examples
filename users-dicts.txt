@@ -1,0 +1,24 @@
+username: jakec
+realname: Jake Can
+group: jakec
+uid: 1233
+groups:
+  - test
+
+username: johnd
+realname: John Doe
+group: johnd
+uid: 1234
+groups:
+  - dev
+  - test
+
+username: janee
+realname: Jane Egg
+group: janee
+uid: 1235
+groups:
+  - dev
+  - test
+  - prod
+

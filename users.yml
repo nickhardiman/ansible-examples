@@ -1,0 +1,74 @@
+---
+#
+# run
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  # users-dicts.txt
+
+  - name: "users-dicts.txt file contains three dictionaries. Content turns into one string"
+    vars:
+      file_content: "{{ lookup('file', 'users-dicts.txt') }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+
+  - name: "users-dicts.txt file content can be read, but only the last dict is in the var."
+    vars:
+      file_content: "{{ lookup('file', 'users-dicts.txt') | from_yaml }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+       #  this json is one line. Adding to_nice_json will add \n characters but these are literals, to_nice_json does not format msg nicely.
+       # msg: "file content: {{ file_content  | to_nice_json}}"
+
+
+
+  # users-dict.yml
+
+  - name: users-dict.yml file contains one dictionary. 
+    vars:
+      dict_from_file: "{{ lookup('file', 'users-dict.yml') | from_yaml }}"
+    debug:
+       msg: "file content: {{ dict_from_file }}"
+
+  - name: "loop on the keys of this dictionary, rewrite 'mykey: myvalue' in a 'key: mykey, value: myvalue' format"
+    vars:
+      dict_from_file: "{{ lookup('file', 'users-dict.yml') | from_yaml }}"
+    debug:
+       msg: "{{ item }}"
+    loop: "{{ lookup('dict', dict_from_file) }}"
+
+  - name: loop on each dictionary key, print a couple fields from the dictionary.
+    vars:
+      dict_from_file: "{{ lookup('file', 'users-dict.yml') | from_yaml }}"
+    debug:
+       msg: "item key: {{ item.key }}   subkey realname: {{ item.value.realname }} "
+    loop: "{{ lookup('dict', dict_from_file) }}"
+
+  - name: "similar, get the os_groups list, turn it into a string"
+    vars:
+      dict_from_file: "{{ lookup('file', 'users-dict.yml') | from_yaml }}"
+      user_groups: "{{ item.value.os_groups | join(',') }}"
+    debug:
+       msg: "User {{ item.key }}'s OS groups are {{ user_groups }}."
+    loop: "{{ lookup('dict', dict_from_file) }}"
+
+  - name: "use subelements and print each two-element list [ dict, list value] it returns. Loses the key."
+    vars:
+      dict_from_file: "{{ lookup('file', 'users-dict.yml') | from_yaml }}"
+    debug:
+       msg: "{{ item }}"
+    loop: "{{ lookup('subelements', dict_from_file, 'os_groups') }}"
+
+  - name: as above, but only print two values
+    vars:
+      dict_from_file: "{{ lookup('file', 'users-dict.yml') | from_yaml }}"
+    debug:
+       msg: "{{ item[0].realname }}, {{ item[1] }}"
+    loop: "{{ lookup('subelements', dict_from_file, 'os_groups') }}"
+

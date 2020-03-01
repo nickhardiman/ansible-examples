@@ -1,0 +1,28 @@
+---
+# run
+#   ansible-playbook -i inventory-localhost.yml ansible-facts.yml
+#
+- name: ansible_facts
+  hosts: localhost 
+  gather_facts: yes
+  become: no
+  #delegate_to: localhost
+  connection: local
+  tasks:
+
+  - name: display everything
+    debug:
+      var: ansible_facts
+
+  - name: display a subset
+    debug:
+      var: ansible_facts.default_ipv4
+
+  - name: display one fact
+    debug:
+      var: ansible_facts.default_ipv4.address
+
+  - name: display one fact, different syntax
+    debug:
+      var: ansible_facts['default_ipv4']['address']
+

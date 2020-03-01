@@ -1,0 +1,32 @@
+---
+# lookup plug-in 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml lookup-pipe.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: Run commands using lookup. Copy all the lines into a string. Replies are seperated by commas.
+    vars:
+      pipe_var: "{{ lookup('pipe', 'git status', 'git config -l') }}"
+    debug:
+       msg: "lines from command: {{ pipe_var }}"
+
+  - name: Run the same commands using query. Same results as above, except the string becomes an item in an array.
+    vars:
+      pipe_var: "{{ query('pipe', 'git status', 'git config -l') }}"
+    debug:
+       msg: "lines from command: {{ pipe_var }}"
+
+  - name: Run commands using lookup. This time, escape any risky characters using the quote filter. 
+    vars:
+      pipe_var: "{{ lookup('pipe', 'git status', 'git config -l') | quote }}"
+    debug:
+       msg: "lines from command: {{ pipe_var }}"
+

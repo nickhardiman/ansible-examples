@@ -1,0 +1,71 @@
+---
+# regex_replace
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-regex_replace.yml
+#
+- name: regex_replace filter
+  hosts: localhost
+  gather_facts: no
+  vars:
+  - long_name: one_two_three_four_five_six_seven_eight_nine_ten
+  - myhosts:
+    - host1
+    - host2
+    - host3
+  tasks:
+
+  # these take foobar and give bar
+
+  - name: take foobar and give bar by naming characters to match and none to replace them with.
+    debug:
+      msg: "{{ 'foobar' | regex_replace('foo') }}"
+
+  #- name: doesn't work, displays foobar
+  #  debug:
+  #    msg: "{{ 'foobar' | regex_replace('(bar)', '\\1') }}"
+
+  - name: same thing with brackets and matchref
+    debug:
+      msg: "{{ 'foobar' | regex_replace('foo(bar)', '\\1') }}"
+
+  - name: with matchref, anchors and wildcards
+    debug:
+      msg: "{{ 'foobar' | regex_replace('^f.*o(.*)$', '\\1') }}"
+
+  # long_name
+
+  - name: from "one_two_three_four_... to two_three_four_...
+    debug:
+      msg: "{{ long_name | regex_replace('[^_]+_(.*)', '\\1') }} "
+
+  # change text
+
+  - name: convert "localhost:80" to "lOcalhOst:80"
+    debug:
+      msg: "{{ 'localhost:80' | regex_replace('o', 'O') }}"
+
+  - name: from "one_two_three_four_... to "one, two, three, four, ...
+    debug:
+      msg: "{{ long_name | regex_replace('_', ', ') }}"
+
+  # convert "localhost:80" to "localhost, 80"
+
+  - name: regex named groups
+    debug:
+      msg: "{{ 'localhost:80' | regex_replace('^(?P<host>.+):(?P<port>\\d+)$', '\\g<host>, \\g<port>') }}"
+
+  # add text
+
+  - name: add "https://" prefix to each item in a list
+    debug:
+      msg: "{{ myhosts | map('regex_replace', '^(.*)$', 'https://\\1/') | list }}"
+
+  - name: replace an empty string with characters
+    vars:
+      I_am_empty: ''
+    debug:
+      msg: "{{ I_am_empty | regex_replace ('^$', 'boo!') }}"
+
+
+

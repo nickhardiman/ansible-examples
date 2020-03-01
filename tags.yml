@@ -1,0 +1,46 @@
+---
+# tags
+# tags are tag1 and tag2
+# Includes special tags never and untagged
+# 
+# docs
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html
+#
+# run
+# ansible-playbook tags.yml
+# ansible-playbook tags.yml --tags=tag1
+# ansible-playbook tags.yml --tags=tag2
+#
+- name: default values
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  #delegate_to: localhost
+  connection: local
+  vars:
+  - var_with_val: some_value
+  tasks:
+
+  # These three tasks are exclusive, thanks to the special tags. 
+
+  - name: This task only runs when tag1 is provided.
+    debug:
+      msg: "I got tag1"
+    tags: 
+    - tag1
+    - never 
+
+  - name: This task only runs when tag2 is provided.
+    debug:
+      msg: "here's tag2"
+    tags: 
+    - tag2
+    - never 
+
+
+  - name: This task only runs when there are no tags.
+    debug:
+      msg: "untagged"
+    tags: 
+    - untagged
+

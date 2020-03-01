@@ -1,0 +1,25 @@
+---
+# For a much more complicated example, see filter-regex_findall-with-subtasks.yml
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-regex_findall.yml
+#
+
+- name: regex_findall filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+  - my_string: /Users/nhardima/handle/shape
+  - my_list: "{{ my_string | regex_findall('ha')  }}"
+  tasks:
+
+  - name: a list of regex matches
+    debug: 
+      msg: "Python list? or JSON?: {{ my_list }}"
+
+  - name: a string of regex matches
+    debug: 
+      msg: "string: '{{ my_list | join(', ') }}'"
+

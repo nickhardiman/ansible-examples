@@ -1,0 +1,35 @@
+---
+# In a YAML list, a hyphen shows each list element. 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml  list-hyphen.yml
+#
+- name: Ansible is forgiving about how a list hyphen is placed. 
+  hosts: localhost
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+  vars: 
+    myvar: myval
+  tasks: 
+
+  - name: hyphen in the usual position
+    debug: 
+      var: myvar
+    when: myvar is defined
+
+  - 
+    name: hyphen on its own line
+    debug: 
+      var: myvar
+    when: myvar is defined
+      
+  - 
+
+    name: hyphen surrounded by empty lines
+    debug: 
+      var: myvar
+    when: myvar is defined
+      
+  

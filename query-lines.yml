@@ -1,0 +1,27 @@
+---
+# query plug-in 
+# No specific documentation for query. There is this doc which mentions with_lookup, not query.
+#   ansible-doc -t lookup lines
+# 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml query-lines.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: "Run the command 'cat query-lines-users.txt', add lines to an array, and display each one."
+    debug:
+       msg: "line from command: {{ item }}"
+    loop: "{{ query('lines', 'cat query-lines-users.txt') }}"
+
+  - name: similar thing, but display the array.
+    vars: 
+      list_of_lines: "{{ query('lines', 'cat query-lines-users.txt') }}"
+    debug:
+       msg: "list from command: {{ list_of_lines }}"

@@ -1,0 +1,22 @@
+---
+- name: combine two lists
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  vars:
+  - list_1:
+      - apple 
+      - banana
+      - pear 
+  -  list_2:
+      - dog
+      - cat
+      - hamster
+  tasks:
+  - name: use union to stick the lists together 
+    set_fact: 
+      combined_list: "{{ list_1 | union(list_2) }}"
+  - name: display the result
+    debug:
+      msg: "Combined list: {{ combined_list }}"
+

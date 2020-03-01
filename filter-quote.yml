@@ -1,0 +1,38 @@
+---
+# what is the point of the quote filter?
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-quote.yml
+#
+
+- name: quote filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+  - my_list: 
+    - val1
+    - val;2
+    - val!3
+  - my_empty_variable: ''
+  tasks:
+
+  - name: list
+    debug: 
+      msg: "string: {{ my_list  }}"
+
+  - name: list with quote
+    debug: 
+      msg: "string: {{ my_list | quote }}"
+
+  - name: join the list elements into a string.
+    debug: 
+      msg: "string: {{ my_list | join(', ')  }}"
+
+  - name: join the list elements into a string.
+    debug: 
+      msg: "string: {{ my_list | join(', ') | quote }}"
+
+
+

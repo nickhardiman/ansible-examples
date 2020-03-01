@@ -1,0 +1,63 @@
+---
+# see
+# Documents/tech/hardware-and-software/sphinx/ansible-centos-rpi/filter/subelements.rst
+# run 
+#  ansible-playbook -i inventory-localhost.yml filter-dict2items.yml
+#
+- name: treat each dictionary key/value pair as an item in a list. Three keys makes three arrays.
+  hosts: localhost
+  gather_facts: no
+  vars:
+    hash_of_hashes:
+      key1: 
+        subkey1: this_is_dictionary_1
+      key2:
+        subkey1: this_is_dictionary_2
+        subkey2: this_is_dictionary_2
+        subkey3: this_is_dictionary_2
+      key3:
+        subkey1: this_is_the_third_dict
+        subkey2: 
+          subsubkey1: '4th dict'
+          subsubkey2: '4th dict'
+          subsubkey3: '4th dict'
+
+    hash_of_lists:
+      key1:
+        - list_element_1
+        - list_element_2
+        - list_element_3
+      key2:
+        - list_element_1
+      key3:
+        - list_element_1
+        - list_element_2
+
+    hash_of_mixed_stuff:
+      key1: string
+      key2:
+        - list_element_1
+        - list_element_2
+        - list_element_3
+      key3: 
+        subkey1: this_is_dictionary_2
+        subkey2: this_is_dictionary_2
+        subkey3: this_is_dictionary_2
+
+  tasks:
+
+    - name: "hash of hashes. The dictionary is split into three items in an array. In the loop, item.key is the key name and item.value is the sub-dictionary. [ {key1: ...}, {key2: ...}, {key3: ...} ]"
+      debug: 
+        var: item
+      loop: "{{ hash_of_hashes | dict2items }}"
+
+    - name: "hash of lists. Each item.value is a list [ [...], [...], [...] ]"
+      debug: 
+        var: item
+      loop: "{{ hash_of_lists | dict2items }}"
+
+    - name: "hash of mixed stuff. item.value changes. First one's a string, then a list, then a dict. [ '...', [...], {...} ]"
+      debug: 
+        var: item
+      loop: "{{ hash_of_mixed_stuff | dict2items }}"
+

@@ -1,0 +1,24 @@
+---
+# gather facts
+#
+# run
+# ansible-playbook -i inventory-localhost.yml gather_facts.yml
+#
+- name: gather_facts
+  hosts: localhost 
+  gather_facts: yes
+  become: no
+  connection: local
+  tasks: 
+
+  - name: all facts
+    debug: 
+      var: ansible_facts
+
+  - name: one fact
+    debug: 
+      var: ansible_facts.kernel_version
+
+  - name: persistence
+    debug: 
+      msg: "Enabling 'use fact cache' in Ansible Tower would copy all this to memcache."

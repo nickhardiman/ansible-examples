@@ -1,0 +1,29 @@
+---
+# https://docs.ansible.com/ansible/2.8/user_guide/playbooks_filters.html#regular-expression-filters
+#      {{ 'Some DNS servers are 8.8.8.8 and 8.8.4.4' | regex_findall('\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b') }}
+
+    - name: "{{ item }}: copy IP addresses from this file to a variable"
+      set_fact:
+        IP_list: "{{ lookup('file', item ) | regex_findall( '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}' ) | default('NONE') }}"
+        #IP_list: "{{ lookup('file', item ) | regex_findall('[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}') | default('NONE') }}"
+        #IP_list: "{{ lookup('file', item ) | regex_findall('[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+') | default('NONE') }}"
+
+    - name: "{{ item }}: display string of IP addresses"
+      debug:
+        msg: "list of IP addresses: {{ IP_list }}"
+
+    - name: "{{ item }}: If the list is not empty, join the element into a string"
+      set_fact:
+        IP_string: "{{ IP_list | join(', ') }}"
+      when: IP_list is defined and IP_list != []
+
+    - name: "{{ item }}: If the list is empty, say so."
+      set_fact:
+        IP_string: "nope"
+      when: IP_list is not defined or IP_list == []
+
+    - name: "{{ item }}: display string of IP addresses"
+      debug:
+        msg: "string of IP addresses: {{ IP_string }}"
+
+

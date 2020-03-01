@@ -1,0 +1,17 @@
+---
+- hosts: localhost 
+  gather_facts: yes 
+  tasks:
+    - debug:
+        msg: 
+        - "ansible_distribution: {{ ansible_distribution }}"
+        - "ansible_distribution_major_version: {{ ansible_distribution_major_version }}"
+    - name: red hat?
+      debug: 
+        msg: "I am so last year"
+      when: >
+        ( ansible_distribution == "RedHat" and
+          ansible_distribution_major_version == "7" )
+        or
+        ( ansible_distribution == "Fedora" and
+        ansible_distribution_major_version == "28" )

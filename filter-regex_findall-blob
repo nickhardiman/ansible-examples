@@ -1,0 +1,2 @@
+DEVICE=eth1BOOTPROTO=noneONBOOT=yesNETWORK=10.0.1.0NETMASK=255.255.255.0IPADDR=10.0.1.27USERCTL=no
+these two are identified correctly:1.2.3.1234.5.6.123xxxx

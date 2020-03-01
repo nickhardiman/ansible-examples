@@ -1,0 +1,55 @@
+---
+# A lookup plug-in is an Ansible extension to the Jinja2 templating language. 
+# https://role.rhu.redhat.com/rol-rhu/app/courses/do447-2.8/pages/ch04s03
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml lookup-file.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: file list
+    set_fact: 
+      file_list: 
+      - filter-regex_findall-blob
+      - filter-regex_findall-hosts
+      - filter-regex_findall-ifcfg-eth0
+
+  - name: "{{ item }}: display content"
+    vars:
+      file_content: "{{ lookup('file', item ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+    loop: "{{ file_list }}"
+
+  - name: "raw yaml file"
+    vars:
+      file_content: "{{ lookup('file', 'inventory-localhost.yml' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+
+  - name: "Convert yaml file to internal data. The task output shows the data in JSON format."
+    vars:
+      file_content: "{{ lookup('file', 'inventory-localhost.yml' ) | from_yaml }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+
+  - name: nonexistant file. ignore_errors is set. 
+    vars:
+      file_content: "{{ lookup('file', 'i-dont-exist' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+    ignore_errors: yes
+    
+
+  - name: nonexistant file, with another way of ignoring the error
+    vars:
+      file_content: "{{ lookup('file', 'i-dont-exist', errors='warn' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+

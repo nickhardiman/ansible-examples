@@ -1,0 +1,62 @@
+---
+#  group module
+#  requires root privilege.
+#  see become.yml  
+#
+# run
+# ansible-playbook --ask-become-pass module-group.yml
+#
+- name: from list to group accounts
+  hosts: localhost 
+  gather_facts: no
+  become: yes
+  #delegate_to: localhost
+  connection: local
+  # don't use the variable name groups, that has a special meaning in ansible.
+  vars:
+    mygroups:
+      - name: jennyb
+      - name: jakec
+      - name: johnd
+      - name: janee
+      - name: dev
+        gid: 1233
+      - name: test
+        gid: 1234
+      - name: uat
+        gid: 1235
+      - name: prod
+        gid: 1236
+
+  # GID is optional, can accept whatever the system gives us
+
+  tasks:
+
+  # literal values 
+  #
+  - name: Add a group
+    group: 
+      name: temporary
+
+  - name: check
+    shell: grep temporary /etc/group
+    register: groupcheck
+    changed_when: no 
+
+  - name: success?
+    debug: 
+      var: groupcheck.stdout
+
+  - name: Remove a group
+    group: 
+      name: temporary
+      state: absent
+
+  # values from list
+  #
+  - name: Add groups from list 
+    group:
+      name: "{{ item.name }}"
+      gid: "{{ item.gid | default(omit) }}"
+    loop: "{{ mygroups }}" 
+

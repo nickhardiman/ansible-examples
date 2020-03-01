@@ -1,0 +1,27 @@
+---
+# https://stackoverflow.com/questions/48512527/how-to-use-regex-findall-in-ansible-playbook-properly
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-regex_findall.yml
+#
+
+- name: regex_findall filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: file list
+    set_fact: 
+      file_list: 
+      - filter-regex_findall-blob
+      - filter-regex_findall-none
+      - filter-regex_findall-hosts
+      - filter-regex_findall-ifcfg-eth0
+      - filter-regex_findall-ifcfg-eth1
+
+  - name: include_tasks
+    include_tasks: filter-regex_findall-subtasks.yml
+    loop: "{{ file_list }}"
+

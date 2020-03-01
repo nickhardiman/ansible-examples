@@ -1,0 +1,23 @@
+---
+# lower filter 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-join.yml
+#
+
+- name: lower case
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+  - my_list: 
+    - val1!
+    - VAL2.
+    - "Val3 :-)"
+  tasks:
+
+  - name: Change all alphabetic characters in upper case to lower case. Leave the others.
+    debug: 
+      msg: "list: {{ my_list | lower }}"
+

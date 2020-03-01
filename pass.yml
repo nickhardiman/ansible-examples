@@ -1,0 +1,13 @@
+---
+
+- name: password hash test
+  hosts: localhost 
+  gather_facts: no
+  become: no 
+  vars:
+    plain_password: bla
+    encrypted_password: "{{ plain_password | password_hash('sha512') }}"
+  tasks:
+  - debug: 
+      msg: "The encrypted version of '{{ plain_password }}' is '{{ encrypted_password }}'."
+

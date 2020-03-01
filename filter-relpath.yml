@@ -1,0 +1,62 @@
+---
+# relpath reads two files, and figures out how to get to the first one starting at the second one. 
+# It guesses from the paths it is given. 
+# reldir does not read the file system, so fake directories and file names can be used. 
+#
+# If you run reldir like this, it gives the relative path from  /etc/sudoers.d to /var/tmp.
+# request: 
+#     "{{ '/var/tmp' | relpath('/etc/sudoers.d') }}"
+# response: 
+#     "../../var/tmp"
+# If you use it like this, it looks like the linux basename function. 
+# Don't be fooled, relpath is not like linux's basename function.
+# request: 
+#     "{{ '/var/tmp' | relpath('/var') }}"
+# response: 
+#     "tmp"
+# 
+# Other path filters are dirname and realpath.
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml  filter-relpath.yml  
+#
+# My test directory looks like this. 
+#
+
+- name: use relpath
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+  - my_list_of_files:
+    - /fakedir1/fakefile1
+    - /fakedir1/fakedir2/fakefile2
+    - /fakedir1/fakedir2/fakedir5/fakefile5
+    - /fakedir1/fakedir2/fakedir4/fakefile4
+    - /fakedir1/fakedir3/fakefile3
+  tasks:
+
+  - name: path from one directory to another
+    debug: 
+      msg: "{{ '/var/tmp' | relpath('/etc/sudoers.d') }}"
+  - name: remove one leading path
+    debug: 
+      msg: "{{ '/var/tmp' | relpath('/var') }}"
+  - name: remove one leading path. Examples from here dont exist in the file system
+    debug: 
+      msg: "{{ '/fakedir1/fakedir2/fakedir3/fakefile2' |  relpath('/fakedir1') }}"
+  - name: remove two leading paths
+    debug: 
+      msg: "{{ '/fakedir1/fakedir2/fakedir3/fakefile2' |  relpath('/fakedir1/fakedir2') }}"
+  - name: goes nuts without the leading slash
+    debug: 
+      msg: "{{ '/fakedir1/fakedir2/fakedir3/fakefile2' |  relpath('fakedir1') }}"
+  - name: goes nuts with a path in the middle.
+    debug: 
+      msg: "{{ '/fakedir1/fakedir2/fakedir3/fakefile2' |  relpath('fakedir2') }}"
+  - name: map onto an array
+    debug: 
+      msg: "{{ my_list_of_files |  map('relpath', '/fakedir1') | list }}"
+

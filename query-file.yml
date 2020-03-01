@@ -1,0 +1,27 @@
+---
+# query plug-in vs. lookup plug-in
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml query-file.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+
+  - name: "lookup file puts all files' content in one big string."
+    vars:
+      file_content: "{{ lookup('file', '/etc/hosts', '/etc/syslog.conf' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+
+  - name: "query file makes a list and puts each file's content in a list item."
+    vars:
+      file_content: "{{ query('file', '/etc/hosts', '/etc/syslog.conf' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+

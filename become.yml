@@ -1,0 +1,54 @@
+---
+#  become
+#  requires root privilege, which requires a sudo password.
+#  There are a few ways of providing a password. 
+#  
+#  edit ansible.cfg. Add this.
+#    [privilege_escalation]
+#    become_ask_pass=True
+#  Don't try adding become_password=MyPassword to this ini file, it won't work.
+# 
+#  Use command line flag. Interactive, so no good for unattended automation. 
+#    --ask-become-pass or -K
+#
+#  Edit the inventory. Add this.
+#    ansible_become_password: MyPassword
+#
+#  Edit the inventory. 
+#  Add a password that is encrypted by ansible vault. 
+#  (I haven't tried this)
+#  Trickier, and you have an extra vault password to deal with.
+#  see https://docs.ansible.com/ansible/2.8/user_guide/playbooks_vault.html
+#    ansible_become_password: !vault |
+#          $ANSIBLE_VAULT;1.1;AES256
+#          66386439653236336462626566653063336164663966303231363934653561363964363833313662
+#          6431626536303530376336343832656537303632313433360a626438346336353331386135323734
+#          62656361653630373231613662633962316233633936396165386439616533353965373339616234
+#          3430613539666330390a313736323265656432366236633330313963326365653937323833366536
+#          34623731376664623134383463316265643436343438623266623965636363326136
+#  
+#
+# run
+# ansible-playbook -i become-inventory.yml  become.yml
+#
+- name: become with password
+  hosts: localhost 
+  gather_facts: no
+  become: yes
+  #delegate_to: localhost
+  connection: local
+
+  tasks:
+
+  - name: who am i?
+    shell: id 
+    register: myid
+
+  - name: ansible's reply
+    debug:
+      var: myid
+
+  - name: This is the interesting bit.
+    debug:
+      var: myid.stdout
+

@@ -1,0 +1,45 @@
+
+jakec:
+  realname: Jake Can
+  group: jakec
+  uid: 1233
+  os_groups:
+    - test
+  mysql_databases:
+    - this
+  
+johnd:
+  realname: John Doe
+  group: johnd
+  uid: 1234
+  os_groups:
+    - dev
+    - test
+  mysql_databases:
+    - this
+    - that
+  
+janee:
+  realname: Jane Egg
+  group: janee
+  uid: 1235
+  os_groups:
+    - dev
+    - test
+    - prod
+  mysql_databases:
+    - this
+    - that
+    - other
+  
+judef:
+  realname: Jude Fox
+  group: judef
+  uid: 1236
+  os_groups:
+    - dev
+    - prod
+  mysql_databases:
+    - this
+    - other
+

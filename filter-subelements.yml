@@ -1,0 +1,64 @@
+---
+# subelements filter 
+#
+# docs
+# https://docs.ansible.com/ansible/latest/plugins/lookup/subelements.html
+# Documents/tech/hardware-and-software/sphinx/ansible-centos-rpi/filter/subelements.rst
+#
+# run 
+#   ansible-playbook filter-subelements.yml
+#
+- name: show var structure as it is needed for example to make sense
+  hosts: localhost
+  gather_facts: no
+  vars:
+    list_of_hashes:
+      - key1: this_is_dictionary_1
+        key2:
+          - a_list_in_dict_1
+        key3: val3
+        key4: val4
+      - key1: this_is_dictionary_2
+      - key1: this_is_dictionary_3
+        key2:
+          - a_list_in_dict_3
+          - i_have_two_items
+      - key1: this_is_the_fourth_dictionary
+      - key1: this_is_the_fifth_dictionary
+        key2:
+          - dict_5_list_1
+          - dict_5_list_2
+      - key1: this_is_the_last_dictionary
+
+    another_list_of_hashes:
+      - key1: value1
+        key2:
+          - dict_1_list_1
+      - key1: value2
+        key2:
+          - dict_2_list_1
+          - dict_2_list_2
+      - key1: value3
+        key2:
+          - dict_3_list_1
+          - dict_3_list_2
+          - dict_3_list_3
+
+  tasks:
+
+    - name: simple use of subelements
+      debug: 
+        var: item
+      loop: "{{ another_list_of_hashes | subelements('key2') }}"
+
+    - name: fail to handle missing keys
+      debug: 
+        var: item
+      loop: "{{ list_of_hashes | subelements('key2') }}"
+      ignore_errors: yes
+
+    - name: list values from the key2 lists. Don't error if key2 is missing.
+      debug: 
+        var: item
+      loop: "{{ lookup('subelements', list_of_hashes, 'key2', {'skip_missing': True})  | list }}"
+

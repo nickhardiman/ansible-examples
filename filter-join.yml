@@ -1,0 +1,33 @@
+---
+# https://stackoverflow.com/questions/48512527/how-to-use-regex-findall-in-ansible-playbook-properly
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-join.yml
+#
+
+- name: join filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+  - my_list: 
+    - val1
+    - val2
+    - val3
+  - my_empty_variable: ''
+  tasks:
+  - name: join the list elements into a string.
+    debug: 
+      msg: "string: '{{ my_list | join(', ') }}'"
+
+  - name: set a default value
+    set_fact: 
+      my_empty_variable: empty
+    when: my_empty_variable == ''
+
+  - name: handle an empty list
+    debug: 
+      msg: "string: '{{ my_empty_variable | join(', ') }}'"
+
+

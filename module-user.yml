@@ -1,0 +1,87 @@
+---
+# user module
+#
+# Requires become privilege. 
+#
+# Requires groups.
+#  Groups used here:
+#  dev test uat prod
+#  These must already exist. 
+#  If a group is missing, this error appears. 
+#    fatal: [localhost]: FAILED! => {"ansible_facts": {"discovered_interpreter_python": 
+#      "/usr/bin/python"}, "changed": false, "msg": "Group jennyb does not exist"}
+#  see module-group.yml
+#
+# doc
+#   ansible-doc user
+#
+# run
+#   ansible-playbook --ask-become-pass module-user.yml
+#
+- name: from complex list to user accounts
+  hosts: localhost 
+  gather_facts: no
+  become: yes
+  #delegate_to: localhost
+  connection: local
+  vars:
+    users:
+      - username: jakec
+        realname: Jake Can
+        group: jakec
+        uid: 1233
+        groups:
+          - test
+      - username: johnd
+        realname: John Doe
+        group: johnd
+        uid: 1234
+        groups:
+          - dev
+          - test
+      - username: janee
+        realname: Jane Egg
+        group: janee
+        uid: 1235
+        groups:
+          - dev
+          - test
+          - prod
+
+  tasks:
+
+  # literal values 
+  #
+  - name: Add the user 'jennyb' with a specific uid and some groups.
+    user:
+      name: jennyb
+      comment: Jenny Bird
+      uid: 1232
+      group: jennyb
+      groups: test
+
+  - name: check 
+    shell: grep jennyb /etc/passwd
+    register: checkuser
+
+  - name: success?
+    debug: 
+      var: checkuser.stdout 
+      
+  - name: Remove the user 'jennyb' and her home directory.
+    user:
+      name: jennyb
+      state: absent
+      remove: yes
+
+  # values from list
+  - name: Add users from list 
+    vars:
+    user:
+      name: "{{ item.username }}"
+      comment: "{{ item.realname }}"
+      uid: "{{ item.uid }}"
+      group: "{{ item.group }}"
+      groups: "{{ item.groups }}"
+    loop: "{{ users }}" 
+
