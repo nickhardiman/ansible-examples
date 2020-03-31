@@ -1,0 +1,38 @@
+Indent a text block by four spaces 
+
+
+no filter 
+------------------------------------------
+The line in the template has 4 spaces then the variable. 
+Only the first line is indented. 
+
+    {{ my_text_block }}
+
+
+with filter
+------------------------------------------
+The template has no spaces before the variable. 
+The first line is not indented. 
+
+{{ my_text_block | indent(width=4) }}
+
+
+with filter, more options
+------------------------------------------
+This result looks the same as above.
+
+{{ my_text_block | indent(width=4, first=false, blank=true) }}
+
+This is all indented. 
+
+{{ my_text_block | indent(width=4, first=true) }}
+
+This template line has 4 spaces then the variable. 
+The result is also all indented. 
+
+    {{ my_text_block | indent(width=4, first=false) }}
+
+Option blank=false makes no difference. 
+
+{{ my_text_block | indent(width=4, first=true, blank=false) }}
+

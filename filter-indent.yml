@@ -1,0 +1,29 @@
+---
+# https://jinja.palletsprojects.com/en/2.11.x/templates/#indent
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+#
+# run
+#   ansible-playbook filter-indent.yml
+#
+
+- name: indent filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+
+  vars:
+  # The fourth line is indented, but contains no characters. 
+  - my_text_block: |
+      first line
+      second line 
+      third line
+      
+      fifth line
+
+  tasks:
+  - name: display in a template 
+    template: 
+      src: './filter-indent.j2'
+      dest: './filter-indent.txt'
+ 

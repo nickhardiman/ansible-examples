@@ -1,0 +1,67 @@
+Indent a text block by four spaces 
+
+
+no filter 
+------------------------------------------
+The line in the template has 4 spaces then the variable. 
+Only the first line is indented. 
+
+    first line
+second line 
+third line
+
+fifth line
+
+
+
+with filter
+------------------------------------------
+The template has no spaces before the variable. 
+The first line is not indented. 
+
+first line
+    second line 
+    third line
+
+    fifth line
+
+
+
+with filter, more options
+------------------------------------------
+This result looks the same as above.
+
+first line
+    second line 
+    third line
+    
+    fifth line
+    
+
+This is all indented. 
+
+    first line
+    second line 
+    third line
+
+    fifth line
+
+
+This template line has 4 spaces then the variable. 
+The result is also all indented. 
+
+    first line
+    second line 
+    third line
+
+    fifth line
+
+
+Option blank=false makes no difference. 
+
+    first line
+    second line 
+    third line
+
+    fifth line
+
