@@ -1,0 +1,23 @@
+---
+# simple variable 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#simple-variables
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml var-simple.yml
+#
+
+- name: define and display a simple variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the simple variable
+  vars:
+    simple_variable: "some value"
+
+  tasks:
+
+  - name: display the simple variable content, using a jinja2 substitution 
+    debug: 
+      msg: "content: {{ simple_variable }}"
+

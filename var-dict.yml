@@ -1,0 +1,54 @@
+---
+# dictionary variable 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#dictionary-variables
+#
+#
+
+- name: define and display a dictionary variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the dictionary variable
+  vars:
+    dictionary_variable: 
+      a_key: a value
+      another_key: another value
+      and_another_key: and another value
+      'key with spaces': some value
+
+  tasks:
+
+  - name: display the dictionary variable content, using a jinja2 substitution 
+    debug: 
+      msg: "This is what a JSON object looks like: {{ dictionary_variable }}"
+
+  - name: display one value in the dictionary variable
+    debug: 
+      msg: "another_key: {{ dictionary_variable['key with spaces'] }}"
+
+  - name: display one value in the dictionary variable
+    debug: 
+      msg: "another_key: {{ dictionary_variable.another_key }}"
+
+  - name: display all keys in the dictionary variable
+    debug: 
+      msg: "value: {{ item }}"
+    loop: "{{ dictionary_variable | list }}"
+
+  - name: rearrange the dictionary into a list of dictionaries using the filter "dict2items"
+    debug: 
+      msg: "value: {{ item }}"
+    loop: "{{ dictionary_variable | dict2items }}"
+
+  - name: rearrange the dictionary into a list of dictionaries using the lookup "dict"
+    debug: 
+      msg: "value: {{ item }}"
+    loop: "{{ lookup('dict', dictionary_variable) }}"
+
+  - name: use the lookup "dict" and a "when" clause to display one definition
+    debug: 
+      msg: "{{ item.key }}: {{ item.value }}"
+    loop: "{{ lookup('dict', dictionary_variable) }}"
+    when: '"a_key" in item.key'
+

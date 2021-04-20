@@ -1,0 +1,79 @@
+---
+# nested list variables
+#
+# This list contains more lists nested inside it. 
+# Nobody uses a list of lists like this in the real world. 
+# The values can only be accessed by keeping track of the index numbers.
+# These are hard to follow. 
+#
+# A list of dictionaries is much more useful, where the value of each dictionary is a list
+# Key names are easier to track than index numbers. 
+
+- name: define and display a list of lists 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define a list variable that contains lists. 
+  # the items that end in colons are variables that hold nested lists. 
+  # It's the same layout as a dictionary entry: key: value.
+  # In fact, to make it extra weird, each nested list is an anonymous dictionary. 
+  vars:
+    list_of_lists: 
+    - a value (index 0)
+    - another value (index 1)
+    # index 2 contains a nested list 
+    - 
+      - index 0, start of a nested list  
+      - index 1
+      - index 2
+    # index 3 contains a nested list 
+    - 
+      - index 0, another nested list starts here
+      - index 1
+      - index 2
+      - 
+        - index 0, a deeper nested list 
+        - index 1
+        - 
+          - index zero, the deepest nested list 
+          - index one
+          - index two
+
+    # these may make the structure a little clearer, or confuse the pants off everyone.
+    # In YAML, a list is a sequence and a key value pair is a mapping.
+    # https://yaml.org/spec/1.2/spec.html
+
+    # a YAML sequence of scalars
+    # This key has the name sequence1
+    - scalar 1
+    - scalar 2
+    - scalar 3
+
+    # a YAML block sequence
+    # This is a sequence of sequences 
+    - 
+      - first scalar in this sequence
+      - second scalar in this sequence
+    - 
+      - first scalar in this sequence
+      - second scalar in this sequence
+    - 
+      - first scalar in this sequence
+      - second scalar in this sequence
+
+
+  tasks:
+
+  - name: display the list
+    debug: 
+      msg: "This JSON array of arrays is complicated: {{ list_of_lists }}"
+
+  - name: the first nested list
+    debug: 
+      msg: "deeper: {{ list_of_lists[2] }}"
+
+  - name: a scalar in the deepest nested list
+    debug: 
+      msg: "deepest: {{ list_of_lists[3][3][2][0] }}"
+

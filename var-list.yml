@@ -1,0 +1,45 @@
+---
+# list variable 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
+#
+#
+
+- name: define and display a list variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the list variable
+  vars:
+    list_variable: 
+    - a value
+    - another value
+    - a third value
+    # This is assumed to be an int (a number), not a str (a character in the alphabet)
+    - 2
+    # This is assumed to be a str (a character)
+    - "2"
+
+  tasks:
+
+  - name: display the list variable content, using a jinja2 substitution 
+    debug: 
+      msg: "This is what a JSON array looks like: {{ list_variable }}"
+
+  - name: display one item in the list variable
+    debug: 
+      msg: "second value: {{ list_variable[1] }}"
+
+  - name: display the list variable content, using a loop
+    debug: 
+      msg: "value: {{ item }}"
+    loop: "{{ list_variable }}"
+
+  - name: arithmetic 
+    debug: 
+      msg: "{{ list_variable[3] }} + 3  = {{ list_variable[3] + 3 }}"
+
+  - name: arithmetic on a character. Oops. 
+    debug: 
+      msg: "{{ list_variable[4] }} + 3  = {{ list_variable[4] + 3 }}"
+

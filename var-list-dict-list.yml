@@ -1,0 +1,111 @@
+---
+# nested list variables
+#
+#
+
+- name: define and display a list of lists 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define a list variable that contains lists. 
+  # the items that end in colons are variables that hold nested lists. 
+  # It's the same layout as a dictionary entry: key: value.
+  # In fact, to make it extra weird, each nested list is an anonymous dictionary. 
+  vars:
+    list_of_lists: 
+    - a value
+    - another value
+    - 
+      - 1
+      - 2
+      - 3
+    - 
+      - a
+      - b
+      - 
+        - bla
+        - wibble
+        - 
+          - one 
+          - two 
+          - three 
+
+    my_list: 
+    - a value
+    - another value
+    - nested_list:
+      - 1
+      - 2
+      - 3
+    - another_nested_list:
+      - a
+      - b
+      - deep_nested_list:
+        - bla
+        - wibble
+        - deeper_list:
+          - one 
+          - two 
+          - three 
+
+    # these may make the structure a little clearer, or confuse the pants off everyone.
+    # In YAML, a list is a sequence and a key value pair is a mapping.
+    # https://yaml.org/spec/1.2/spec.html
+
+    # a YAML sequence of scalars
+    # This key has the name sequence1
+    - scalar 1
+    - scalar 2
+    - scalar 3
+
+    # a YAML mapping 
+    # This is the association of a key and a value.
+    key1: value1
+    key2: value2
+
+    # a YAML sequence of scalars, mapped to a key
+    # The key can point to a sequence of scalars.
+    # This key has the name sequence1
+    sequence1: 
+    - scalar 1
+    - scalar 2
+    - scalar 3
+
+    # a YAML block sequence
+    # This is a sequence of mappings 
+    - 
+      key1: value1
+      key2: value2
+    - 
+      key1: value3
+      key2: value4
+    - 
+      key1: value5
+      key2: value6
+
+
+  tasks:
+
+  - name: that deeper list
+    debug: 
+      msg: "deeper: {{ list_of_lists[2][2] }}"
+
+  - name: display my_list
+    debug: 
+      msg: "This JSON array is complicated: {{ my_list }}"
+
+  - name: you can't display another_nested_list like this. 
+    debug: 
+      msg: "another_nested_list: {{ another_nested_list }}"
+    ignore_errors: yes
+
+  - name: but you can like this. 
+    debug: 
+      msg: "another_nested_list is like a dict entry: {{ my_list[3] }}"
+
+  - name: that deeper list
+    debug: 
+      msg: "deeper: {{ my_list[3]['another_nested_list'][2]['deep_nested_list'] }}"
+      #msg: "deeper: {{ my_list[3][2][2] }}"
+
