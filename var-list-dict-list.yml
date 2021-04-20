@@ -1,5 +1,5 @@
 ---
-# nested list variables
+# lists inside dicts inside a list inside a dict
 #
 #
 
@@ -13,24 +13,6 @@
   # It's the same layout as a dictionary entry: key: value.
   # In fact, to make it extra weird, each nested list is an anonymous dictionary. 
   vars:
-    list_of_lists: 
-    - a value
-    - another value
-    - 
-      - 1
-      - 2
-      - 3
-    - 
-      - a
-      - b
-      - 
-        - bla
-        - wibble
-        - 
-          - one 
-          - two 
-          - three 
-
     my_list: 
     - a value
     - another value
@@ -47,22 +29,42 @@
         - deeper_list:
           - one 
           - two 
-          - three 
+          - I am such a deep value
 
     # these may make the structure a little clearer, or confuse the pants off everyone.
     # In YAML, a list is a sequence and a key value pair is a mapping.
     # https://yaml.org/spec/1.2/spec.html
 
-    # a YAML sequence of scalars
-    # This key has the name sequence1
-    - scalar 1
-    - scalar 2
-    - scalar 3
+    # key, or scalar, or variable
+    # The first line "my_list: " is both a dictionary name and a key. 
+    # It is part of a YAML mapping. 
+    # A key is a label that represents a memory location. 
+    # A key is called a scalar, a term stolen from the mathematical world, related to treating memory as a matrix.
+    # In the programmer world, a scalar is another word for variable.
 
+    # value
+    # Everything after that colon and space ": " is the value associated with that key.
+ 
     # a YAML mapping 
     # This is the association of a key and a value.
+    key: value
+
+    # In Python, a set of keys and values is called a dict or dictionary. 
+    # In JSON it is an object, and in other languages it's a hash.
     key1: value1
     key2: value2
+    key3: value3
+
+    # The second line "- a value" is a scalar in a sequence. 
+    # It is part of a YAML mapping. 
+
+    # a YAML sequence of scalars
+    # Ansible throws an error if a list is defined like this.
+    # The error is 'did not find expected key'.
+    # That's why this section must be commented out, while the other ones are not. 
+    # - scalar 1
+    # - scalar 2
+    # - scalar 3
 
     # a YAML sequence of scalars, mapped to a key
     # The key can point to a sequence of scalars.
@@ -72,24 +74,7 @@
     - scalar 2
     - scalar 3
 
-    # a YAML block sequence
-    # This is a sequence of mappings 
-    - 
-      key1: value1
-      key2: value2
-    - 
-      key1: value3
-      key2: value4
-    - 
-      key1: value5
-      key2: value6
-
-
-  tasks:
-
-  - name: that deeper list
-    debug: 
-      msg: "deeper: {{ list_of_lists[2][2] }}"
+  tasks: 
 
   - name: display my_list
     debug: 
@@ -97,15 +82,18 @@
 
   - name: you can't display another_nested_list like this. 
     debug: 
-      msg: "another_nested_list: {{ another_nested_list }}"
+      msg: "another_nested_list is a dictionary entry: {{ another_nested_list }}"
     ignore_errors: yes
 
   - name: but you can like this. 
     debug: 
-      msg: "another_nested_list is like a dict entry: {{ my_list[3] }}"
+      msg: "another_nested_list is a dictionary entry: {{ my_list[3] }}"
 
-  - name: that deeper list
+  - name: the value of another_nested_list is the nested list.
     debug: 
-      msg: "deeper: {{ my_list[3]['another_nested_list'][2]['deep_nested_list'] }}"
-      #msg: "deeper: {{ my_list[3][2][2] }}"
+      msg: "The value of another_nested_list is a list: {{ my_list[3]['another_nested_list'] }}"
+
+  - name: The deeper the nesting, the harder it is to use. 
+    debug: 
+      msg: "my_list[3]['another_nested_list'][2]['deep_nested_list'][2]['deeper_list'][2]: {{ my_list[3]['another_nested_list'][2]['deep_nested_list'][2]['deeper_list'][2] }}"
 
