@@ -1,6 +1,5 @@
 ---
 # A lookup plug-in is an Ansible extension to the Jinja2 templating language. 
-# https://role.rhu.redhat.com/rol-rhu/app/courses/do447-2.8/pages/ch04s03
 #
 # run
 #   ansible-playbook -i inventory-localhost.yml lookup-file.yml
