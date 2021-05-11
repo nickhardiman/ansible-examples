@@ -1,0 +1,61 @@
+---
+# Take a list of hosts.
+# Add them to two inventory groups, "running_hosts" and "failing_hosts".
+# Run
+# ansible-playbook  -i module-wait_for_connection-inventory.yml  module-wait_for_connection.yml 
+#
+# The inventory file "module-wait_for_connection-inventory.yml" contains four hosts. 
+# Two of them can be contacted and two can't.
+# These two hosts aren't real, but ansible successfully talks to them.
+# Ansible makes a local connection to localhost, which always works. 
+# This directive makes it work: ansible_connection=local
+#    i_respond
+#    i_also_respond
+# These two hosts aren't real and can't be contacted.
+# Ansible tries to make an SSH connection to the host, but can't find it. 
+#    i_dont_exist
+#    neither_do_i
+# 
+#
+# This playbook contains three plays. 
+# One sorts the hosts, the next one displays the "running_hosts" inventory group and the final one shows failing hosts.
+
+# sort the hosts
+- hosts: all
+  gather_facts: no
+  tasks:
+    - block:
+
+        - name: Try to connect to the host.
+          wait_for_connection:
+            timeout: 5
+
+        - name: Did it work? Add the host to the "running_hosts" inventory group.
+          group_by:
+            key: "running_hosts"
+
+      rescue:
+
+        - name: It didn't work. Add the host to the "failing_hosts" group.
+          group_by:
+            key: "failing_hosts"
+
+# display the "running_hosts" inventory group
+- hosts: running_hosts
+  gather_facts: no
+  tasks:
+
+  - name: running hosts
+    debug:
+      var: inventory_hostname
+
+
+# show failing hosts
+- hosts: failing_hosts
+  gather_facts: no
+  tasks:
+
+  - name: failing hosts
+    debug:
+      var: inventory_hostname
+

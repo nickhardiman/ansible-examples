@@ -1,0 +1,5 @@
+i_respond       ansible_connection=local
+i_also_respond  ansible_connection=local
+i_dont_exist    ansible_connection=ssh
+neither_do_i    ansible_connection=ssh
+

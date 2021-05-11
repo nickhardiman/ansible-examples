@@ -1,0 +1,90 @@
+---
+# boolean variable 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml var-bool.yml
+#
+
+- name: define and display a boolean variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the simple variable
+  vars:
+    # These are booleans
+    # yes is converted to True and no to False.
+    yes_bool: yes
+    no_bool: no
+    True_bool: True
+    False_bool: False
+    # These are not booleans, but can be converted using the bool filter. 
+    string_pretending_to_be_a_true_bool: "yes"
+    string_pretending_to_be_a_false_bool: "no"
+    random_string: "bla bla bla"
+    empty_string: ""
+    integer_pretending_to_be_a_true_bool: 1
+    integer_pretending_to_be_a_false_bool: 0
+    big_integer: 999
+
+  tasks:
+
+  - name: display a boolean true
+    debug: 
+      msg: "yes_bool: {{ yes_bool }}"
+
+  - name: display a boolean false
+    debug: 
+      msg: "no_bool: {{ no_bool }}"
+
+  # from string to boolean 
+
+  - name: convert string "yes" to boolean True
+    debug: 
+      msg: "string_pretending_to_be_a_true_bool: {{ string_pretending_to_be_a_true_bool | bool }}"
+
+  - name: convert string "no" to boolean False (why is this lower case?)
+    debug: 
+      var: string_pretending_to_be_a_false_bool | bool
+
+  - name: convert random string "bla bla bla" to boolean
+    debug: 
+      var: random_string | bool
+
+  - name: convert empty string "" to boolean False
+    debug: 
+      var: empty_string | bool
+
+  # from integer to boolean 
+
+  - name: convert integer 1 to boolean True
+    debug: 
+      msg: "integer_pretending_to_be_a_true_bool: {{ integer_pretending_to_be_a_true_bool | bool }}"
+
+  - name: convert integer 0 to boolean False
+    debug: 
+      var: integer_pretending_to_be_a_false_bool | bool
+
+  - name: convert big integer to boolean 
+    debug: 
+      var: big_integer | bool
+
+  # test 
+
+  - name: check for boolean with when conditional
+    debug: 
+      msg: It's a boolean
+    when: False_bool is boolean()
+
+  - name: check for boolean with type_debug
+    debug: 
+      msg: "{{ False_bool | type_debug }}"
+
+  # from boolean to string 
+
+  - name: convert from boolean to string
+    set_fact:
+      bool_string: "{{ yes_bool | string }}"
+  - debug:
+      var: bool_string
+

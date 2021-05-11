@@ -1,0 +1,82 @@
+---
+# is test 
+# https://jinja.palletsprojects.com/en/2.11.x/templates/#tests
+# defined, divisibleby, undefined and other tests (about 30 total) are listed here. 
+# https://jinja.palletsprojects.com/en/2.11.x/templates/#list-of-builtin-tests
+
+#   ansible-playbook -i inventory-localhost.yml filter-regex_search.yml
+#
+
+- name: test a variable or expression 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: two "boolean()" tests, joined with "and"
+    vars:
+      # Ansible converts yes and no to True and False
+      i_am_true: yes
+      i_am_false: no
+    debug: 
+      msg: "These variables both hold boolean values. i_am_true: {{ i_am_true }}, i_am_false: {{ i_am_false }}"
+    when: i_am_true is boolean and i_am_false is boolean
+
+
+  - name: the "divisibleby(x)" test
+    vars:
+      my_number: 9
+      my_divisor: 3
+    debug: 
+      msg: "{{ my_number }} is divisible by {{ my_divisor }}"
+    when: my_number is divisibleby(my_divisor)
+
+
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#conditionals-based-on-variables  
+  - name: Run when the variable "foo" is defined, using the "defined()" test
+    vars:
+      foo: bar
+    debug: 
+      msg: "found foo. It contains '{{ foo }}'"
+    when: foo is defined()
+
+  - name:  If the brackets are empty, they can be left out. "defined" is the same as "defined()" 
+    vars:
+      foo: bar
+    debug: 
+      msg: "found foo. It contains '{{ foo }}'"
+    when: foo is defined
+
+  - name: Run when a variable is missing with the "undefined" test
+    debug: 
+      msg: Oops! The variable bar is missing.
+    when: bar is undefined
+
+  - name: same thing, but using "not defined" 
+    debug: 
+      msg: Oops! The variable bar is missing.
+    when: bar is not defined
+
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#conditions-based-on-registered-variables
+
+  - name: This task fails. Result is captured in a variable.
+    ansible.builtin.command: /bin/false
+    register: result
+    ignore_errors: true
+
+  - name: the "failed()" test 
+    debug: 
+      msg: that task failed
+    when: result is failed
+
+  - name: the "succeeded()" test
+    debug: 
+      msg: that task succeeded
+    when: result is succeeded
+
+  - name: the "skipped()" test
+    debug: 
+      msg: that task was skipped
+    when: result is skipped
+

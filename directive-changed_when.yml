@@ -1,0 +1,46 @@
+# A directive changes the way Ansible manages a task. 
+# The changed_when directive tells Ansible to ignore the result and mark a task as successful. 
+# it's a bit like ignore_errors and ignore_unreachable
+# This directive can mark a task like this
+#   TASK [ ... ] **********
+#   changed: [localhost]
+# or like this.
+#   TASK [ ... ] **********
+#   ok: [localhost]
+#
+# An Ansible directive is similar to a programming directive. 
+# A programming directive instructs a compiler or interpreter to do something special.
+# An ansible directive tells the ansible engine to do something special. 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml directive-changed_when.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: This task is always marked as changed, but the "ls" command is read-only. It doesn't change anything, but Ansible doesn't know that. 
+    shell: ls
+
+  - name: This task is never marked as changed. 
+    shell: ls
+    changed_when: no
+
+  - name: tell ansible that the "ls" command doesn't change anything, but everything else does. First with "ls" ...
+    vars:
+      my_command: ls
+    shell: "{{ my_command }}"
+    register: r_shell
+    changed_when: "r_shell['cmd'] != 'ls'"
+
+  - name: ... and repeat with "pwd"
+    vars:
+      my_command: pwd
+    shell: "{{ my_command }}"
+    register: r_shell
+    changed_when: "r_shell['cmd'] != 'ls'"
+

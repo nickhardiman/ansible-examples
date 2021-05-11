@@ -1,0 +1,18 @@
+---
+# A lookup plug-in is an Ansible extension to the Jinja2 templating language. 
+# https://docs.ansible.com/ansible/latest/plugins/lookup/env.html
+#
+# run
+#   ansible-playbook lookup-env.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - debug: 
+      msg: "{{ lookup('env','HOME') }} is an environment variable"
+

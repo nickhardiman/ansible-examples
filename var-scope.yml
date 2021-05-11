@@ -1,0 +1,48 @@
+---
+# var scope
+#
+# run
+# ansible-playbook var-scope.yml
+#
+- name: var scope play 1
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  #delegate_to: localhost
+  connection: local
+  vars:
+    playbook_var: playbook_val
+
+  tasks: 
+  - name: playbook_var is available to every task in this playbook.
+    debug: 
+      var: playbook_var
+
+  - name: task_var is available in this task only.
+    vars: 
+      task_var: task_val
+    debug: 
+      var: task_var
+
+  - name: check task_var in a different task
+    debug: 
+      var: task_var
+
+
+- name: var scope play 2
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  #delegate_to: localhost
+  connection: local
+
+  tasks: 
+  - name: playbook_var is ???
+    debug: 
+      var: playbook_var
+
+  - name: task_var ???
+    debug: 
+      var: task_var
+
+

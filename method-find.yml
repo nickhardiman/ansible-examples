@@ -1,0 +1,47 @@
+---
+# find method
+# This is a python string find() method. 
+# It's not ansible or jinja2. 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#conditions-based-on-registered-variables
+#
+#   ansible-playbook -i inventory-localhost.yml method-find.yml
+#
+
+- name: test a variable or expression 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  # https://www.w3schools.com/python/ref_string_find.asp
+
+  # jinja2 can run a python method.
+  # find() returns -1 if it can't find the text. 
+  - name: find a little text in a lot of text
+    vars: 
+      my_sentence: Well, hello there!
+    debug:
+      msg: Found a word
+    when: my_sentence.find("hello") != -1
+
+  # This sentence has 18 characters. 
+  # The first character is at position 0 and the last is at position 17.
+  # Position 18 is the end of string.
+  #     Well, hello there!
+  #     012345678901234567
+  # Start searching at position 6 and stop at position 11
+  # If find is told to stop at position 10, it fails. 
+  - name: find a little text, but only between certain positions
+    vars: 
+      my_sentence: Well, hello there!
+    debug:
+      msg: Found a word
+    when: my_sentence.find("hello", 6, 11) != -1
+
+  - name: The result of find doesn't get passed back from jinja2 to ansible. 
+    vars:
+      jinja2_says: '{{ my_sentence.find("hello")  }}'
+    debug:
+      var: jinja2_says
+

@@ -1,0 +1,38 @@
+---
+# Read variables from a file and display them.
+#
+# run
+# ansible-playbook module-include_vars.yml
+# 
+# Useful for reading variables created elsewhere. 
+# include_vars is a dynamic action - it happens while the playbook is running. 
+#
+# The compile-time equivalent is a playbook keyword: "vars_files".
+# There is no compile-time module called "import_vars".
+# 
+# docs
+# vars_files playbook keyword
+# https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html
+# include_vars module
+# https://docs.ansible.com/ansible/latest/modules/include_vars_module.html
+# the difference between import and include
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_includes.html
+# All import* statements are pre-processed at the time playbooks are parsed.
+# All include* statements are processed as they are encountered during the execution of the playbook.
+#
+- name: include variables from a file
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  # read this file before taking any action
+  - name: read the file
+    include_vars: 
+      file: module-include_vars-from-here.yml
+
+  - name: Display what was read from the file. 
+    debug:
+      var: var_from_file
+

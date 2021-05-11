@@ -1,0 +1,146 @@
+---
+# when conditional
+# The code following "when: " is jinja2 code, not ansible. 
+# There are some gotchas to be wary of.
+#
+# Don't use double curly braces {{ }}.
+# They are usually used to tell Ansible what to hand over to jinja2, but in this case the whole thing is handed over. 
+# Jinja2 doesn't understand double curly braces. 
+#
+# Be careful with quotes. 
+# This is OK.
+#    when: '"bar" == "bar"' 
+# This is not.
+#    when: "bar" == "bar" 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml conditional-when.yml
+#
+
+- name: first play 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    my_sentence: Well, hello there!
+    my_word: hello
+  tasks:
+
+  # text exact match
+
+  - name: Compare two strings.
+    debug:
+      msg: This task compares two strings using ==
+    when: "'Well, hello there!' == 'Well, hello there!'"
+    #
+    # This type of "when" line requires careful quoting because the Ansible parser is easily confused.
+    # These variations cause a parser error, even though it looks like normal programming. 
+    #when: 'bar' == 'bar' 
+    #when: "bar" == "bar" 
+    # Wrapping this up in another pair of quotes fixes the problem. 
+    # These variations work OK.
+    #when: "'bar' == 'bar'"
+    #when: '"bar" == "bar"' 
+
+  - name: Compare a variable with a string using ==
+    debug:
+      msg: This task is the same, except one string is inside a variable.
+    when: my_sentence == 'Well, hello there!'
+
+  - name: Compare a variable with a string using is match() 
+    debug:
+      msg: This task uses "is match('Well, hello there!')" 
+    when: my_sentence is match('Well, hello there!')
+    #
+    # This also works with quotes around the outside. 
+    #when: "my_sentence is match('Well, hello there!')"
+    #
+    # The "is" word looks like English, but don't try using a "this is that" structure. 
+    # This won't work: 
+    #    when: "my_sentence is 'Well, hello there!'"
+    # Missing out the match test causes the error 
+    #    expected token 'name', got 'string'
+
+
+  # text substring match
+
+  - name: Look for one string inside another using "in" and strings
+    debug:
+      msg: This task finds one string inside another.
+    when: "'foo' in 'foobar'"
+    # This requires the same careful quoting as above.
+
+  - name: Look for one string inside another using "in" and variables
+    debug:
+      msg: This task uses variables and finds one string ({{ my_word }}) inside another ({{ my_sentence }}).
+    when: "my_word in my_sentence"
+
+  - name: same thing, but using "regex_search" instead of "in"
+    debug:
+      msg: This task uses strings and finds "bar" inside "foobar"
+    when: " 'foobar' | regex_search('bar') == 'bar' "
+
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
+
+  - name: Compare a variable with a string using is match() and a regex
+    debug:
+      msg: This task uses "is match('.*hello.*')". The regex matches the entire sentence. 
+    when: my_sentence is match('.*hello.*')
+
+  - name: Compare a variable with a string using is search() and a string
+    debug:
+      msg: This task uses "is search('hello')". The string matches part of the sentence.
+    when: my_sentence is search('hello')
+
+  - name: Compare a variable with a string using is regex() and a regex
+    debug:
+      msg: This task uses "is regex('.*hello')". The regex matches part of the sentence. 
+    when: my_sentence is regex('.*hello')
+
+
+
+  # stop the playbook
+
+  # The play below does not run. 
+  - name: This "fail ... when" task stops the playbook
+    fail:
+      msg: A match here interrupts the playbook, stops work and counts a failure. 
+    when: my_sentence == 'Well, hello there!'
+
+    # Acceptable formats for the "when" directive are pretty limited. 
+    # Try commenting out the "when" line above and uncommenting one of these "when" lines.
+    #
+    # These variations work OK.
+    # same thing, different quotes 
+    #when: my_sentence == "Well, hello there!"
+    #
+    # None of these work. 
+    # Ansible displays an error, which comes in a couple of variations.
+    # Runtime error 
+    #   fatal: ... The conditional check '...' failed
+    # Compile time error 
+    #   ERROR! We were unable to read either as JSON nor YAML
+    #
+    # The "when" clause is actually jinja2 code, so handling of curly braces {{ }} is a bit weird.
+    #when: "{{ my_sentence }} == "Well, hello there!"
+    #
+    # The keyword "is" does not mean "is equivalent to"
+    #when: "{{ my_match }} is 'bar'"
+    #when: "{{ my_match }}" is 'bar' 
+    #when: my_match is "bar"
+    #when: 'bar' is 'bar' 
+
+
+
+- name: second play 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: simple message
+    debug:
+      msg: I am the second play. 
+

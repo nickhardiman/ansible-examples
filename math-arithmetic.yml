@@ -1,0 +1,63 @@
+---
+# maths, math, mathematics
+# https://www.mydailytutorials.com/ansible-arithmetic-operations/
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml conditional-when.yml
+#
+
+- name: arithmeticß 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    my_sentence: Well, hello there!
+    my_word: hello
+  tasks:
+
+  - debug:
+      msg: "addition{{ 4 +3 }}" #Ansible addition 7
+  - debug:
+      msg: "substraction {{ 4 - 3 }}"  #Ansible arithmetic substraction 1
+  - debug:
+      msg: "multiplication {{ 4 * 3 }}" #multiplication 12
+  - debug:
+      msg: "Modulo operation {{ 7 % 4}}" #ansible Modulo operation - find remainder 3
+  - debug:
+      msg: "floating division {{ 4 / 3}}" #ansible floating division 1.33333333333
+  - debug:
+      msg: "cube root {{ 27 | root(3)}}" # Ansible arithmetic cube root 3.0
+  - debug:
+      msg: "square root {{ 16 | root}}" # square root 3.0
+  - debug:
+      msg: "power {{ 3 | pow(3)}}" #Ansible arithmetic power of a number 27
+  - debug:
+      msg: "Absolute value {{ -16.7 | abs}}" #Absolute value of a number 16.7
+  - debug: 
+      msg: "Int conversion of float value {{ -19.23 |int}}" #int conversion of a float value -19
+  - debug: 
+      msg: "Multiple filters for getting absolute integer value of negative number {{ -43.33 |int|abs}}" #Absolute value of a number 43
+  - debug: 
+      msg: "Common Ansible round of a number {{ 39.7 | round}}" #40
+  - debug: 
+      msg: "Common Rounding of a number {{ 39.4 | round}}" #39
+  - debug: 
+      msg: "Common Rounding of a number {{ 39.5 | round}}" #40
+  - debug: 
+      msg: "Another way of Common Rounding of a number{{ 39.779 | round(0,'common')}}" #40
+  - debug: 
+      msg: "floor Rounding of a number {{ 39.779 | round(0,'floor')}}" #39.0 - - still a float. Use integer filter to convert to integer
+  - debug: 
+      msg: "Ansible floor Rounding of a number {{ 39.779 | round(1,'floor')}}" #39.7
+  - debug: 
+      msg: "floor Rounding of a number {{ 39.779 | round(2,'floor')}}" #39.77
+  - debug: 
+      msg: "floor Rounding of a number {{ 39.779 | round(0,'floor')}}" #40.0 - still a float. Use integer filter to convert to integer
+  - debug: 
+      msg: "floor Rounding of a number {{ 39.779 | round(1,'floor')}}" #39.8
+  - debug: 
+      msg: "Ceiling Rounding of a number {{ 39.779 | round(2,'ceil')}}" #39.78
+  - debug: 
+      msg: "log of a number {{ 16 | log(4)}}" #2.0
+

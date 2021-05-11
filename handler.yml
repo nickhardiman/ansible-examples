@@ -1,0 +1,88 @@
+---
+# play
+# one playbook, three plays
+# Each play has a handler. 
+# All the handlers have the same name. 
+# All the tasks call the handler.
+# Handlers are called by plays, not the playbook.
+# Each play runs its own handler once. 
+#
+# run
+# ansible-playbook play.yml
+#
+- name: play 1
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    playbook_var: playbook_val
+
+  tasks: 
+  - name: task 1 in play 1
+    debug: 
+      msg: This is task 1, play 1
+    changed_when: true
+    notify: play handler
+
+  - name: task 2 in play 1
+    debug: 
+      msg: This is task 2, play 1
+    changed_when: true
+    notify: play handler
+
+  handlers: 
+  - name: play handler
+    debug:
+      msg: I am the play 1 handler 
+
+
+- name: play 2
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+
+  tasks: 
+  - name: task 1 in play 2
+    debug:
+      msg: This is task 1, play 2
+    changed_when: true
+    notify: play handler
+
+  - name: task 2 in play 2
+    debug:
+      msg: This is task 2, play 2
+    changed_when: true
+    notify: play handler
+
+  handlers:
+  - name: play handler
+    debug:
+      msg: I am the play 2 handler
+
+
+- name: play 3
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+
+  tasks:
+  - name: task 1 in play 3
+    debug:
+      msg: This is task 1, play 3
+    changed_when: true
+    notify: play handler
+
+  - name: task 2 in play 3
+    debug:
+      msg: This is task 2, play 3
+    changed_when: true
+    notify: play handler
+
+  handlers:
+  - name: play handler
+    debug:
+      msg: I am the play 3 handler
+

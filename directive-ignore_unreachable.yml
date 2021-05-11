@@ -1,0 +1,30 @@
+---
+# A directive changes the way Ansible manages a task. 
+# Adding the ignore_unreachable directive is a handy way to keep running if a host can't be contacted.
+#
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_error_handling.html#ignoring-unreachable-host-errors
+
+#
+# run
+#   ansible-playbook -i module-wait_for_connection-inventory.yml directive-ignore_unreachable.yml
+#
+# Results show an unreachable field. failed no, skipped yes. 
+#  summary 
+#  PLAY RECAP *******************************************************************************************
+#  i_also_respond : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+#  i_dont_exist   : ok=0    changed=0    unreachable=1    failed=0    skipped=1    rescued=0    ignored=0   
+#  i_respond      : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+#  neither_do_i   : ok=0    changed=0    unreachable=1    failed=0    skipped=1    rescued=0    ignored=0   
+
+
+
+- name: 
+  hosts: all 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: This executes, fails, and the failure is ignored
+    ansible.builtin.ping: 
+    ignore_unreachable: yes

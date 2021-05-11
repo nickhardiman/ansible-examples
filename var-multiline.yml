@@ -1,0 +1,143 @@
+---
+# Values can span multiple lines.
+# https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html#yaml-basics
+#   |   Literal Block Scalar          include the newlines and any trailing spaces, ignore indent
+#   >   Folded Block Scalar           fold newlines to spaces, ignore indent
+# These variations are mentioned in the YAML spec. 
+# https://yaml.org/spec/1.2/spec.html#id2796251
+#   |-  block scalar, literal, chomp. The - after the pipe removes trailing newlines
+#   |+  block scalar, literal, preserve. The + keeps trailing newlines.
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml var-multiline.yml
+#
+
+- name: variables with multiline scalars 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # This variable is a block scalar. 
+  # It is a literal, which means the pipe | tells ansible to include all special characters.
+  # most special characters are safe to include.
+  vars: 
+      test_file_1: var-multiline-literal.txt
+      test_file_2: var-multiline-folding.txt
+  tasks:
+
+  # The first few tasks write a scalar to a file and to the screen.
+  # The file looks exactly the same, minus the indent. 
+  # The task output is different, showing only one line and showing newlines as "\n".
+
+  - name: literal block scalar. |  Indentation is possible but tricky.
+    vars:
+      literal_block_scalar_indent: |
+        These lines must line up.
+          You can increase the indentation of this line. 
+        But you can't decrease the indentation of this line. 
+        That would cause a syntax error. 
+    debug: 
+      msg: "string: '{{ literal_block_scalar_indent }}'"
+
+  - name: literal block scalar. |  Special characters are escaped in the task output (callback display).
+    vars:
+      literal_block_scalar_escape: |
+        "double quotes" and 'single quotes' are fine.
+        So are (round braces). [Square braces] too.
+        {curly braces} are OK, but ansible chokes on {\{ double curly braces }\} so they must be escaped.
+    debug: 
+      msg: "string: '{{ literal_block_scalar_escape }}'"
+
+  - name: "literal block scalar. |  Copy this content to file {{ test_file_1 }}. Run 'cat {{ test_file_1 }}' to see the result."
+    vars:
+      literal_block_scalar: |
+        These lines must line up.
+          You can increase the indentation of this line. 
+        But you can't decrease the indentation of this line. 
+        That will cause a syntax error. 
+        "double quotes" and 'single quotes' are fine.
+        So are (round braces). [Square braces] too.
+        {curly braces} are OK, but ansible chokes on {\{ double curly braces }\} so they must be escaped.
+    copy: 
+      content: "{{ literal_block_scalar }}"
+      dest: "{{ test_file_1 }}"
+
+
+
+  # These tasks display variations of how newlines are handled. 
+
+  - name: literal block scalar. | removes all but one newlines at the end of the block.
+    vars: 
+      literal_block_scalar_one_trailing_newline: |
+        literal block scalar.
+        Defining a multi-line scalar with many trailing newlines in a variable in YAML is tricky. 
+        This block has four empty lines following it. 
+        
+
+
+
+    debug: 
+      msg: "string: '{{ literal_block_scalar_one_trailing_newline }}'"
+
+  - name: block scalar, literal, chomp. |- removes all newlines at the end of the block.
+    vars: 
+      literal_block_scalar_chomp: |-
+        literal block scalar.
+        Defining a multi-line scalar with many trailing newlines in a variable in YAML is tricky. 
+        This block has four empty lines following it. 
+        
+
+
+
+    debug: 
+      msg: "string: '{{ literal_block_scalar_chomp }}'"
+
+  - name: block scalar, literal, preserve. |+ keeps all the newlines.
+    vars: 
+      literal_block_scalar_preserve: |+
+        literal block scalar.
+        Defining a multi-line scalar with many trailing newlines in a variable in YAML is tricky. 
+        This block has four empty lines following it. 
+        
+
+
+
+    debug: 
+      msg: "string: {{ literal_block_scalar_preserve }}"
+
+
+
+  # folding
+  # https://yaml.org/spec/1.2/spec.html#id2796251
+
+  - name: folded block scalar. > replaces all newlines with spaces.
+    vars: 
+      folding_block_scalar: >
+        This is line one. 
+        This is line two. 
+        This is line three. 
+    debug: 
+      msg: "string: '{{ folding_block_scalar }}'"
+
+
+  - name: folded block scalar. > does not remove extra spaces.
+    vars: 
+      folding_block_scalar: >
+        There    are   big    spaces   between    these   words.
+        second line:  wibble   wibble
+        third line:   bla      bla 
+    debug: 
+      msg: "string: '{{ folding_block_scalar }}'"
+
+
+  - name: "folding block scalar. Copy this content to file {{ test_file_2 }}. Run 'cat {{ test_file_2 }}' to see the result."
+    vars:
+      folding_block_scalar_spaces: >
+        There    are   big    spaces   between    these   words.
+        second line:  wibble   wibble
+        third line:   bla      bla 
+    copy: 
+      content: "{{ folding_block_scalar_spaces }}"
+      dest: "{{ test_file_2 }}"
+
+

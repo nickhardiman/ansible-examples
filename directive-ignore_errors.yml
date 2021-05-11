@@ -1,0 +1,41 @@
+# A directive changes the way Ansible manages a task. 
+# Adding the ignore_errors directive is a handy way to keep running if a task fails.
+# If all hosts fail, the playbook stops running. 
+# The ignore_errors directive tells Ansible to ignore the result and mark a task as successful. 
+#
+# Ansible writes a message in the task's output, "...ignoring".
+# The summary has an extra field named "ignored", like this. 
+# 
+# PLAY RECAP ***************************************************************************************
+# localhost  : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=1   
+#
+# An Ansible directive is similar to a programming directive. 
+# A programming directive instructs a compiler or interpreter to do something special.
+# An ansible directive tells the ansible engine to do something special. 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml directive-ignore_errors.yml
+#
+
+- name: 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  # jinja2 does the addition and comparison.
+  - name: OK, 2 plus 2 definitely dos not add up to 3, but let's say it does. 
+    assert:
+      that: "{{ 2 + 2 == 3 }}"
+    ignore_errors: yes
+
+  - name: This task fails and the playbook stops.
+    assert:
+      that: "{{ 2 + 2 == 3 }}"
+
+  - name: I don't run because the playbook fails to reach here.
+    debug:
+      msg: Always the bridesmaid, never the bride.
+
+

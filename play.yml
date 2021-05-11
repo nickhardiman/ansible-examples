@@ -1,0 +1,46 @@
+---
+# play
+# one playbook, three plays
+#
+# run
+# ansible-playbook play.yml
+#
+- name: play 1
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    playbook_var: playbook_val
+
+  tasks: 
+  - name: task in play 1
+    debug: 
+      msg: This is play 1
+
+
+
+- name: play 2
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+
+  tasks: 
+  - name: task in play 2
+    debug: 
+      msg: This is play 2
+
+
+
+- name: play 3
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+
+  tasks: 
+  - name: task in play 3
+    debug: 
+      msg: This is play 3
+

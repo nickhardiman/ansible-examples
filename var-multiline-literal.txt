@@ -1,0 +1,7 @@
+These lines must line up.
+  You can increase the indentation of this line. 
+But you can't decrease the indentation of this line. 
+That will cause a syntax error. 
+"double quotes" and 'single quotes' are fine.
+So are (round braces). [Square braces] too.
+{curly braces} are OK, but ansible chokes on {\{ double curly braces }\} so they must be escaped.

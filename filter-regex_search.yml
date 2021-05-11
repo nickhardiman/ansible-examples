@@ -1,0 +1,52 @@
+---
+# regex_search 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#searching-strings-with-regular-expressions
+# ansible regex filters 
+#    regex_replace
+#    regex_escape
+#    regex_search
+#    regex_findall
+# source 
+# https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/filter/core.py
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-regex_search.yml
+#
+
+- name: regex_search filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    found: no
+  tasks:
+
+  - name: simple regex - plain text only. returns the matched text, not a boolean true or yes
+    debug:
+      msg: "{{ 'foobar' | regex_search('bar') }}"
+
+  - name: match failure returns nothing
+    debug:
+      msg: "{{ 'foobar' | regex_search('nope') }}"
+
+  - name: more complicated regex match. "\w+" matches one or more word characters. Requires an extra backslash \.
+    debug:
+      msg: "{{ 'foobar' | regex_search('\\w+') }}"
+
+  - name: with a "when" conditional 
+    vars:
+      my_match: "{{ 'foobar' | regex_search('bar') }}"
+    debug:
+      msg: I found what I was looking for
+    when: my_match == 'bar'
+
+  - name: with a "when" conditional and "!=" (not equal to)
+    vars:
+      my_match: "{{ 'foobar' | regex_search('bar') }}"
+    debug:
+      msg: I did not find what I was looking for
+    when: my_match != 'bar'
+
+
+

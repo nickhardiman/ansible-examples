@@ -1,0 +1,21 @@
+# Comments are thrown away by the Ansible parser. 
+# I am a comment. 
+---
+# I can be before the document start or after, doesn't matter. 
+
+- name: comments and messages
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+  
+  # I'm an indented comment. 
+# It doesnt matter what the indentation is. 
+    # It's all ignored. 
+
+  - name: I'm a task message. 
+    debug:
+      msg: I'm a debug message.  # I'm an inline comment. You can't see me. 
+
+

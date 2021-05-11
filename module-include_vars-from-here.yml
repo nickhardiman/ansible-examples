@@ -1,0 +1,4 @@
+var_from_file: 
+  its_a_dictionary:   
+    that: contains_another_dictionary
+
