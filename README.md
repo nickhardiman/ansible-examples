@@ -1,16 +1,19 @@
 # ansible-examples
 
 These are my little playbooks, to remind me how Ansible tasks behave.
-
 Read it, run it, edit it, play with it. 
+
+They all run on localhost. No network required. 
 
 "It's a pile of junk" disclaimer - 
 The files are more brain-dump than structured, so quite possibly a complete mess.
 
 ## What are these?
 
-These are tiny playbooks that run locally, to see how ansible behaves. 
-The playbooks are simple - no roles, SSH, or remote hosts. Mostly no privilege escalation.
+There are about 100 little playbooks here.
+Each one is about an ansible thing, like a play, a directive or a variable type. 
+They all run locally and demonstrate how a little bit of ansible behaves. 
+The playbooks are simple - no roles, no SSH, no remote hosts and mostly no privilege escalation (one exception is module-user.yml).
 
 I wrote these on Fedora. My cross-platform testing is a big fat zero. 
 I have no idea how they behave on Windows or other platforms.
