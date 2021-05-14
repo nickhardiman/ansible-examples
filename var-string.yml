@@ -1,0 +1,122 @@
+---
+# string variable 
+# run
+#   ansible-playbook var-string.yml
+#
+# A string here is the Python idea of a string - a piece of text. 
+#
+# YAML isn't really interested in strings, or in any other data types. 
+# YAML is only interested in sequences of unicode characters, and doessn't care what they mean. 
+# Python may assume "0x10" is a hexadecimal number, "2" is an integer and "01-01-1970" is a date, but YAML doesn't.
+# YAML sees a string, and all these other data types, as somebody else's problem. 
+# Data types are something the programming language takes care of. 
+# YAML probably copies this definition of a scalar from the three JSON data types: scalar, array and object. 
+# 
+# Ansible is written in Python, which does care about data types.  
+# When that programming language stores a YAML scalar, the scalar does get typed. 
+# Here is a line from a YAML file. 
+#    my_var: True
+# This ends up getting stored as a boolean value.
+# But this version of the same line gets stored as a string, not a boolean. 
+#    my_var: "True"
+#
+# I am not convinced this is right - 
+# the YAML spec at https://yaml.org/spec/1.2/spec.html doesn't explain scalars.
+# The spec does give a few examples, like this one.
+#   avg: 0.278
+# This is an example of "mapping scalars to scalars".
+# So in YAML world a string like "avg" and a decimal fraction like "0.278" are both scalars. 
+#
+
+- name: define and display a string variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: If the text has no special characters, it does not need quotes. 
+    vars:
+      plain_string: I start with a letter so I am stored as a string. 
+    debug:
+      var: plain_string
+
+    # Python converts YAML scalars to data types.
+    # "2" and 2 are both scalars to YAML, but not to Python. 
+    # Adding quotes means ansible sees this is a string, not an integer.
+  - name: Python says "string!". Python does "looks like a duck, sounds like a duck, so it's a duck" data typing.
+    vars:
+      quoted_string: "2"
+    debug:
+      var: quoted_string
+
+    # This is an integer, not a string.
+  - name: Python says "integer!"
+    vars:
+      not_a_string: 2
+    debug:
+      var: not_a_string
+
+  - name: no special meaning for single quotes and double quotes
+    vars:
+      single_quoted_string: 'single or double, man, we are all the same underneath'
+    debug:
+      var: single_quoted_string
+
+  - name: Well, usually no special meaning for single quotes and double quotes...
+    vars:
+      double_quoted_string: "single or double, man, we are all the same underneath"
+    debug:
+      var: double_quoted_string
+
+  - name: ...except when it comes to special control characters like newline and tab  ...
+    vars:
+      double_quoted_string_with_controls: "These newline \n and tab \t characters look exactly the same in the output."
+    debug:
+      var: double_quoted_string_with_controls
+
+  - name: ... with single quotes they are escaped. 
+    vars:
+      single_quoted_string_with_controls: 'These newline \n and tab \t characters now have double backslashes.'
+    debug:
+      var: single_quoted_string_with_controls
+
+
+  - name: This string is a multiline block of text.
+    vars:
+      literal_block_string: |
+        Line one. All these newlines stay (look for the backslash n characters).
+        Line two. 
+        Line three. 
+    debug:
+      var: literal_block_string
+
+  - name: This string is a multiline block of text.
+    vars: 
+      folding_block_string: >
+        Line one. This newline is removed. 
+        Line two. This newline is also removed. 
+        Line three. This newline remains.
+    debug:
+      var: folding_block_string
+
+  - name: "Put quotes around the YAML special character : or get a parse error"
+    vars:
+      string_with_colon: "oops:"
+    debug:
+      var: string_with_colon
+
+  - name: :it's fine as the first character. And the same goes for - which is used in lists.
+    vars:
+      colon_string: :it's fine as the first character
+    debug:
+      var: colon_string
+
+  - name: Some characters have an extra meaning, like the square brackets [] used in a JSON array. 
+    vars:
+      reserved_characters: Don't put these at the start of a value  [] {} > | * & ! % # ` @ ,
+    debug:
+      var: reserved_characters
+
+
+

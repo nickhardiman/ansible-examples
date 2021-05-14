@@ -1,0 +1,19 @@
+---
+# contact four hosts
+# We don't have four machines - we only have localhost. 
+# Connection trickery points all four host names to localhost.
+# Have a look at the inventory to see the "ansible_connection: local" line.
+#
+# run
+# ansible-playbook -i inv-four-hosts-inventory.yml inv-four-hosts.yml
+#
+- hosts: all
+  gather_facts: no
+  become: no
+  tasks: 
+
+  
+  - name: display inventory hostname
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
