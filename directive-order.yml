@@ -1,0 +1,84 @@
+# A directive changes the way Ansible manages a task. 
+#
+# An Ansible directive is similar to a programming directive. 
+# A programming directive instructs a compiler or interpreter to do something special.
+# An ansible directive tells the ansible engine to do something special. 
+#
+# run
+#   ansible-playbook -i directive-order-inventory.yml directive-order.yml
+#
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#ordering-execution-based-on-inventory
+# options 
+# inventory:         (default) The order provided in the inventory
+# reverse_inventory: The reverse of the order provided by the inventory
+# sorted:            Sorted alphabetically sorted by name
+# reverse_sorted:    Sorted by name in reverse alphabetical order
+# shuffle:           Randomly ordered on each run
+#
+# The summary always lists hosts in sorted order. 
+#
+# PLAY RECAP ***********************
+# 1host                      : ok=5  
+# a_host                     : ok=5  
+# and_another_host           : ok=5  
+# another_host               : ok=5  
+# host-4                     : ok=5  
+# host2                      : ok=5  
+# host_3                     : ok=5  
+# 
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  order: inventory
+  tasks:
+
+  - name: Run this task on each host, in the order they appear in the inventory
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  order: reverse_inventory
+  tasks:
+
+  - name: Order is reverse_inventory
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  order: sorted
+  tasks:
+
+  - name: Order is sorted (alphabetically)
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  order: reverse_sorted
+  tasks:
+
+  - name: Order is reverse_sorted (alphabetically)
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  order: shuffle
+  tasks:
+
+  - name: Order is shuffle (random)
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+

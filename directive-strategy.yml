@@ -1,0 +1,79 @@
+# A directive changes the way Ansible manages a task. 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#selecting-a-strategy
+#
+# An Ansible directive is similar to a programming directive. 
+# A programming directive instructs a compiler or interpreter to do something special.
+# An ansible directive tells the ansible engine to do something special. 
+#
+# run
+#   ansible-playbook -i inv-four-hosts-inventory.yml directive-strategy.yml
+#
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  #connection: local
+  strategy: linear
+  tasks:
+
+  - name: strategy linear
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
+  - name: OS pause
+    command: 
+      cmd: sleep 1
+    changed_when: no
+
+
+  - name: ansible pause runs once
+    pause: 
+      seconds: 1
+
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  #connection: local
+  strategy: free
+  tasks:
+
+  - name: strategy free
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
+  - name: OS pause
+    command: 
+      cmd: sleep 1
+    changed_when: no
+
+# This task causes this error.
+#  ERROR! The 'pause' module bypasses the host loop, which is currently not supported in the free strategy and would instead execute for every host in the inventory list.
+#  - name: pause runs once?
+#    pause: 
+#      seconds: 1
+
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  #connection: local
+  strategy: debug
+  tasks:
+
+  - name: strategy debug
+    debug:
+      msg: "I am {{ inventory_hostname }}"
+
+  - name: OS pause
+    command: 
+      cmd: sleep 1
+    changed_when: no
+
+  - name: pause runs once?
+    pause:
+      seconds: 1
+
