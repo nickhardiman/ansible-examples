@@ -1,0 +1,19 @@
+# A directive changes the way Ansible manages a task. 
+#
+# An Ansible directive is similar to a programming directive. 
+# A programming directive instructs a compiler or interpreter to do something special.
+# An ansible directive tells the ansible engine to do something special. 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml directive-changed_when.yml
+#
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  tasks:
+
+  - name: This task is always marked as changed, but the "ls" command is read-only. It doesn't change anything, but Ansible doesn't know that. 
+    shell: ls
+

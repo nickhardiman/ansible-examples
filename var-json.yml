@@ -1,0 +1,53 @@
+---
+
+- name: variables with multiline scalars 
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+
+  - name: literal block scalar. |
+    vars:
+      literal_block_json: |
+        {
+          "one": 1,
+          "two": 2
+        }
+    debug:
+      msg: "string: '{{ literal_block_json }}'"
+
+  - name: literal block scalar with single quotes. Can mess up parsing. |
+    vars:
+      literal_block_json_quotes: |
+        '{
+          "one": 1,
+          "two": 2
+        }'
+    debug:
+      msg: "string: '{{ literal_block_json_quotes }}'"
+
+
+  - name: folding block scalar. >
+    vars:
+      folding_block_json: >
+        {
+          "one": 1,
+          "two": 2
+        }
+    debug:
+      msg: "string: '{{ folding_block_json }}'"
+
+  - name: folding block scalar with var substitution. >
+    vars:
+      my_var: hi there
+      folding_block_json_var: >
+        {
+          "one": 1,
+          "two": 2,
+          "my_var_: "{{ my_var }}"
+        }
+    debug:
+      msg: "string: '{{ folding_block_json_var }}'"
+

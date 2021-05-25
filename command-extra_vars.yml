@@ -1,0 +1,46 @@
+---
+# extra variables supplied on the command line
+#
+# run
+#
+# no extra vars
+# ansible-playbook command-extra_vars.yml
+#
+# one extra var, using the original UNIX-style single character option "-e"
+# ansible-playbook -e "an_extra_var='a cli value'" command-extra_vars.yml
+#
+# one extra var, using the newer GNU-style keyword "--extra_vars"
+# That's "--extra-vars", not "--extra_vars". Use a hyphen, not an underscore.
+# ansible-playbook --extra-vars="an_extra_var='a cli value'" command-extra_vars.yml
+#
+# two extra vars, with one "-e" option 
+# ansible-playbook -e "an_extra_var='a cli value' another_extra_var='another cli value'" command-extra_vars.yml
+#
+# two extra vars, with two "-e" options
+# ansible-playbook -e "an_extra_var='a cli value'" -e "another_extra_var='another cli value'" command-extra_vars.yml
+#
+# When wrapping up many variables with just one "-e" option, be careful with the quoting.
+# This version doesn't work. 
+# Ansible looks for a playbook called "another_extra_var='another cli value'" and fails to find it. 
+# ansible-playbook -e "an_extra_var='a cli value'" "another_extra_var='another cli value'" command-extra_vars.yml
+#
+
+- name: an_extra_vars
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: Was the first extra var supplied? 
+    set_fact:
+      first_message: "value of an_extra_var: '{{ an_extra_var | default('nothing, it was not supplied') }}'"
+  - debug:
+      var: first_message
+
+  - name: Was the second extra var supplied? 
+    set_fact:
+      second_message: "value of another_extra_var: '{{ another_extra_var | default('nothing, it was not supplied') }}'"
+  - debug:
+      var: second_message
+

@@ -1,0 +1,61 @@
+---
+# jinja2 test - defined
+# run
+#   ansible-playbook test-defined.yml
+# https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-tests.defined
+#
+# Brackets are optional.
+# These two lines do the same thing. 
+#    when: some_content is defined()
+#    when: some_content is defined
+#
+- name: define and display a string variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: test - does a string with content count as "defined"?
+    vars:
+      some_content: bla bla bla
+    debug:
+      msg: "Yes :) Variable some_content contains '{{ some_content }}'"
+    when: some_content is defined()
+
+  - name: test - does a string with no content count as "defined"?
+    vars:
+      no_content: ""
+    debug:
+      msg: "Yes :) Variable no_content contains '{{ no_content }}'"
+    when: no_content is defined()
+
+  - name: test - does a non-existent string count as "defined"?
+    debug:
+      msg: "No :( I don't get displayed, but at least there's no error."
+    when: does_not_exist is defined()
+
+  - name: works with a list
+    vars:
+      my_list:
+      - one
+      - two
+      - three
+      - four
+    debug:
+      msg: "my_list '{{ item }}'"
+    loop: "{{ my_list }}"
+    when: my_list is defined()
+
+  - name: works with a list
+    vars:
+      my_list:
+      - one
+      - two
+      - three
+      - four
+    debug:
+      msg: "my_list '{{ item loop.nextitem }}'"
+    loop: "{{ my_list }}"
+    #when: loop.nextitem is defined()
+
