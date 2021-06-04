@@ -1,0 +1,44 @@
+---
+# What happens if your inventory is empty?
+# It's never completely empty. 
+# Ansible adds localhost to the inventory.
+#
+# What happens if your inventory contains one empty group? 
+# Ansible adds two more groups: "all" and "ungrouped".
+#
+# run
+# ansible-playbook -i inv-empty-inventory.yml inv-empty.yml
+#
+- name: This first play is skipped.
+  hosts: all
+  gather_facts: no
+  become: no
+  tasks: 
+
+  - name: I never run.
+    debug: 
+      msg: Nothing to see here.
+
+- name: This second play runs on localhost.
+  hosts: localhost
+  gather_facts: no
+  become: no
+  tasks: 
+
+  - name: I do run.
+    debug: 
+      msg: "Greetings from {{ inventory_hostname }}."
+
+  - name: Are empty groups removed by Ansible? No!
+    debug: 
+      msg: "group: {{ item.key }}"
+    loop: "{{ groups | dict2items }}"
+
+  - name: figure out how many hosts are in the group "empty_group"
+    set_fact: 
+      host_count: "{{ groups['empty_group'] | length }}"
+
+  - name: the answer is ...
+    debug: 
+      msg: "empty_group contains {{ host_count }} hosts"
+
