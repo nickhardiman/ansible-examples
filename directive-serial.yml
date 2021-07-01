@@ -1,19 +1,41 @@
+# serial directive 
+# run
+#   ansible-playbook -i inv-four-hosts-inventory.yml directive-serial.yml
+#
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#setting-the-batch-size-with-serial
 # A directive changes the way Ansible manages a task. 
 #
 # An Ansible directive is similar to a programming directive. 
 # A programming directive instructs a compiler or interpreter to do something special.
 # An ansible directive tells the ansible engine to do something special. 
 #
-# run
-#   ansible-playbook -i inventory-localhost.yml directive-changed_when.yml
+
+# Ansible feels funny about using serial like this, and issues a warning.
+# For more information, see the auto_legacy section in
+# https://docs.ansible.com/ansible/2.10/reference_appendices/interpreter_discovery.html
 #
 
-- name: 
+- name: This play runs many times.
+  hosts: all
+  gather_facts: no
+  become: no
+  serial: 1
+  tasks:
+
+  # We can't use pause - that always runs on localhost.
+  - name: wait a second
+    shell: sleep 1
+    # ansible can't tell nothing changed, so force "ok" instead of "changed"
+    changed_when: false
+
+- name: This play runs once. It runs the same task on all hosts at the same time (in parallel). 
   hosts: all
   gather_facts: no
   become: no
   tasks:
 
-  - name: This task is always marked as changed, but the "ls" command is read-only. It doesn't change anything, but Ansible doesn't know that. 
-    shell: ls
+  - name: wait a second
+    shell: sleep 1
+    # ansible can't tell nothing changed, so force "ok" instead of "changed"
+    changed_when: false
 

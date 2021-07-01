@@ -1,0 +1,7 @@
+make_me_lower_case_6: My Book Title
+make_me_lower_case_6: "{{ make_me_lower_case_6 | lower }}"
+#
+make_me_lower_case_7: My Book Title
+_intermediate_variable_7: "{{ make_me_lower_case_7 | lower }}"
+make_me_lower_case_7: "{{ _intermediate_variable_7 | lower }}"
+

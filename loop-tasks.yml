@@ -1,0 +1,8 @@
+- name: first task
+  debug:
+    msg: item "{{ item }}"
+
+- name: second task
+  debug:
+    msg: item "{{ item }}"
+

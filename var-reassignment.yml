@@ -1,0 +1,140 @@
+---
+# variable reassignment
+#
+# run
+#   ansible-playbook var-reassignment.yml
+#
+# If you've ever programmed something like "i = i + 1" then you may expect Ansible to be able to do something similar.
+# The set_fact module can, but the rest of Ansible finds this tricky.
+# It's safer to create new variables, rather than trying to reassign values to existing variables. 
+# If you understand functional programming, treat variables like they are immutable. 
+#
+# variable assignment 
+
+- name: take a simple variable, changes its value, and re-assign that value back to the variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the simple variable
+  vars:
+    # The five tasks each have their own variable to change. 
+    # This makes sure the work from one task does not affect the work of the next one.
+    make_me_lower_case_1: My Book Title
+    make_me_lower_case_2: My Book Title
+    # This one is for YAML lovers
+    my_anchor_var: &anchor "My Book Title"
+    #make_me_lower_case_3: My Book Title
+    make_me_lower_case_4: My Book Title
+    make_me_lower_case_5: My Book Title
+    # If I make a copy here, it's the old mixed case value
+    my_copy_1: "{{ make_me_lower_case_5  }}"
+  vars_files:
+    # make_me_lower_case_6 and make_me_lower_case_7 are in this file.
+    var-reassignment-vars.yml
+  tasks:
+  
+
+  # 1. variable reassignment with programming shorthand 
+  # This doesn't work! 
+  # Assume Jinja2 takes care of the intermediate variable.
+  # Instead of defining an intermediate variable, try assigning "replaced_value" to itself.
+  # This shorthand does work in many programming languages, but not in Jinja2.
+  #
+  - name: This task fails because it sends Jinja2 into a recursive loop.
+    vars: 
+      make_me_lower_case_1: "{{ make_me_lower_case_1 | lower }}"
+    debug: 
+      msg: "make_me_lower_case_1: {{ make_me_lower_case_1  }}"
+    ignore_errors: yes
+
+  # 2. variable reassignment with an intermediate variable
+  # This doesn't work! 
+  # A variable is defined elsewhere. 
+  # First, copy this variable to an intermediate variable.
+  # Then, replace the content and assign back to the first variable.
+  # This requires an intermediate variable to hold our work.
+  #
+  # This intermediate variable has no use anywhere else.
+  # I gave the intermediate variable a special name starting with an underscore, to remind me not to try using this elsewhere.
+  # If I see a variable name with an underscore being used elsewhere, like on the command line when I run ansible-playbook, I know I have made a programming mistake.
+  #
+  - name: This task fails because it sends Jinja2 into a recursive loop.
+    vars: 
+      _intermediate_variable: "{{ make_me_lower_case_2 | lower }}"
+      make_me_lower_case_2: "{{ _intermediate_variable }}"
+    debug: 
+      msg: "make_me_lower_case_2: {{ make_me_lower_case_2  }}"
+    ignore_errors: yes
+
+  # 3. variable reassignment using a YAML anchor 
+  # This doesn't work! 
+  # Ansible does not understand the YAML anchor.
+  #
+  - name: This task fails with a templating error.
+    vars: 
+      _intermediate_variable: "{{ *anchor | lower }}"
+      make_me_lower_case_3: "{{ _intermediate_variable }}"
+    debug: 
+      msg: "make_me_lower_case_3: {{ make_me_lower_case_3  }}"
+    ignore_errors: yes
+
+# set_fact module 
+
+  # 4. variable reassignment with the set_fact module and programming shorthand
+  # This works! 
+  # A variable is defined elsewhere. 
+  # Take the value, change it, and assign it back to the first variable.
+  # Then assign the value back to the first variable.
+  #
+  - name: replace the value of make_me_lower_case
+    set_fact: 
+      make_me_lower_case_4: "{{ make_me_lower_case_4 | lower }}"
+  - name: view the result
+    debug:
+      msg: "make_me_lower_case_4: {{ make_me_lower_case_4  }}"
+    ignore_errors: yes
+
+  # 5. variable reassignment with the set_fact module and an intermediate variable
+  # This works! 
+  # A variable is defined elsewhere. 
+  # Take the value, change it, and assign it to an intermediate variable.
+  # Then assign the value back to the first variable.
+  #
+  - name: create _intermediate_variable
+    set_fact: 
+      _intermediate_variable: "{{ make_me_lower_case_5 | lower }}"
+  - name: replace the value of make_me_lower_case_5
+    set_fact: 
+      make_me_lower_case_5: "{{ _intermediate_variable }}"
+  - name: view the result
+    debug:
+      msg: "make_me_lower_case_5: {{ make_me_lower_case_5  }}"
+  - name: this var copies the new value
+    vars:
+      my_copy_2: "{{ make_me_lower_case_5  }}"
+    debug:
+      msg: "my_copy_1: {{ my_copy_1 }}, my_copy_2: {{ my_copy_2 }}"
+
+# vars file 
+
+  # 6. variable reassignment with a vars file and programming shorthand 
+  # This doesn't work! 
+  # It's similar to 1.
+  #
+  - name: This task fails because it sends Jinja2 into a recursive loop.
+    debug:
+      msg: "make_me_lower_case_6: {{ make_me_lower_case_6  }}"
+    ignore_errors: yes
+
+  # 7. variable reassignment with a vars file and an intermediate variable
+  # This doesn't work!
+  # It's similar to 2.
+  #
+  - name: This task fails because it sends Jinja2 into a recursive loop.
+    debug:
+      msg: "make_me_lower_case_7: {{ make_me_lower_case_7  }}"
+    ignore_errors: yes
+
+
+

@@ -8,6 +8,9 @@
 #   |-  block scalar, literal, chomp. The - after the pipe removes trailing newlines
 #   |+  block scalar, literal, preserve. The + keeps trailing newlines.
 #
+# These are strings. 
+# For a description of scalars and strings, see var-string.yml
+#
 # run
 #   ansible-playbook -i inventory-localhost.yml var-multiline.yml
 #
@@ -38,6 +41,16 @@
         That would cause a syntax error. 
     debug: 
       msg: "string: '{{ literal_block_scalar_indent }}'"
+
+  - name: another indented literal block scalar. This one's JSON |
+    vars:
+      literal_block_json: |
+        {
+          "one": 1,
+          "two": 2
+        }
+    debug:
+      msg: "string: '{{ literal_block_json }}'"
 
   - name: literal block scalar. |  Special characters are escaped in the task output (callback display).
     vars:

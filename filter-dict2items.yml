@@ -2,7 +2,7 @@
 # see
 # Documents/tech/hardware-and-software/sphinx/ansible-centos-rpi/filter/subelements.rst
 # run 
-#  ansible-playbook -i inventory-localhost.yml filter-dict2items.yml
+#  ansible-playbook filter-dict2items.yml
 #
 - name: treat each dictionary key/value pair as an item in a list. Three keys makes three arrays.
   hosts: localhost

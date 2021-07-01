@@ -1,0 +1,86 @@
+---
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
+#
+# The filters match() and regex_search() are similar. 
+# match returns a boolean value.
+# regex_search returns the matched string. 
+#
+# The start has to match. The end, not so much.
+# Match does not look for one little piece of text in a bigger piece of text, like "b" in "a b c".
+# The match filter has to match the start, or it returns False.
+# That is not what I expected.
+# The regex filter does match "b" in "a b c".
+#
+# Python does the heavy lifting with its re library.
+# https://docs.python.org/3/library/re.html
+#
+- name: match filter
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    my_sentence: "Well, hello there!"
+  tasks:
+
+# exact match 
+
+  - name: Exact match comparing two strings
+    debug:
+      msg: This task uses "match('Well, hello there!')". The regex matches the entire sentence.
+    when: my_sentence is match('Well, hello there!')
+
+  - name: Match the start
+    debug:
+      msg: This task uses "match('Well')"
+    when: my_sentence is match('Well')
+
+  - name: Match the middle. This fails.
+    debug:
+      msg: This task uses "match('hello')". The regex matches the entire sentence.
+    when: my_sentence is match('hello')
+
+# partial match 
+
+  - name: If you want to look for a word in the middle, try "regex()" instead.
+    debug:
+      msg: This task uses "is regex('hello')". The regex filter doesn't have to match the whole sentence.
+    when: my_sentence is regex('hello')
+
+  - name: You can find a word in a sentence using "match()" and a regex
+    debug:
+      msg: This task uses "match('.*hello.*')", which is "anything, followed by hello, followed by anything".
+    when: my_sentence is match('.*hello.*')
+
+  - name: A regex that matches the start and middle
+    debug:
+      msg: This task uses "match('.*hello')", which is "anything, followed by hello
+    when: my_sentence is match('.*hello')
+
+  - name: A regex that does not match the beginning. This fails. 
+    debug:
+      msg: This task uses "match('hello.*')", which is "hello, followed by anything"
+    when: my_sentence is match('hello.*')
+
+# trickier regular expressions
+
+  - name: character class. A word character is a, A, b, etc. A space character is a space or tab. 
+    debug:
+      msg: This task uses "match('\\w+\\s')", which is one or more word characters followed by a space character 
+    when: my_sentence is match('\\w+\\s')
+
+  - name: character set. [el]+ matches e, el, eell, eee, lll, etc. 
+    debug:
+      msg: W[el]+  Match Well by looking for W followed by one or more e or l characters
+    when: my_sentence is match('W[el]+')
+
+  - name: lookahead assertion. It's pointless to use one with match.
+    debug:
+      msg: Well,\\s+(?=hello)   Match "Well, " but only if it is followed by hello
+    when: my_sentence is match('Well,\\s+(?=hello)')
+
+  - name: comment. Ignored by Python's re code.
+    debug:
+      msg: Well,\\s+(?#have I found my match?)
+    when: my_sentence is match('Well,\\s+(?#have I found my match?)')
+

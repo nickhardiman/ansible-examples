@@ -1,15 +1,59 @@
 ---
+# default filter
+#
+# run
+# ansible-playbook -i inventory-localhost.yml filter-default.yml 
+# ansible-playbook -i inventory-localhost.yml -e "extra_var='a cli value'" filter-default.yml 
+#
 - name: Loop Register Test
+  hosts: localhost 
   gather_facts: no
-  hosts: localhost
+  become: no
+  connection: local
   tasks:
-    - name: Looping Echo Task
+
+# repeat one task
+
+    - name: loop with list
+      debug:
+        msg: item "{{ item }}"
+      loop:
+        - one
+        - two
+        - three
+
+    - name: Looping echo task. stdout is captured in r_echo.
       shell: "echo This is my item: {{ item }}"
       loop:
         - one
         - two
-      register: echo_results
+        - three
+      register: r_echo
 
-    - name: Show echo_results variable
+    - name: Show what the shell module captured, from r_echo.results[0].stdout to r_echo.results[2].stdout  
       debug:
-        var: echo_results
+        msg: "results is a list of items, and the items include stdout. first: '{{ r_echo.results[0].stdout }}', second: '{{ r_echo.results[1].stdout }}', third: '{{ r_echo.results[2].stdout }}'"
+
+# repeat many tasks 
+
+    # you can't loop a block like this.
+    # This causes a compile error. 
+    #   ERROR! 'loop' is not a valid attribute for a Block
+    #
+    #- block:
+    #
+    #  - name: loop in a block
+    #    debug:
+    #      msg: item "{{ item }}"
+    #
+    #  loop:
+    #  - one
+    #  - two
+    #  - three
+
+    - name: loop with include_tasks
+      include_tasks: loop-tasks.yml
+      loop:
+        - one
+        - two
+        - three

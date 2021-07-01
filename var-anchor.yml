@@ -1,0 +1,32 @@
+---
+# YAML anchor
+#
+# run
+#   ansible-playbook var-anchor.yml
+#
+# variable assignment 
+
+- name: define and display a simple variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the simple variable
+  vars:
+    simple_variable: I don't have quotes
+    my_anchor_var: &my_anchor "My Book Title"
+    my_copy: *my_anchor
+    my_dict:
+      i_got: *my_anchor
+
+  tasks:
+
+  - name: display the variable content
+    debug: 
+      msg: ": my_copy: {{ my_copy }}"
+
+  - name: display the dict variable content
+    debug: 
+      msg: ": my_dict.i_got: {{ my_dict.i_got }}"
+
+

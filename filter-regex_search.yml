@@ -1,11 +1,20 @@
 ---
 # regex_search 
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#searching-strings-with-regular-expressions
-# ansible regex filters 
+#
+# The filters match() and regex_search() are similar.
+# match returns a boolean value.
+# regex_search returns the matched string.
+#
+# ansible regex filters that return text 
 #    regex_replace
 #    regex_escape
 #    regex_search
 #    regex_findall
+# ansible regex filters that return bool
+#    match
+#    regex
+#
 # source 
 # https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/filter/core.py
 #
@@ -30,7 +39,11 @@
     debug:
       msg: "{{ 'foobar' | regex_search('nope') }}"
 
-  - name: more complicated regex match. "\w+" matches one or more word characters. Requires an extra backslash \.
+  - name: character class regex match. "\w" matches one word character. Requires an extra backslash \.
+    debug:
+      msg: "{{ 'foobar' | regex_search('\\w') }}"
+
+  - name: more complicated regex match. "\w+" matches one or more word characters.
     debug:
       msg: "{{ 'foobar' | regex_search('\\w+') }}"
 
@@ -47,6 +60,4 @@
     debug:
       msg: I did not find what I was looking for
     when: my_match != 'bar'
-
-
 
