@@ -1,0 +1,80 @@
+# A directive changes the way Ansible manages a task. 
+#
+# run
+#   ansible-playbook -i inventory-localhost.yml directive-when.yml
+#
+# An Ansible directive is similar to a programming directive. 
+# A programming directive instructs a compiler or interpreter to do something special.
+# An ansible directive tells the ansible engine to do something special. 
+#
+# The "when" directive needs a true or false boolean value.
+# It can take one line, like this
+#    when: my_variable == "this value"
+# or a list, like this.
+#    when: 
+#    - variable1 == "value1"
+#    - variable2 == "value2"
+#    - variable3 == "value3"
+#
+# Only a little boolean logic is shown here - the equality operators "==" and "!=".
+# See conditional-when.yml and test-is.yml for more. 
+# 
+
+# 
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  vars:
+    my_empty_var: ""
+    my_second_empty_var: ""
+    my_non_empty_var: hello
+    my_second_non_empty_var: howdy
+   
+  tasks:
+
+  - name: when needs a true or false boolean value
+    debug: 
+      msg: The when line is given to jinja2, and jinja2 returns true or false
+    when: my_non_empty_var == "hello"
+
+# Combine when, AND and "==".
+
+  - name: All the things in a list must be true.
+    debug: 
+      msg: It's like checking "when this is true AND that is true"
+    when: 
+    - my_non_empty_var == "hello"
+    - my_second_non_empty_var == "howdy"
+
+  - name: Complain if both variables are empty, part 1
+    debug: 
+      msg: this is true AND that is true - the whole thing is true
+    when: 
+    - my_empty_var == ""            # this is true
+    - my_second_empty_var == ""     # this is true
+
+  - name: Complain if both variables are empty, part 2
+    debug: 
+      msg: this is true AND that is false - the whole thing is false 
+    when: 
+    - my_empty_var == ""            # this is true
+    - my_non_empty_var == ""        # this is false
+
+# Combining when, AND and "!=" (NOT) is confusing.
+
+  - name: Complain if both variables are filled in, part 1
+    debug: 
+      msg: this is true AND that is false - the whole thing is false
+    when: 
+    - my_non_empty_var != ""        # this is true
+    - my_empty_var != ""            # this is false
+
+  - name: Complain if both variables are filled in, part 2
+    debug: 
+      msg: this is true AND that is true - the whole thing is true
+    when: 
+    - my_non_empty_var != ""         # this is true
+    - my_second_non_empty_var != ""  # this is true
+

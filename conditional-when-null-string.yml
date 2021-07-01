@@ -1,0 +1,62 @@
+# How ansible deals with a null value
+#
+# run
+#   ansible-playbook conditional-when-null-string.yml
+#
+# Javascript and other languages use null.
+# https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null
+# JSON objects sometimes contain null values. 
+#
+# If a string can either have content or be null, it can be tricky to check.
+# A null string is not the same as an empty string. 
+#
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  vars:
+    # This variable contains the special value Null
+    a_null_var: Null
+    # This variable contains characters
+    a_string: I am content
+    # This variable contains nothing
+    an_empty_string: ''
+   
+  tasks:
+
+  - name: a_null_var == "" is not true, so I am skipped.
+    debug: 
+      msg: A null value is not the same as an empty string.
+    when: a_null_var == ""
+
+  - name: a_null_var == None is true, so I run.
+    debug: 
+      msg: A null value is the same as the special Python None value. 
+    when: a_null_var == None
+
+  - name: a_null_var on its own is false, so I am skipped. 
+    debug: 
+      msg: A null value is the same as false.
+    when: a_null_var 
+
+  - name: not a_null_var equates to true, so I run.
+    debug: 
+      msg: A null value is the same as false.
+    when: not a_null_var 
+
+  - name: a_string equates to true, so I run.
+    debug: 
+      msg: This is a string with some characters.
+    when: a_string 
+
+  - name: an_empty_string equates to false, so I am skipped.
+    debug: 
+      msg: This is a string with no characters.
+    when: an_empty_string 
+
+  - name: an_empty_string == a_null_var equates to false, so I am skipped.
+    debug: 
+      msg: A string containing nothing is not the same as a Null value. 
+    when: an_empty_string == a_null_var
+

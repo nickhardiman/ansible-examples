@@ -1,0 +1,29 @@
+---
+# ipaddr filter
+# run
+#   ansible-playbook filter-ipaddr-address.yml 
+#
+# See filter-ipaddr.yml for the big explanation. 
+# This is about the variation
+#   ipaddr('address')
+#
+- name: ipaddr filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: "address from 1.2.3.4/16"
+    vars: 
+      ipv4_addr_and_cidr: '1.2.3.4/16'
+    debug: 
+      msg: "'{{ ipv4_addr_and_cidr }} | ipaddr('address')' returns {{ ipv4_addr_and_cidr | ipaddr('address') }}"
+
+  - name: "address from 1.2.3.4/56. An IPv4 address has 32 bits, so a 56 bit mask makes no sense."
+    vars: 
+      ipv4_addr_and_cidr: '1.2.3.4/56'
+    debug: 
+      msg: "'{{ ipv4_addr_and_cidr }} | ipaddr('address')' returns {{ ipv4_addr_and_cidr | ipaddr('address') }}"
+
+

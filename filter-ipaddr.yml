@@ -1,17 +1,38 @@
 ---
 # ipaddr filter
+# run
+# ansible-playbook -i inventory-localhost.yml filter-ipaddr.yml 
+#
+# The ipaddr filter is one of those Ansible modules that requires optional Python libraries.
+# The ipaddr filter requires python's "netaddr" be installed on the ansible controller.
+# If this library is missing, the playbook ends with this error message. 
+#   fatal: [localhost]: FAILED! => {"msg": "The ipaddr filter requires python's netaddr be installed on the ansible controller"}
+#
+# RHEL and Fedora
+# Install RPM package "python3-netaddr".
+# Mac
+# Create a Python virtualenv, activate it, and pip install netaddr
+#
+# The ipaddr filter is designed to clean up an IP address, not to check it is valid.
+# If the IP address is good, it is returned. 
+# The code "1.2.3.4 | ipaddr" returns "1.2.3.4". 
+# It does not return true.
+#
+# This filter works with decimal numbers too, which may be a surprise.
+# "123 | ipaddr" returns "0.0.0.123". 
+# It does not return false.  
+#
 # https://docs.ansible.com/ansible/2.4/playbooks_filters_ipaddr.html
-# ipaddr()
+# variations
+#
 # ipv4()
 # ipv6()
+# ipaddr()
 # ipaddr('address')
 # ipaddr('network')
 # ipaddr('netmask') 
 # ipaddr('broadcast') 
-# etc. 
-#
-# run
-# ansible-playbook -i inventory-localhost.yml filter-ipaddr.yml 
+# ipaddr('bool') 
 #
 - name: ipaddr filter
   hosts: localhost 
@@ -108,3 +129,20 @@
     debug: 
       msg: "{{ ipv4_addr }} translates to int: {{ ipv4_addr | ipaddr('int') }}, 6to4: {{ ipv4_addr | ipaddr('6to4') }}"
 
+
+# ipaddr('address')
+  - name: "address from 1.2.3.4/16"
+    vars: 
+      ipv4_addr_and_cidr: '1.2.3.4/16'
+    debug: 
+      msg: "'{{ ipv4_addr_and_cidr }} | ipaddr('address')' returns {{ ipv4_addr_and_cidr | ipaddr('address') }}"
+
+  - name: "address from 1.2.3.4/56. An IPv4 address has 32 bits, so a 56 bit mask makes no sense."
+    vars: 
+      ipv4_addr_and_cidr: '1.2.3.4/56'
+    debug: 
+      msg: "'{{ ipv4_addr_and_cidr }} | ipaddr('address')' returns {{ ipv4_addr_and_cidr | ipaddr('address') }}"
+
+# ipaddr('network')
+# ipaddr('netmask') 
+# ipaddr('broadcast') 

@@ -1,0 +1,12 @@
+- name: green task one 
+  debug:
+    msg: Hello from task one
+
+- name: green task two 
+  debug:
+    msg: Hello from task two
+
+- name: green task three 
+  debug:
+    msg: Hello from task three
+

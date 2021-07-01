@@ -1,0 +1,48 @@
+---
+# Read tasks from a file
+#
+# run
+# ansible-playbook module-include_tasks.yml
+# 
+# Useful for reading tasks from elsewhere. 
+# include_tasks is a dynamic action - it happens while the playbook is running. 
+# All include* statements are processed as they are encountered during the execution of the playbook.
+# All import* statements are pre-processed at the time playbooks are parsed.
+# The compile-time equivalent is import_tasks.
+#
+# There are three blue tasks and three green tasks. 
+# Module import_tasks is used with when, so only one set of tasks runs.
+# The ignored tasks aren't displayed at all. 
+# The include_tasks module doesn't behave like this. 
+# If import_tasks is replaced by include_tasks, every task is displayed and the green ones are skipped.
+# 
+# docs
+# include_tasks module
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_tasks_module.html
+# the difference between import and include
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html#includes-dynamic-re-use
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_includes.html
+#
+- name: include tasks from a file
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars: 
+    # choose one of two sets of tasks, called blue and green
+    set_to_include: blue
+  tasks:
+
+  - name: read blue tasks
+    include_tasks: 
+      file: module-include_tasks-blue.yml
+    when: set_to_include == "blue"
+
+  # If set_to_include is not "green", then green tasks are not shown in the output.
+  # This task name appears, but none of the names inside the file appear. 
+  - name: read green tasks
+    include_tasks: 
+      file: module-include_tasks-green.yml
+    when: set_to_include == "green"
+
+

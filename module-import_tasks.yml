@@ -1,0 +1,45 @@
+---
+# Read tasks from a file
+#
+# run
+# ansible-playbook module-import_tasks.yml
+# 
+# Useful for reading tasks from elsewhere. 
+# import_tasks happens at compile time.
+# All include* statements are processed as they are encountered during the execution of the playbook.
+# All import* statements are pre-processed at the time playbooks are parsed.
+# The run-time equivalent is include_tasks.
+#
+# There are three blue tasks and three green tasks. 
+# Module include_tasks is used with when, so only one set of tasks runs.
+# The ignored tasks all appear, with "skipped".
+# The import_tasks module doesn't behave like this. 
+# 
+# docs
+# import_tasks module
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_tasks_module.html
+# the difference between import and include
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html#imports-static-re-use
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_includes.html
+#
+- name: import tasks from a file
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars: 
+    # choose one of two sets of tasks, called blue and green
+    set_to_import: blue
+  tasks:
+
+  - name: read blue tasks
+    import_tasks: 
+      file: module-import_tasks-blue.yml
+    when: set_to_import == "blue"
+
+  - name: read green tasks
+    import_tasks: 
+      file: module-import_tasks-green.yml
+    when: set_to_import == "green"
+
+
