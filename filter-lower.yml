@@ -2,8 +2,9 @@
 # lower filter 
 #
 # run
-#   ansible-playbook -i inventory-localhost.yml filter-join.yml
+#   ansible-playbook filter-lower.yml
 #
+# https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.lower
 
 - name: lower case
   hosts: localhost 
