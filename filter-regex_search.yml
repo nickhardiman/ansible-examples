@@ -1,6 +1,7 @@
 ---
 # regex_search 
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#searching-strings-with-regular-expressions
+# run
+#   ansible-playbook -i inventory-localhost.yml filter-regex_search.yml
 #
 # The filters match() and regex_search() are similar.
 # match returns a boolean value.
@@ -15,11 +16,11 @@
 #    match
 #    regex
 #
+# See
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#searching-strings-with-regular-expressions
 # source 
 # https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/filter/core.py
 #
-# run
-#   ansible-playbook -i inventory-localhost.yml filter-regex_search.yml
 #
 
 - name: regex_search filter

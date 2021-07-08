@@ -1,0 +1,58 @@
+---
+# copy an item from a list
+# run 
+#   ansible-playbook var-list-to-simple.yml
+#
+# Copy a value from a list and assign it to a simple variable.
+# Ansible takes the set_fact code and translates it to jinja2 code.
+# The formatting is a little tricky.
+# See
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
+#
+# The last task combines two filters. 
+# It uses a jinja2 filter called "select", combined with another filter called "match".
+# See 
+# https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.select
+
+- name:  build a list
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    empty_list: []
+    full_list: ['first', 'second', 'third', 'fourth', 'fifth', 'sixth']
+
+  tasks:
+
+  - name: copy the first thing in the list
+    vars:
+      simple_var: "{{ full_list | first }}"
+    debug: 
+      var: simple_var
+
+  - name: An empty list doesn't break the task.
+    vars:
+      simple_var: "{{ empty_list | first }}"
+    debug: 
+      var: simple_var
+
+  - name: Copy the last thing in the list.
+    vars:
+      simple_var: "{{ full_list | last }}"
+    debug: 
+      var: simple_var
+
+  - name: Index pointer -1 ("-" means count backwards from the end) also works.
+    vars:
+      simple_var: "{{ full_list[-1] }}"
+    debug: 
+      var: simple_var
+
+  - name: Copy the last thing in the list that starts with the letter "f".
+    vars:
+      f_list: "{{ full_list | select('match', '^f.+') }}"
+      last_item: "{{ f_list | last }}"
+    debug: 
+      var: last_item
+

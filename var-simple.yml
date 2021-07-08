@@ -1,11 +1,14 @@
 ---
 # simple variable 
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#simple-variables
 #
 # run
 #   ansible-playbook var-simple.yml
 #
-# variable assignment 
+# Ansible calls a variable containing one value a "simple" variable. 
+# A programmer may think of this as a scalar.
+# See
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#simple-variables
+# 
 
 - name: define and display a simple variable
   hosts: localhost 
