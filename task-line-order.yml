@@ -1,0 +1,31 @@
+---
+# a task is a dictionary
+# run 
+#   ansible-playbook task-line-order.yml
+#
+# The line order makes no difference to the YAML parser.
+# You can rearrange the lines. 
+#
+- name: Rearranging the lines in a task makes no difference to the outcome.
+  hosts: localhost
+  gather_facts: false
+  vars: 
+    myvar: myval
+  tasks: 
+
+  - name: The "name" line is first and the "when" line is last. This is a common layout.
+    debug: 
+      var: myvar
+    when: myvar is defined
+
+  - name: This task is almost the same as the task above, but the "when" line is second, not last.
+    when: myvar is defined
+    debug: 
+      var: myvar
+
+  - when: myvar is defined
+    name: The "when" line is first in this task. 
+    debug: 
+      var: myvar
+
+  

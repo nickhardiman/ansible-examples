@@ -1,0 +1,78 @@
+---
+# build a list variable 
+# run 
+#   ansible-playbook list-var-build.yml
+#
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
+#
+# Take a bunch of scalars (simple values) and make a list.
+# The "+" operator combines two lists.
+# Ansible takes the set_fact code and translates it to jinja2 code.
+# The formatting is a little tricky.
+
+- name:  build a list
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+
+  # define things to add to our list
+  vars:
+    var_1: val1
+    var_2: val2
+    var_3: val3
+    empty_list_1: []
+    empty_list_2: []
+    empty_list_3: []
+    empty_list_4: []
+
+  tasks:
+
+  - name: Add the content of variable var_1 to an empty list.
+    set_fact:
+      empty_list_1: "{{ empty_list_1 + [var_1] }}"
+
+  - name: no longer empty?
+    debug: 
+      var: empty_list_1
+
+  - name: same thing, different format
+    set_fact:
+      empty_list_2: "{{ empty_list_2 }} + ['{{ var_1 }}']"
+
+  - name: no longer empty?
+    debug: 
+      var: empty_list_2
+
+  - name: If quotes are missing, strange things happen. This ends up as a string, "[] + [val1]".
+    set_fact:
+      empty_list_3: "{{ empty_list_3 }} + [{{ var_1 }}]"
+
+  - name: no longer empty?
+    debug: 
+      var: empty_list_3
+
+  - name: add many values to an empty list
+    set_fact:
+      empty_list_4: "{{ empty_list_4 }} + ['{{ item }}']"
+    loop:
+    - var_1
+    - var_2
+    - var_3
+
+  - name: no longer empty?
+    debug: 
+      var: empty_list_4
+
+  - name: This task is same as above, but it creates the list from scratch. It doesn't start with an empty list.
+    set_fact:
+      create_a_list: "{{ create_a_list | default([]) }} + ['{{ item }}']"
+    loop:
+    - var_1
+    - var_2
+    - var_3
+
+  - name: no longer empty?
+    debug: 
+      var: create_a_list
+

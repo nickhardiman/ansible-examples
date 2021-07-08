@@ -1,7 +1,9 @@
 ---
 # list variable 
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
+# run 
+#   ansible-playbook list-var-build.yml
 #
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
 #
 
 - name: define and display a list variable

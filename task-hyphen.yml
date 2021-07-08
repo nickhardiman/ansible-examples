@@ -4,6 +4,11 @@
 # run
 #   ansible-playbook -i inventory-localhost.yml  list-hyphen.yml
 #
+# Each task starts with a hyphen (a dash, -). 
+# Usually that hyphen is to the left of the first line.
+# It diesn't have to be - the three tasks below all work the same, 
+# but the leading hyphen is on a different line. 
+
 - name: Ansible is forgiving about how a list hyphen is placed. 
   hosts: localhost
   hosts: localhost
@@ -14,22 +19,18 @@
     myvar: myval
   tasks: 
 
-  - name: hyphen in the usual position
+  - name: hyphen on the same line
     debug: 
-      var: myvar
-    when: myvar is defined
+      msg: My hyphen is in the normal place.
 
   - 
     name: hyphen on its own line
     debug: 
-      var: myvar
-    when: myvar is defined
+      msg: My hyphen is getting above its station.
       
   - 
 
     name: hyphen surrounded by empty lines
     debug: 
-      var: myvar
-    when: myvar is defined
-      
+      msg: My hyphen is going it alone.
   
