@@ -5,7 +5,9 @@
 #   ansible-playbook var-reassignment.yml
 #
 # If you've ever programmed something like "i = i + 1" then you may expect Ansible to be able to do something similar.
-# The set_fact module can, but the rest of Ansible finds this tricky.
+# TL;DR: Don't do it in Ansiible.
+# Some of these send Ansible into a recursive crash.
+# The set_fact module can handle this, but even then variable precedence can cause unexpected results.
 # It's safer to create new variables, rather than trying to reassign values to existing variables. 
 # If you understand functional programming, treat variables like they are immutable. 
 #
@@ -18,7 +20,7 @@
   connection: local
   # define the simple variable
   vars:
-    # The five tasks each have their own variable to change. 
+    # Each task has its own variable to change. 
     # This makes sure the work from one task does not affect the work of the next one.
     make_me_lower_case_1: My Book Title
     make_me_lower_case_2: My Book Title
@@ -27,7 +29,9 @@
     #make_me_lower_case_3: My Book Title
     make_me_lower_case_4: My Book Title
     make_me_lower_case_5: My Book Title
-    # If I make a copy here, it's the old mixed case value
+    # 6 and 7 are defined in tasks
+    make_me_lower_case_8: My Book Title
+    # If I make a copy here, the value is still the mixed case value.
     my_copy_1: "{{ make_me_lower_case_5  }}"
   vars_files:
     # make_me_lower_case_6 and make_me_lower_case_7 are in this file.
@@ -96,7 +100,8 @@
     ignore_errors: yes
 
   # 5. variable reassignment with the set_fact module and an intermediate variable
-  # This works! 
+  # It's the most complicated way here.
+  # It  works! 
   # A variable is defined elsewhere. 
   # Take the value, change it, and assign it to an intermediate variable.
   # Then assign the value back to the first variable.
@@ -134,6 +139,20 @@
   - name: This task fails because it sends Jinja2 into a recursive loop.
     debug:
       msg: "make_me_lower_case_7: {{ make_me_lower_case_7  }}"
+    ignore_errors: yes
+
+  # This task is identical to 4, so it's good, right? 
+  # This doesn't work!
+  # It is messed up by variable precedence. 
+  # Run this. 
+  #   ansible-playbook var-reassignment.yml --extra-vars="make_me_lower_case_8=ILoveCaps"
+  # 
+  - name: 'Try thiss by running: ansible-playbook var-reassignment.yml --extra-vars="make_me_lower_case_8=ILoveCaps"'
+    set_fact: 
+      make_me_lower_case_8: "{{ make_me_lower_case_8 | lower }}"
+  - name: view the result
+    debug:
+      msg: "make_me_lower_case_8: {{ make_me_lower_case_8  }}"
     ignore_errors: yes
 
 
