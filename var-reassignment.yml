@@ -29,7 +29,7 @@
     #make_me_lower_case_3: My Book Title
     make_me_lower_case_4: My Book Title
     make_me_lower_case_5: My Book Title
-    # 6 and 7 are defined in tasks
+    # 6 and 7 are defined in the vars file var-reassignment-vars.yml
     make_me_lower_case_8: My Book Title
     # If I make a copy here, the value is still the mixed case value.
     my_copy_1: "{{ make_me_lower_case_5  }}"
@@ -45,7 +45,7 @@
   # Instead of defining an intermediate variable, try assigning "replaced_value" to itself.
   # This shorthand does work in many programming languages, but not in Jinja2.
   #
-  - name: This task fails because it sends Jinja2 into a recursive loop.
+  - name: 1. This task fails because it sends Jinja2 into a recursive loop.
     vars: 
       make_me_lower_case_1: "{{ make_me_lower_case_1 | lower }}"
     debug: 
@@ -63,7 +63,7 @@
   # I gave the intermediate variable a special name starting with an underscore, to remind me not to try using this elsewhere.
   # If I see a variable name with an underscore being used elsewhere, like on the command line when I run ansible-playbook, I know I have made a programming mistake.
   #
-  - name: This task fails because it sends Jinja2 into a recursive loop.
+  - name: 2. This task fails because it sends Jinja2 into a recursive loop.
     vars: 
       _intermediate_variable: "{{ make_me_lower_case_2 | lower }}"
       make_me_lower_case_2: "{{ _intermediate_variable }}"
@@ -75,7 +75,7 @@
   # This doesn't work! 
   # Ansible does not understand the YAML anchor.
   #
-  - name: This task fails with a templating error.
+  - name: 3. This task fails with a templating error.
     vars: 
       _intermediate_variable: "{{ *anchor | lower }}"
       make_me_lower_case_3: "{{ _intermediate_variable }}"
@@ -91,7 +91,7 @@
   # Take the value, change it, and assign it back to the first variable.
   # Then assign the value back to the first variable.
   #
-  - name: replace the value of make_me_lower_case
+  - name: 4. replace the value of make_me_lower_case
     set_fact: 
       make_me_lower_case_4: "{{ make_me_lower_case_4 | lower }}"
   - name: view the result
@@ -106,7 +106,7 @@
   # Take the value, change it, and assign it to an intermediate variable.
   # Then assign the value back to the first variable.
   #
-  - name: create _intermediate_variable
+  - name: 5. create _intermediate_variable
     set_fact: 
       _intermediate_variable: "{{ make_me_lower_case_5 | lower }}"
   - name: replace the value of make_me_lower_case_5
@@ -127,7 +127,7 @@
   # This doesn't work! 
   # It's similar to 1.
   #
-  - name: This task fails because it sends Jinja2 into a recursive loop.
+  - name: 6. This task fails because it sends Jinja2 into a recursive loop.
     debug:
       msg: "make_me_lower_case_6: {{ make_me_lower_case_6  }}"
     ignore_errors: yes
@@ -136,18 +136,18 @@
   # This doesn't work!
   # It's similar to 2.
   #
-  - name: This task fails because it sends Jinja2 into a recursive loop.
+  - name: 7. This task fails because it sends Jinja2 into a recursive loop.
     debug:
       msg: "make_me_lower_case_7: {{ make_me_lower_case_7  }}"
     ignore_errors: yes
 
-  # This task is identical to 4, so it's good, right? 
+  # 8. This task is identical to 4, so it's good, right? 
   # This doesn't work!
   # It is messed up by variable precedence. 
   # Run this. 
   #   ansible-playbook var-reassignment.yml --extra-vars="make_me_lower_case_8=ILoveCaps"
   # 
-  - name: 'Try thiss by running: ansible-playbook var-reassignment.yml --extra-vars="make_me_lower_case_8=ILoveCaps"'
+  - name: '8. Try this by running: ansible-playbook var-reassignment.yml --extra-vars="make_me_lower_case_8=ILoveCaps"'
     set_fact: 
       make_me_lower_case_8: "{{ make_me_lower_case_8 | lower }}"
   - name: view the result
