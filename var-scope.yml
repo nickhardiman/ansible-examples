@@ -2,21 +2,57 @@
 # var scope
 #
 # run
-# ansible-playbook var-scope.yml
+#   ansible-playbook -i var-scope-inventory.yml var-scope.yml
 #
-- name: var scope play 1
-  hosts: localhost 
+# A variable can exist in a task only, in a whole play, or in a host's facts.
+# Ansible variables are treated in different ways, depending on how they are defined. 
+# It's a bit like variable scope in Python, but Ansible is not a programming language.
+# Ansible's idea of scope is not the same as Python's.
+#
+# This playbook contains three sets of variables that have different names and different scopes. 
+# * playbook variables, like "task_var" defined below
+# * facts, like "fact_var"
+# * magic variables, like "hostvars"
+#
+# playbook variables
+# These variables are usually referred to as playbook variables. 
+# * the play variable "play_var"
+# * the task variable "task_var"
+# That's because you find them in a playbook, not because their scope is the entire playbook.
+# There are also inventory variables. 
+# Guess where you find them. 
+# 
+# facts
+# A fact is a variable associated with a host.
+# The variable "fact_var" is a fact. 
+# The set_fact module is handy for making a variable available across plays, but it only sets a variable for the current host.
+#
+# magic variables
+# The last play below copies a fact from one host to another using the magic variable "hostvars".
+# Magic variables are managed by Ansible and are accessible to a playbook.
+# hostvars is a big dictionary of host facts.
+# For more information on hostvars, see 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html#caching-facts
+#
+# This playbook runs on host1 and host2. 
+# Or at least it looks like it does -  we don't really have two machines.
+# Connection trickery points all host names to localhost.
+# This is explained in inv-four-hosts.yml.
+#
+#
+- name: play 1, host1
+  hosts: host1
   gather_facts: no
   become: no
   #delegate_to: localhost
   connection: local
   vars:
-    playbook_var: playbook_val
+    play_var: play_val
 
   tasks: 
-  - name: playbook_var is available to every task in this playbook.
+  - name: The variable play_var was defined above, and is available to every task in this play.
     debug: 
-      var: playbook_var
+      var: play_var
 
   - name: task_var is available in this task only.
     vars: 
@@ -24,25 +60,57 @@
     debug: 
       var: task_var
 
-  - name: check task_var in a different task
+  - name: Undefined! task_var no longer exists.
     debug: 
       var: task_var
 
+  # A fact is a variable associated with a host.
+  - name: Create a "fact_var" fact for host1
+    set_fact:
+      fact_var: playbook_val
 
-- name: var scope play 2
-  hosts: localhost 
+  - name: fact_var exists in this play. 
+    debug: 
+      var: fact_var
+
+
+- name: play 2, host1
+  hosts: host1
   gather_facts: no
   become: no
-  #delegate_to: localhost
   connection: local
 
   tasks: 
-  - name: playbook_var is ???
-    debug: 
-      var: playbook_var
 
-  - name: task_var ???
+  - name: Undefined! task_var only existed in one task in the previous play.
     debug: 
       var: task_var
 
+  - name: Undefined! play_var only existed in the previous play.
+    debug: 
+      var: play_var
+
+  - name: fact_var exists in this play too. 
+    debug: 
+      var: fact_var
+
+- name: play 3, host2
+  hosts: host2
+  gather_facts: no
+  become: no
+  connection: local
+
+  tasks: 
+
+  - name: Undefined! fact_var is not in host2's facts
+    debug: 
+      var: fact_var
+
+  - name: copy the fact_var fact from host1 to the current host, host2
+    set_fact:
+      fact_var: "{{ hostvars['host1']['fact_var'] }}"
+
+  - name: Now there's another variable called "fact_var" in host2's facts.
+    debug: 
+      var: fact_var
 
