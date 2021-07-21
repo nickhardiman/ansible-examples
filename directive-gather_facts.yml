@@ -1,0 +1,47 @@
+---
+# run
+#   ansible-playbook directive-gather_facts.yml
+#
+# Gather facts and display a few.
+# Ansible collects hundreds of facts about a host.
+# This gather_facts directive and the gather_facts module do the same thing.
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/gather_facts_module.html
+#
+- name: first gather_facts play
+  hosts: localhost 
+  gather_facts: yes
+  become: no
+  connection: local
+  tasks:
+
+  - name: display everything. It's a lot. 
+    debug:
+      var: ansible_facts
+
+  - name: display a subset
+    debug:
+      var: ansible_facts.default_ipv4
+
+  - name: display one fact
+    debug:
+      var: ansible_facts.default_ipv4.address
+
+  - name: display one fact, different syntax
+    debug:
+      var: ansible_facts['default_ipv4']['address']
+
+- name: second gather_facts play
+  hosts: localhost 
+  # This line is different. 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: gather facts, even though this play says no above
+    ansible.builtin.gather_facts:
+
+  - name: display one fact, just like in the first play.
+    debug:
+      var: ansible_facts.default_ipv4.address
+

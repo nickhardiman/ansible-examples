@@ -15,14 +15,16 @@ Each one is about an ansible thing, like a play, a directive or a variable type.
 They all run locally and demonstrate how a little bit of ansible behaves. 
 The playbooks are simple - no roles, no SSH, no remote hosts and mostly no privilege escalation (one exception is module-user.yml).
 
-I wrote these on Fedora. My cross-platform testing is a big fat zero. 
+I wrote some of these on Fedora and others on Mac OS. 
+My cross-platform testing is a big fat zero. 
 I have no idea how they behave on Windows or other platforms.
 
 ### getting started 
 
 * `sudo dnf install ansible git` 
 * `git clone https://github.com/nickhardiman/ansible-examples`
-* `ansible-playbook ansible-examples/ansible-facts.yml`
+* `cd ansible-examples`
+* `ansible-playbook directive-gather_facts.yml`
 
 ### playbook 
 
