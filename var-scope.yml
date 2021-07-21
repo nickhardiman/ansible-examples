@@ -90,7 +90,7 @@
     debug: 
       var: play_var
 
-  - name: fact_var exists in this play too. 
+  - name: fact_var exists in this play too. Play 1 and play 2 are both about host1.
     debug: 
       var: fact_var
 

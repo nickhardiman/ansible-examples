@@ -1,7 +1,7 @@
 ---
 # build a list variable 
 # run 
-#   ansible-playbook list-var-build.yml
+#   ansible-playbook var-simple-to-list.yml
 #
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
 #

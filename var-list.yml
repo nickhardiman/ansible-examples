@@ -1,8 +1,13 @@
 ---
 # list variable 
 # run 
-#   ansible-playbook list-var-build.yml
+#   ansible-playbook var-list.yml
 #
+# For more list examples, see these playbooks. 
+# var-simple-to-list.yml - add values to a list
+# var-list-to-simple.yml - copy values from a list
+# var-list-nested.yml - read a list of lists
+# To find out more about list variables, see this documentation. 
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
 #
 
@@ -21,6 +26,8 @@
     - 2
     # This is assumed to be a str (a character)
     - "2"
+    # Define an empty list (an array with no items) using square brackets.
+    an_empty_list: []
 
   tasks:
 
@@ -37,11 +44,20 @@
       msg: "value: {{ item }}"
     loop: "{{ list_variable }}"
 
-  - name: arithmetic 
+  - name: same thing, but with an empty list
     debug: 
-      msg: "{{ list_variable[3] }} + 3  = {{ list_variable[3] + 3 }}"
+      msg: "value: {{ item }}"
+    loop: "{{ an_empty_list }}"
 
-  - name: arithmetic on a character. Oops. 
+# using "defined" with a list
+
+  - name: An empty list is defined.
     debug: 
-      msg: "{{ list_variable[4] }} + 3  = {{ list_variable[4] + 3 }}"
+      msg: An empty array is not the same as an undefined array.
+    when: 'an_empty_list is defined'
+
+  - name: This task only runs when "a_nonexistant_list" is defined. Which it isn't.
+    debug: 
+      msg: No such thing as a_nonexistant_list
+    when: 'a_nonexistant_list is defined'
 
