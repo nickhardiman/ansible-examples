@@ -10,6 +10,12 @@
 #
 # A static inventory file can contain data in two formats, YAML and INI. 
 # Plugins help Ansible decipher data in the file.
+# An inventory may be static or dynamic.
+# A static inventory is a list of hosts in a file.
+# A dynamic inventory is a program that produces a list of hosts. 
+# The playbook doesn't care about whether the inventory is static or dynamic. 
+# Compare this play with the one in inventory-dynamic.yml.
+# They are exactly the same.
 #
 # * INI - Microsoft's .ini style - the default and by far the most common
 # * YAML - does the same job but with dictionaries, lists and indentation
