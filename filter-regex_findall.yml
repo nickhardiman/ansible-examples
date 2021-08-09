@@ -1,10 +1,10 @@
 ---
-# For a much more complicated example, see filter-regex_findall-with-subtasks.yml
 #
 # run
 #   ansible-playbook -i inventory-localhost.yml filter-regex_findall.yml
 #
-
+# For a much more complicated example, see filter-regex_findall-using-subtasks.yml
+#
 - name: regex_findall filter
   hosts: localhost 
   gather_facts: no

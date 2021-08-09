@@ -1,13 +1,15 @@
 ---
+# inventory with no hosts
+#
+# run
+# ansible-playbook -i inventory-empty-inventory.yml inventory-empty.yml
+#
 # What happens if your inventory is empty?
 # It's never completely empty. 
 # Ansible adds localhost to the inventory.
 #
 # What happens if your inventory contains one empty group? 
 # Ansible adds two more groups: "all" and "ungrouped".
-#
-# run
-# ansible-playbook -i inv-empty-inventory.yml inv-empty.yml
 #
 - name: This first play is skipped.
   hosts: all

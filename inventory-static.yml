@@ -1,0 +1,47 @@
+---
+# static inventory
+#
+# run
+# ansible-playbook -i inventory-static-inventory.yml inventory-static.yml
+# ansible-playbook -i inventory-static-inventory.ini inventory-static.yml
+#
+
+# A static inventory file can contain data in two formats, YAML and INI. 
+# Plugins help Ansible decipher data in the file.
+#
+# * INI - Microsoft's .ini style - the default and by far the most common
+# * YAML - same thing but with dictionaries, lists and indentation
+#
+# inventory file fails
+# There is no plugin for JSON or TOML. 
+# If you try this, you will see errors about ansible's plugins failing to understand what's going on.
+# ansible-playbook -i inventory-static-inventory.json inventory-static.yml
+# ansible-playbook -i inventory-static-inventory.toml inventory-static.yml
+#
+# convert from one format to another 
+# from INI to YAML
+ansible-inventory --inventory inventory-static-inventory.ini --list --yaml
+# from INI to TOML
+# requires optional Python library "toml"
+ansible-inventory --inventory inventory-static-inventory.ini --list --toml
+# from YAML to JSON
+# ansible-inventory --inventory inventory-static-inventory.yml --list
+# 
+# mock hosts
+# This playbook runs on host1, host2, host3 and host4. 
+# Or at least it looks like it does -  we don't really have many machines.
+# Connection trickery points all host names to localhost.
+# Have a look at the inventory to see the "ansible_connection: local" line.
+# For more information, see "Connecting to hosts: behavioral inventory parameters".
+# https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#connecting-to-hosts-behavioral-inventory-parameters
+#
+- hosts: all
+  gather_facts: no
+  become: no
+  tasks: 
+
+  
+  - name: display inventory hostname
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+

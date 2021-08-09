@@ -1,8 +1,8 @@
 ---
-# https://stackoverflow.com/questions/48512527/how-to-use-regex-findall-in-ansible-playbook-properly
+# Use regex_findall to find things in files
 #
 # run
-#   ansible-playbook -i inventory-localhost.yml filter-regex_findall.yml
+#   ansible-playbook filter-regex_findall-using-subtasks.yml
 #
 
 - name: regex_findall filter

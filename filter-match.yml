@@ -1,4 +1,6 @@
 ---
+# run
+#  ansible-playbook filter-match.yml
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
 #
 # The filters match() and regex_search() are similar. 
@@ -14,6 +16,15 @@
 # Python does the heavy lifting with its re library.
 # https://docs.python.org/3/library/re.html
 #
+# These files have many regular expression filter examples. 
+#
+# * filter-match.yml
+# * filter-regex_findall.yml
+# * filter-regex_findall-using-subtasks.yml
+# * filter-regex_replace.yml
+# * filter-regex_search.yml
+#
+
 - name: match filter
   hosts: localhost
   gather_facts: no
