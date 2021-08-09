@@ -1,0 +1,25 @@
+---
+# show hostname with magic variable inventory_hostname
+#
+# run
+# ansible-playbook -i var-inventory_hostname-inventory.yml var-inventory_hostname.yml
+#
+# Ansible sets dozens of magic variables. 
+# This page has a list. 
+# https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html
+
+- hosts: all
+  gather_facts: no
+  become: no
+  tasks: 
+
+  - name: use inventory_hostname to display fully qualified domain name
+    debug: 
+      var: inventory_hostname
+    delegate_to: localhost
+
+  - name: use inventory_hostname_short to display just the host name
+    debug: 
+      var: inventory_hostname_short
+    delegate_to: localhost
+

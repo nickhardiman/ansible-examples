@@ -2,30 +2,34 @@
 # static inventory
 #
 # run
-# ansible-playbook -i inventory-static-inventory.yml inventory-static.yml
-# ansible-playbook -i inventory-static-inventory.ini inventory-static.yml
+# This command picks up the default inventory, inventory-localhost.yml
+#   ansible-playbook inventory-static.yml
+# These examples use four mock hosts.
+#   ansible-playbook -i inventory-static-inventory.yml inventory-static.yml
+#   ansible-playbook -i inventory-static-inventory.ini inventory-static.yml
 #
-
 # A static inventory file can contain data in two formats, YAML and INI. 
 # Plugins help Ansible decipher data in the file.
 #
 # * INI - Microsoft's .ini style - the default and by far the most common
-# * YAML - same thing but with dictionaries, lists and indentation
+# * YAML - does the same job but with dictionaries, lists and indentation
 #
 # inventory file fails
 # There is no plugin for JSON or TOML. 
-# If you try this, you will see errors about ansible's plugins failing to understand what's going on.
-# ansible-playbook -i inventory-static-inventory.json inventory-static.yml
-# ansible-playbook -i inventory-static-inventory.toml inventory-static.yml
+# If you try this, you will see errors like this.
+#   Failed to parse <inventory file> with <plugin> plugin
+# Ansible's plugin helpers fail to read these files.
+#   ansible-playbook -i inventory-static-inventory.json inventory-static.yml
+#   ansible-playbook -i inventory-static-inventory.toml inventory-static.yml
 #
 # convert from one format to another 
 # from INI to YAML
-ansible-inventory --inventory inventory-static-inventory.ini --list --yaml
+#   ansible-inventory --inventory inventory-static-inventory.ini --list --yaml
 # from INI to TOML
 # requires optional Python library "toml"
-ansible-inventory --inventory inventory-static-inventory.ini --list --toml
+#   ansible-inventory --inventory inventory-static-inventory.ini --list --toml
 # from YAML to JSON
-# ansible-inventory --inventory inventory-static-inventory.yml --list
+#   ansible-inventory --inventory inventory-static-inventory.yml --list
 # 
 # mock hosts
 # This playbook runs on host1, host2, host3 and host4. 

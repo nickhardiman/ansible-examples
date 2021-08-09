@@ -1,10 +1,10 @@
 web_servers:
   hosts:
-    # No clever parsing. this appears as one line.
+    # Task does not parse this as three hosts. It appears as one line.
     server100.example.com:server101.example.com:server102.example.com:
 db_servers:
   hosts:
-    # Should be on seperate lines.
+    # These appear on seperate lines.
     server103.example.com:
     server104.example.com:
     server105.example.com:

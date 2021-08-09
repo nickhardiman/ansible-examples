@@ -1,3 +1,5 @@
+# This is the default inventory.
+# Look for the "inventory=" line in ansible.cfg
 all:
   hosts:
     localhost:

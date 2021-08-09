@@ -1,0 +1,22 @@
+---
+# dynamic inventory
+#
+# run
+# ansible-playbook -i inventory-dynamic-inventory.sh inventory-dynamic.yml
+#
+# If ansible is given an inventory file that is executable, ansible tries to run it.
+# The executable produces JSON that ansible can use.
+# 
+# mock hosts
+# see ansible-static.yml
+#
+- hosts: all
+  gather_facts: no
+  become: no
+  tasks: 
+
+  
+  - name: display inventory hostname
+    debug: 
+      msg: "I am {{ inventory_hostname }}"
+
