@@ -1,0 +1,38 @@
+---
+# increment
+#
+# run
+#   ansible-playbook math-increment.yml
+#
+# The included tasks file "math-increment-tasks.yml" uses variable reassignment. 
+# This is risky. See var-reassignment.yml to find out why.
+
+- name: ermm
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    counter: 2
+
+  tasks:
+
+  - name: count to 3 using sequence and loop
+    vars:
+      counter_list: "{{ query('sequence', 'start=1 end=3') }}"
+    debug:
+      msg: "loop {{ item }} of {{ counter_list|last }}"
+    loop: "{{ counter_list }}"
+
+  - name: increment by 2 using addition and include_tasks
+    include_tasks: 
+      file: math-increment-tasks.yml
+    loop: "{{ query('sequence', 'start=1 end=3') }}"
+
+  - name: A broken version of the task above. Defining the counter in the task resets its value on every loop 
+    vars:
+      counter: 2
+    include_tasks: 
+      file: math-increment-tasks.yml
+    loop: "{{ query('sequence', 'start=1 end=3') }}"
+
