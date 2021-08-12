@@ -6,10 +6,16 @@
 #
 # If you've ever programmed something like "i = i + 1" then you may expect Ansible to be able to do something similar.
 # TL;DR: Don't do it in Ansiible.
-# Some of these send Ansible into a recursive crash.
-# The set_fact module can handle this, but even then variable precedence can cause unexpected results.
 # It's safer to create new variables, rather than trying to reassign values to existing variables. 
 # If you understand functional programming, treat variables like they are immutable. 
+#
+# Some of these send Ansible into a recursive crash.
+# See tasks 1, 2, 6 and 7 below. 
+#
+# The set_fact module can handle this. See task 4 below.
+# But even with set_fact, variable precedence can cause unexpected results. 
+# See task 8.
+#
 #
 # variable assignment 
 
@@ -87,6 +93,7 @@
 
   # 4. variable reassignment with the set_fact module and programming shorthand
   # This works! 
+  # Beware of variable precedence - see task 8 below.
   # A variable is defined elsewhere. 
   # Take the value, change it, and assign it back to the first variable.
   # Then assign the value back to the first variable.

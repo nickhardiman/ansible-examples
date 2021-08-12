@@ -6,14 +6,11 @@
 #   ansible-playbook -i inventory-localhost.yml conditional-when.yml
 #
 
-- name: arithmeticß 
+- name: arithmetic
   hosts: localhost 
   gather_facts: no
   become: no
   connection: local
-  vars:
-    my_sentence: Well, hello there!
-    my_word: hello
   tasks:
 
   - debug:
