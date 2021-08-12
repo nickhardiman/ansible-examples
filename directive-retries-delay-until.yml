@@ -60,10 +60,6 @@
     delay: "{{ delay_seconds }}"
     until: "r_date_now.stdout|int > seconds_in_future|int"
 
-  - name: display the end value
-    ansible.builtin.debug: 
-      var: r_date_now.stdout
-
   - name: display the end date in seconds
     ansible.builtin.debug: 
       msg: "The date in seconds was {{ r_date_in_seconds.stdout }} and is now {{ r_date_now.stdout }}."
