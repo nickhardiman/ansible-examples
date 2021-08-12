@@ -1,0 +1,68 @@
+---
+# retry
+#
+# run
+#   ansible-playbook directive-retries-delay-until.yml
+#
+# The directives retries, delay and until are often used together to wait for something to happen.
+# "retries" and "delay" define how often to check and how long to wait.
+# If the task takes too long, the task fails. 
+# "until" defines what success looks like. 
+#
+# This example checks for a time 20 seconds into the future. 
+# The task tries 7 times (first time and 6 retries).
+# It waits 5 seconds between tries. 
+# That's a total wait time of 6 * 5 = 30 seconds, so the task succeeds.
+# Lowering these numbers (to something like 4 * 3 = 12 seconds) makes the task fail.
+#
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#retrying-a-task-until-a-condition-is-met
+# The default value for “retries” is 3 and “delay” is 5.
+
+- name: check for a time 20 seconds into the future
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    delay_seconds: 5
+    retry_count: 6
+    # these values make the task succeed
+    #delay_seconds: 5
+    #retry_count: 6
+    # these values make the task fail
+    #delay_seconds: 4
+    #retry_count: 3
+  tasks:
+
+  - name: read the date in seconds
+    shell: "date +'%s'"
+    register: r_date_in_seconds
+
+  - name: display the date in seconds
+    debug: 
+      msg: "The date, counted in seconds since 00:00:00 UTC on 1 January 1970, is now {{ r_date_in_seconds.stdout }}."
+
+  - name: calculate a new date, 20 seconds into the future
+    set_fact:
+      seconds_in_future: "{{ r_date_in_seconds.stdout|int + 20 }}"
+
+  - name: display the new date
+    debug: 
+      msg: "The date 20 seconds into the future is {{ seconds_in_future }}."
+
+  - name: Check the date now. Repeat every {{ delay_seconds }} seconds, until {{ retry_count }} retries or at least 20 seconds have passed.
+    shell: "date +'%s'"
+    changed_when: false  # Ansible assumes the shell module changes something, but this task is read-only
+    register: r_date_now
+    retries: "{{ retry_count }}"
+    delay: "{{ delay_seconds }}"
+    until: "r_date_now.stdout|int > seconds_in_future|int"
+
+  - name: display the end value
+    debug: 
+      var: r_date_now.stdout
+
+  - name: display the end date in seconds
+    debug: 
+      msg: "The date in seconds was {{ r_date_in_seconds.stdout }} and is now {{ r_date_now.stdout }}."
+
