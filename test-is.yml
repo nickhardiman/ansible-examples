@@ -4,7 +4,7 @@
 # defined, divisibleby, undefined and other tests (about 30 total) are listed here. 
 # https://jinja.palletsprojects.com/en/2.11.x/templates/#list-of-builtin-tests
 
-#   ansible-playbook -i inventory-localhost.yml filter-regex_search.yml
+#   ansible-playbook test-is.yml
 #
 
 - name: test a variable or expression 
@@ -60,15 +60,20 @@
 
   # https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#conditions-based-on-registered-variables
 
-  - name: This task fails. Result is captured in a variable.
+  - name: This task runs /bin/false and fails. Result is captured in a variable.
     ansible.builtin.command: /bin/false
     register: result
     ignore_errors: true
 
-  - name: the "failed()" test 
+  - name: the "failed()" test with "result is failed"
     debug: 
       msg: that task failed
     when: result is failed
+
+  - name: a similar task with "result.failed"
+    debug: 
+      msg: that task failed
+    when: result.failed
 
   - name: the "succeeded()" test
     debug: 
