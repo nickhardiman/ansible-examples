@@ -1,0 +1,64 @@
+---
+# string variable 
+# run
+#   ansible-playbook var-string-quote.yml
+#
+
+- name: define and display a string variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+    # Python converts YAML scalars to data types.
+    # "2" and 2 are both scalars to YAML, but not to Python. 
+    # Adding quotes means ansible sees this is a string, not an integer.
+  - name: Python says "string!". Python does "looks like a duck, sounds like a duck, so it's a duck" data typing.
+    vars:
+      quoted_string: "2"
+    debug:
+      var: quoted_string
+
+  - name: no special meaning for single quotes and double quotes
+    vars:
+      single_quoted_string: 'single or double, man, we are all the same underneath'
+    debug:
+      var: single_quoted_string
+
+  - name: Well, usually no special meaning for single quotes and double quotes...
+    vars:
+      double_quoted_string: "single or double, man, we are all the same underneath"
+    debug:
+      var: double_quoted_string
+
+  - name: ...except when it comes to special control characters like newline and tab  ...
+    vars:
+      double_quoted_string_with_controls: "These newline \n and tab \t characters look exactly the same in the output."
+    debug:
+      var: double_quoted_string_with_controls
+
+  - name: Be careful about where quotes go around variables. This is bad ...
+    vars:
+      bla_var: Bla
+    debug:
+      msg: BlaBla"{{ bla_var }}"
+
+  - name: ... and this is good.
+    vars:
+      bla_var: Bla
+    debug:
+      msg: "BlaBla{{ bla_var }}"
+
+  - name: ... with single quotes they are escaped. 
+    vars:
+      single_quoted_string_with_controls: 'These newline \n and tab \t characters now have double backslashes.'
+    debug:
+      var: single_quoted_string_with_controls
+
+  - name: "Put quotes around the YAML special character : or get a parse error"
+    vars:
+      string_with_colon: "oops:"
+    debug:
+      var: string_with_colon
+
