@@ -1,9 +1,17 @@
 ---
-# play
 # one playbook, three plays
 #
 # run
 # ansible-playbook play.yml
+#
+# This file is a simple playbook. 
+# The playbook contains three plays. 
+# Each play contains one task. 
+#
+# For more complex examples, try these files next. 
+# task-line-order.yml - a task is a YAML dictionary, and rearranging its lines makes no difference. 
+# directive-handler.yml - examples of special handler tasks
+# 
 #
 - name: play 1
   hosts: localhost 

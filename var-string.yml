@@ -28,7 +28,7 @@
 # So in YAML world a string like "avg" and a decimal fraction like "0.278" are both scalars. 
 #
 # For examples of quoted strings, see var-string-quote.yml
-# For examples of multi-line strings, see var-block.yml
+# For examples of multi-line strings AKA text blocks, see var-multiline.yml
 #
 
 - name: define and display a string variable

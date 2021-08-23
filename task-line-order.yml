@@ -1,10 +1,15 @@
 ---
-# a task is a dictionary
+# rearrange lines in a task
 # run 
 #   ansible-playbook task-line-order.yml
 #
+# A task is a dictionary, with one dictionary key on each line
 # The line order makes no difference to the YAML parser.
 # You can rearrange the lines. 
+# The keys in each task are "name", "debug" and "when". 
+# Usually the "name" key is listed first, to act like a comment at the top.
+# These tasks all do the same thing because the order of dictionary keys does not matter. 
+
 #
 - name: Rearranging the lines in a task makes no difference to the outcome.
   hosts: localhost
