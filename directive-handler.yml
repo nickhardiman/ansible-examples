@@ -1,5 +1,5 @@
 ---
-# play
+# a handler is a special task
 #
 # run
 # ansible-playbook directive-handler.yml

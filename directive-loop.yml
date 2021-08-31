@@ -1,9 +1,8 @@
 ---
-# default filter
+# loop
 #
 # run
-# ansible-playbook -i inventory-localhost.yml filter-default.yml 
-# ansible-playbook -i inventory-localhost.yml -e "extra_var='a cli value'" filter-default.yml 
+# ansible-playbook directive-loop.yml 
 #
 - name: Loop Register Test
   hosts: localhost 
@@ -22,7 +21,7 @@
         - two
         - three
 
-    - name: Looping echo task. stdout is captured in r_echo.
+    - name: A similar task, with "echo". stdout is captured in r_echo.
       shell: "echo This is my item: {{ item }}"
       loop:
         - one
