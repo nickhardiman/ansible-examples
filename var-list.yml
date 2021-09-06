@@ -26,6 +26,10 @@
     - 2
     # This is assumed to be a str (a character)
     - "2"
+    #
+    # The same thing, written using JSON instead of YAML
+    json_list_variable: ["a value", "another value", "a third value", 2, "2"]
+    #
     # Define an empty list (an array with no items) using square brackets.
     an_empty_list: []
 
@@ -44,7 +48,12 @@
       msg: "value: {{ item }}"
     loop: "{{ list_variable }}"
 
-  - name: same thing, but with an empty list
+  - name: same thing, but defined using JSON instead of YAML
+    debug: 
+      msg: "value: {{ item }}"
+    loop: "{{ json_list_variable }}"
+
+  - name: Loop with an empty list
     debug: 
       msg: "value: {{ item }}"
     loop: "{{ an_empty_list }}"
