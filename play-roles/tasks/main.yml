@@ -1,0 +1,6 @@
+---
+# tasks file for play-roles
+
+- name: I am a task inside the role.
+  debug:
+    msg: Roles run before tasks.

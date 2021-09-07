@@ -1,12 +1,12 @@
-# A directive changes the way Ansible manages a task. 
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#selecting-a-strategy
+# strategy is a directive that changes the way a play is managed
+# run
+#   ansible-playbook -i inv-four-hosts-inventory.yml play-strategy.yml
 #
 # An Ansible directive is similar to a programming directive. 
 # A programming directive instructs a compiler or interpreter to do something special.
 # An ansible directive tells the ansible engine to do something special. 
 #
-# run
-#   ansible-playbook -i inv-four-hosts-inventory.yml directive-strategy.yml
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#selecting-a-strategy
 #
 
 - name: 

@@ -1,0 +1,20 @@
+# "roles" is an anonymous list of roles.
+# run
+#   ansible-playbook play-roles.yml
+#
+
+- name: 
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: I am the first task in the play.
+    debug: 
+      msg: Tasks in the play run after tasks in the role.
+
+  roles: 
+
+  - role: play-roles
+
