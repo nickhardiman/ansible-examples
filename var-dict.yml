@@ -1,5 +1,8 @@
 ---
 # dictionary variable 
+# run 
+#   ansible-playbook var-dict.yml 
+#  
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#dictionary-variables
 #
 #
@@ -35,16 +38,6 @@
     debug: 
       msg: "value: {{ item }}"
     loop: "{{ dictionary_variable | list }}"
-
-  - name: rearrange the dictionary into a list of dictionaries using the filter "dict2items"
-    debug: 
-      msg: "value: {{ item }}"
-    loop: "{{ dictionary_variable | dict2items }}"
-
-  - name: rearrange the dictionary into a list of dictionaries using the lookup "dict"
-    debug: 
-      msg: "value: {{ item }}"
-    loop: "{{ lookup('dict', dictionary_variable) }}"
 
   - name: use the lookup "dict" and a "when" clause to display one definition
     debug: 
