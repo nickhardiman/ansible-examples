@@ -1,0 +1,29 @@
+# "tasks" is an anonymous list of tasks
+# run
+#   ansible-playbook play-pre_tasks-post_tasks.yml
+#
+
+- name: pre_tasks, tasks and post_tasks
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+
+  tasks:
+
+  - name: I am in the "tasks:" section.
+    debug: 
+      msg: I don't run first.
+
+  pre_tasks:
+
+  - name: I am in the "pre_tasks:" section.
+    debug: 
+      msg: I run first.
+
+  post_tasks:
+
+  - name: I am in the "post_tasks:" section.
+    debug: 
+      msg: I run last.
+

@@ -3,18 +3,41 @@
 #   ansible-playbook play-roles.yml
 #
 
-- name: 
+- name: play 1 - a task and a role
   hosts: localhost
   gather_facts: no
   become: no
   connection: local
+
   tasks:
 
-  - name: I am the first task in the play.
+  - name: I am the first task in the "tasks" list.
     debug: 
       msg: Tasks in the play run after tasks in the role.
 
   roles: 
 
   - role: play-roles
+
+- name: play 2 - pre_task, role and task
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+
+  pre_tasks:
+
+  - name: I am a pre_task in the second play.
+    debug: 
+      msg: Pre_tasks in the play run before tasks in the role.
+
+  roles: 
+
+  - role: play-roles
+
+  tasks:
+
+  - name: I am the first task in the "tasks" list.
+    debug: 
+      msg: Tasks in the play run after tasks in the role.
 

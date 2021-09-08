@@ -3,7 +3,7 @@
 #   ansible-playbook play-tasks.yml
 #
 
-- name: 
+- name: a list of tasks
   hosts: localhost
   gather_facts: no
   become: no
