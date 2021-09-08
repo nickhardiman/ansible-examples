@@ -1,5 +1,7 @@
 ---
 # nested list variables
+# run:
+#   ansible-playbook var-list-nested.yml
 #
 # This list contains more lists nested inside it. 
 # Nobody uses a list of lists like this in the real world. 
@@ -14,8 +16,10 @@
   gather_facts: no
   become: no
   connection: local
-  # define a list variable that contains lists. 
-  # the items that end in colons are variables that hold nested lists. 
+
+  # one big list of lists
+  # Define a list variable that contains lists. 
+  # The items that end in colons are variables that hold nested lists. 
   # It's the same layout as a dictionary entry: key: value.
   # In fact, to make it extra weird, each nested list is an anonymous dictionary. 
   vars:
@@ -65,9 +69,17 @@
 
   tasks:
 
-  - name: display the list
+  - name: a list of lists
     debug: 
       msg: "This JSON array of arrays is complicated: {{ list_of_lists }}"
+
+  # The "wantlist=True" is optional. Without it, the lookup returns a scalar (a string)
+  # https://docs.ansible.com/ansible/latest/plugins/lookup.html#forcing-lookups-to-return-lists-query-and-wantlist-true
+  - name: list of lists, after being run through the lookup "flattened" with option "wantlist=True"
+    vars:
+      flattened_list: "{{ lookup('community.general.flattened', list_of_lists, wantlist=True) }}"
+    debug: 
+      msg: "flattened JSON array of arrays: {{ flattened_list }}"
 
   - name: the first nested list
     debug: 
