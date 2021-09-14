@@ -1,0 +1,52 @@
+# use a simple custom module
+# run
+#  ANSIBLE_LIBRARY=module-custom  ansible-playbook module-custom.yml 
+# read the documentation
+#  ANSIBLE_LIBRARY=module-custom  ansible-doc my_echo
+#
+# This playbook uses a custom module called my_echo.
+# You can see this module here: 
+#    module-custom/my_echo.py
+# (that's module-custom with a hyphen and my_echo with an underscore)
+# The my_echo module displays a value set in the task below.
+# The module contains very little Python code and documentation.
+#
+# configuration variables
+# That ANSIBLE_LIBRARY environment variable tells the playbook where to look for the module.
+# This environment variable is used to set one of Ansible's confugration variables.
+# Confusingly, the names don't match. 
+# The env var is ANSIBLE_LIBRARY and the config var is DEFAULT_MODULE_PATH.
+#
+# To list all configuration variables, along with their environment variable names, run this.
+#   ansible-config list
+# In that big list is this entry.
+#   DEFAULT_MODULE_PATH:
+#     default: ~/.ansible/plugins/modules:/usr/share/ansible/plugins/modules
+#     description: Colon separated paths in which Ansible will search for Modules.
+#     env:
+#     - name: ANSIBLE_LIBRARY
+#     ini:
+#     - key: library
+#       section: defaults
+#     name: Modules Path
+#     type: pathspec
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+
+  - name: This is how Ansible set the ANSIBLE_LIBRARY path.
+    debug: 
+      msg: "DEFAULT_MODULE_PATH: {{ lookup('config', 'DEFAULT_MODULE_PATH')}}"
+
+  - name: echo something on STDOUT. 
+    my_echo: 
+      say_this: Hello world!
+    register: r_my_echo
+
+  # display the result so we can see STDOUT
+  - debug: 
+      var: r_my_echo
+
