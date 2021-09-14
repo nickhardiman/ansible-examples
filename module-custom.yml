@@ -11,26 +11,9 @@
 # The my_echo module displays a value set in the task below.
 # The module contains very little Python code and documentation.
 #
-# configuration variables
-# That ANSIBLE_LIBRARY environment variable tells the playbook where to look for the module.
-# This environment variable is used to set one of Ansible's confugration variables.
-# Confusingly, the names don't match. 
-# The env var is ANSIBLE_LIBRARY and the config var is DEFAULT_MODULE_PATH.
-#
-# To list all configuration variables, along with their environment variable names, run this.
-#   ansible-config list
-# In that big list is this entry.
-#   DEFAULT_MODULE_PATH:
-#     default: ~/.ansible/plugins/modules:/usr/share/ansible/plugins/modules
-#     description: Colon separated paths in which Ansible will search for Modules.
-#     env:
-#     - name: ANSIBLE_LIBRARY
-#     ini:
-#     - key: library
-#       section: defaults
-#     name: Modules Path
-#     type: pathspec
-#
+# The ANSIBLE_LIBRARY environment variable tells the playbook where to look for the module.
+# For more information on how ANSIBLE_LIBRARY works, see this playbook.
+#   lookup-config.yml
 
 - hosts: localhost
   connection: local
