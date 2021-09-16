@@ -1,0 +1,85 @@
+# lookup vars plugin 
+# run 
+#   ansible-playbook lookup-vars.yml
+#
+# "lookup('vars', 'thing')" gets values from the ansible_facts dictionary.
+# 'thing' is one of the keys, like "ansible_all_ipv4_addresses", "ansible_default_ipv4" or "facter_timezone".
+# Example 1. This works.
+#   {{ lookup('vars', 'ansible_default_ipv4') }}
+#
+# variable substitution
+# One advantage of this lookup is using a variable to hold the name of a variable you want to look up.
+# This lookup gives the same result as the lookup example above, if my_key is variable whose value is 'ansible_default_ipv4'.
+# Example 2. This works.
+#   {{ lookup('vars', my_key) }}
+#
+# subkeys
+# This lookup is not clever enough to handle subkeys. 
+# A variable with . or [] has a subkey, like "ansible_default_ipv4.address" or "ansible_default_ipv4['address']".
+# Example 3. This does not work.
+#   {{ lookup('vars', 'ansible_default_ipv4.address') }}
+# To get the value of a subkey you have to go through shenanigans like this.
+# Example 4. This does work.
+#  {{ lookup('vars', 'ansible_default_ipv4').address }}
+#
+# The 'ansible_facts' data structure
+# Running this command
+#   ansible localhost -m ansible.builtin.setup
+# produces literally thousands of lines.
+# Almost all of these lines are the "ansible_facts" dictionary.
+# It looks like this.
+#     localhost | SUCCESS => {
+#        "ansible_facts": {
+#            "ansible_all_ipv4_addresses": [
+#                "128.160.190.106"
+#            ],
+#     ...
+#            "ansible_default_ipv4": {
+#                "address": "128.160.190.106",
+#                "alias": "ens192",
+#                "macaddress": "00:50:56:82:e0:0a",
+#     ...
+#                "netmask": "255.255.255.0",
+#                "network": "128.160.190.0",
+#                "type": "ether"
+#            },
+#     ...
+ 
+---
+- hosts: localhost
+  gather_facts: yes
+  become: no
+  connection: local
+  tasks:
+ 
+# simple fact
+# works for variables listed inside ansible_facts
+  - name: display a variable's value, without lookup
+    debug:
+      msg: "ansible_all_ipv4_addresses: {{ ansible_all_ipv4_addresses }}"
+ 
+  - name: same thing, using lookup vars
+    debug:
+      msg: "lookup('vars', 'ansible_all_ipv4_addresses' ): {{ lookup('vars', 'ansible_all_ipv4_addresses' ) }}"
+ 
+  - name: and again, with an extra variable substitution
+    vars:
+       my_var: ansible_all_ipv4_addresses
+    debug:
+      msg: "lookup('vars', my_var): {{ lookup('vars', my_var) }}"
+ 
+# nested fact
+  - name: The easy way to view a nested variable's value
+    debug:
+      msg: "ansible_default_ipv4.address: {{ ansible_default_ipv4.address }}"
+
+  - name: nested, with lookup
+    debug:
+      msg: "lookup('vars', 'ansible_default_ipv4').address: {{ lookup('vars', 'ansible_default_ipv4').address }}"
+ 
+  - name: nested, with lookup and an extra variable substitution
+    vars:
+       my_var: ansible_default_ipv4
+    debug:
+      msg: "lookup('vars', my_var).address: {{ lookup('vars', my_var).address }}"
+ 
