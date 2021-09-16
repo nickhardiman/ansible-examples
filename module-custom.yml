@@ -24,12 +24,20 @@
     debug: 
       msg: "DEFAULT_MODULE_PATH: {{ lookup('config', 'DEFAULT_MODULE_PATH')}}"
 
-  - name: echo something on STDOUT. 
-    my_echo: 
-      say_this: Hello world!
-    register: r_my_echo
+  - name: This module has no arguments. It displays "hello world"
+    my_hello: 
+    register: r_my_hello
 
   # display the result so we can see STDOUT
+  - debug: 
+      var: r_my_hello
+
+  - name: This one does. And it has documentation. Echo something on STDOUT. 
+    my_echo: 
+      say_this: Hello again!
+    register: r_my_echo
+
+  # display the result
   - debug: 
       var: r_my_echo
 
