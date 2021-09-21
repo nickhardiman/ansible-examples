@@ -1,9 +1,13 @@
 ---
-# https://jinja.palletsprojects.com/en/2.11.x/templates/#indent
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
 #
 # run
 #   ansible-playbook filter-indent.yml
+#
+# This filter is one of jinja2's builtin filters. 
+# Builtin filters are described in the jinja2 docs.
+# https://jinja.palletsprojects.com/en/3.0.x/templates/#builtin-filters
+# For more information on the template module, see the ansible docs.
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
 #
 
 - name: indent filter

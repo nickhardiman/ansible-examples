@@ -1,0 +1,31 @@
+jinja2 "for" loop statement example
+
+delimiters 
+-------------------------
+Have a look at file "module-template/loop.var.j2"
+There are a few kinds of delimiter.
+The double curly braces  {{ '{{ }}' }} tell jinja2 that this is an expression.
+Work it out and display the result. 
+The brace/percent combination {{ '{% %}' }} tells jinja2 this is a statement to be evaluated.
+The brace/hash combination {{ '{# #}' }} tells jinja2 this is a comment to be ignored. 
+
+formatting
+-------------------------
+The loops are not indented like a python "for" loop.
+If you want to indent jinja2 code to look more like python, run "ansible-doc template" and look for lstrip_blocks.
+
+loops
+-------------------------
+Display each name.
+
+{# This is a "for" loop statement #}
+{% for item in names %}
+Hello {{ item }}
+{% endfor %}
+
+This loop is the same, except it removes newlines and trailing spaces. 
+
+{% for item in names -%}
+Hello {{ item }}! 
+{%- endfor -%}
+

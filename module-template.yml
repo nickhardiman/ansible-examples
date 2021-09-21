@@ -1,0 +1,40 @@
+# jinja2 and template
+# run
+#   ansible-playbook module-template.yml
+#
+# This jinja2 document contains many examples.
+# Template Designer Documentation
+# https://jinja.palletsprojects.com/en/3.0.x/templates/
+#
+- name: 
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  become: no
+  tasks:
+
+  - name: substitute a variable. Run "cat module-template/var.txt".
+    vars:
+      name: Zaid
+    ansible.builtin.template: 
+      src: module-template/var.txt.j2
+      dest: module-template/var.txt
+
+  - name: loop. Run "cat module-template/loop.txt".
+    vars:
+      names: 
+      - Angela
+      - Mo
+      - Zaid
+    ansible.builtin.template: 
+      src: module-template/loop.txt.j2
+      dest: module-template/loop.txt
+
+  - name: branch. Run "cat module-template/if.txt".
+    vars:
+      name: Fatima
+      display: yes
+    ansible.builtin.template: 
+      src: module-template/if.txt.j2
+      dest: module-template/if.txt
+
