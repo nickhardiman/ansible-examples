@@ -4,6 +4,7 @@
 #
 # "lookup('vars', 'thing')" gets values from the ansible_facts dictionary.
 # 'thing' is one of the keys, like "ansible_all_ipv4_addresses", "ansible_default_ipv4" or "facter_timezone".
+#
 # Example 1. This works.
 #   {{ lookup('vars', 'ansible_default_ipv4') }}
 #
@@ -16,9 +17,12 @@
 # subkeys
 # This lookup is not clever enough to handle subkeys. 
 # A variable with . or [] has a subkey, like "ansible_default_ipv4.address" or "ansible_default_ipv4['address']".
+#
 # Example 3. This does not work.
 #   {{ lookup('vars', 'ansible_default_ipv4.address') }}
+#
 # To get the value of a subkey you have to go through shenanigans like this.
+#
 # Example 4. This does work.
 #  {{ lookup('vars', 'ansible_default_ipv4').address }}
 #
@@ -62,11 +66,21 @@
     debug:
       msg: "lookup('vars', 'ansible_all_ipv4_addresses' ): {{ lookup('vars', 'ansible_all_ipv4_addresses' ) }}"
  
-  - name: and again, with an extra variable substitution
+  - name: same thing, with string manipulation
+    debug:
+      msg: "lookup('vars', 'ansible_all' + '_ipv4_addresses' ): {{ lookup('vars', 'ansible_all' + '_ipv4_addresses' ) }}"
+ 
+  - name: and again, with variable substitution
     vars:
        my_var: ansible_all_ipv4_addresses
     debug:
       msg: "lookup('vars', my_var): {{ lookup('vars', my_var) }}"
+ 
+  - name: and again, with variable substitution and string manipulation
+    vars:
+      prefix: ansible_all
+    debug:
+      msg: "lookup('vars', prefix + '_ipv4_addresses' ): {{ lookup('vars', prefix + '_ipv4_addresses' ) }}"
  
 # nested fact
   - name: The easy way to view a nested variable's value
