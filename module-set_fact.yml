@@ -1,0 +1,61 @@
+---
+# set_fact module
+# run
+#   ansible-playbook -i module-set_fact-inventory.yml module-set_fact.yml
+#
+# A fact is a variable containing data about a host. 
+# Facts are added to the current host's dictionary.
+# They are not visible to any other hosts. 
+# The first play sets some facts for host1.
+# The second play tries to view one of these facts and fails.
+#
+# If you want to copy a variable from one host to another, check out var-scope.yml
+# If you want to see all the facts ansible collects about a host, see play-gather_facts.yml
+#
+- name: set facts about host1
+  hosts: host1
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: set a fact
+    set_fact:
+      my_var: my_val
+
+  - name: display the fact
+    debug:
+      var: my_var
+
+  - name: set a few facts
+    set_fact:
+      a_var: a value
+      a_list: 
+      - a
+      - b
+      - c
+      a_dict:
+        some_key: some value
+        another_key: another value
+        and_another: last one
+
+  - name: display facts
+    debug:
+      var: a_var
+  - debug:
+      var: a_list
+  - debug:
+      var: a_dict
+
+
+- name: view facts about host2
+  hosts: host2
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: Try displaying the my_var fact. this fails with a "VARIABLE IS NOT DEFINED!" error.
+    debug:
+      var: my_var
+

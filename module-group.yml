@@ -1,10 +1,12 @@
 ---
-#  group module
-#  requires root privilege.
-#  see become.yml  
-#
+# group is a module from module library
 # run
 # ansible-playbook --ask-become-pass module-group.yml
+#
+#  This playbook adds and removes a user group.
+#  It requires root privilege.
+#  see become.yml  
+#
 #
 - name: from list to group accounts
   hosts: localhost 
@@ -58,5 +60,12 @@
     group:
       name: "{{ item.name }}"
       gid: "{{ item.gid | default(omit) }}"
+    loop: "{{ mygroups }}" 
+
+  - name: Remove groups from list 
+    group:
+      name: "{{ item.name }}"
+      gid: "{{ item.gid | default(omit) }}"
+      state: absent
     loop: "{{ mygroups }}" 
 

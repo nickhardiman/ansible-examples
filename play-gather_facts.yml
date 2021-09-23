@@ -1,4 +1,5 @@
 ---
+# The play directive gather_facts
 # run
 #   ansible-playbook directive-gather_facts.yml
 #
