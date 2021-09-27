@@ -10,6 +10,9 @@
 #----------------------------------------------------------
 # text to read 
 
+# These two lines are described here.
+# Forwards Compatibility Boilerplate
+# https://docs.ansible.com/ansible/2.3/dev_guide/developing_python3.html#forwards-compatibility-boilerplate
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 

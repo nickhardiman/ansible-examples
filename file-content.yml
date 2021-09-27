@@ -1,0 +1,44 @@
+# display file content
+# run 
+#  ansible-playbook file-content.yml
+#
+#
+# Backslashes are escaped.
+# This file content: 
+#
+# |      /`·.          |
+# |     /¸...¸`:·      |
+# | ¸.·´  ¸   `·.¸.·´) |
+# |: © ):´;      ¸  {  |
+# | `·.¸ `·  ¸.·´\`·¸) |
+# |     `\\´´\¸.·´     |
+#
+# becomes this Ansible output:
+#
+# TASK [display ASCII art with backslashes] *****************
+# ok: [localhost] => {
+#     "r_cat.stdout_lines": [
+#        "|      /`·.          |",
+#        "|     /¸...¸`:·      |",
+#        "| ¸.·´  ¸   `·.¸.·´) |",
+#        "|: © ):´;      ¸  {  |",
+#        "| `·.¸ `·  ¸.·´\\`·¸) |",
+#        "|     `\\\\´´\\¸.·´     |"
+#     ]
+# }
+#
+- name: display file content
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks: 
+  
+  - name: read file content
+    shell: cat ./file-content.txt
+    register: r_cat
+
+  - name: display file content
+    debug: 
+      var: r_cat.stdout_lines
+
