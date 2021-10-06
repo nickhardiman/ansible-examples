@@ -1,0 +1,45 @@
+# async
+# run
+#   ansible-playbook -i inv-four-hosts-inventory.yml directive-async.yml
+#
+- name: async
+  hosts: all
+  connection: local
+  gather_facts: no
+  become: no
+  vars:
+    sleep_seconds: 8
+ 
+  tasks:
+
+  - name: "An instant command: echo Hello World"
+    shell: "echo Hello World"
+
+  - name: "Re-run the echo command, but with async: 45 seconds, poll: 5 seconds. This takes a little over 5 seconds to finish"
+    shell: "echo Hello World"
+    async: 45
+    poll: 5
+
+  - name: "This task runs a longer command: sleep {{ sleep_seconds }}"
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+
+  - name: "Re-run the sleep command, but with async: 45, poll: 0. Ansible doesn't wait for this task to finish. It's fire and forget."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 45
+    poll: 0
+
+  - name: "The same task again."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 45
+    poll: 0
+
+  - name: "Re-run the sleep command, but with async: 45, poll: 5. This takes more than {{ sleep_seconds }} seconds to finish."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 45
+    poll: 5
+
+  - name: "The same task again."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 45
+    poll: 5
+
