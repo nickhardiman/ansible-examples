@@ -2,6 +2,9 @@
 # run
 #   ansible-playbook -i inv-four-hosts-inventory.yml directive-async.yml
 #
+# The poll directive tells Ansible to check for completion every few seconds.
+# "Poll" is a little like "retry" because something is repeated.
+# The retry directive tells Ansible to run a task every few seconds and check the result. 
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html
 #
 - name: async
@@ -17,31 +20,36 @@
   - name: "An instant command: echo Hello World"
     shell: "echo Hello World"
 
-  - name: "Re-run the echo command, but with async: 45 seconds, poll: 5 seconds. This takes a little over 5 seconds to finish"
+  - name: "Re-run the echo command, but with async: 30 seconds, poll: 5 seconds. This takes a little over 5 seconds to finish"
     shell: "echo Hello World"
-    async: 45
+    async: 30
     poll: 5
 
   - name: "This task runs a longer command: sleep {{ sleep_seconds }}"
     ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
 
-  - name: "Re-run the sleep command, but with async: 45, poll: 0. Ansible doesn't wait for this task to finish. It's fire and forget."
+  - name: "Re-run the sleep command, but with async: 30, poll: 0. Ansible doesn't wait for the sleep command to finish. It's fire and forget."
     ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
-    async: 45
+    async: 30
     poll: 0
 
-  - name: "The same task again."
+  - name: "The same task again. This task started before the previous sleep command finished."
     ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
-    async: 45
+    async: 30
     poll: 0
 
-  - name: "Re-run the sleep command, but with async: 45, poll: 5. This takes more than {{ sleep_seconds }} seconds to finish."
+  - name: "Re-run the sleep command, but with async: 30, poll: 5. This takes more than {{ sleep_seconds }} seconds to finish."
     ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
-    async: 45
+    async: 30
     poll: 5
 
-  - name: "The same task again."
+  - name: "The same task again. This task was blocked until the previous sleep command finished."
     ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
-    async: 45
+    async: 30
+    poll: 5
+
+  - name: "This 'sleep {{ sleep_seconds }}' task fails, with async: 5, poll: 5."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 5
     poll: 5
 

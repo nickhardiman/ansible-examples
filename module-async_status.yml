@@ -1,0 +1,59 @@
+---
+# async_status is a module from module library
+# run
+#   ansible-playbook module-async_status.yml
+#
+# If async_status runs and the job is not done, that is "OK"
+# If async_status runs and the job is done, the task is "Changed".
+# Use register, until and retries to keep checking.
+#
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html
+#
+- name: the async_status module
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    sleep_seconds: 12
+ 
+  tasks:
+
+  - name: "A task that runs a 'sleep {{ sleep_seconds }}' command, with async: 30, poll: 0. Ansible doesn't wait for the command to finish. It's fire and forget."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 30
+    poll: 0
+    register: r_sleep
+
+  - name: Check the sleep command. Only try once. This task is "ok".
+    async_status:
+      jid: "{{ r_sleep.ansible_job_id }}"
+
+
+  - name: "Run another asynchronous sleep task."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 30
+    poll: 0
+    register: r_sleep
+
+  - name: This task is "changed". Keep checking until the 25 second timeout (4 retries x 5 second delay = 25, plus a second or two to run the task).
+    async_status:
+      jid: "{{ r_sleep.ansible_job_id }}"
+    register: r_status
+    until: r_status.finished
+    retries: 4
+    
+  - name: "run the sleep command again."
+    ansible.builtin.command: "/bin/sleep {{ sleep_seconds }}"
+    async: 30
+    poll: 0
+    register: r_sleep
+
+  - name: This task is "fatal". It times out after 10 seconds (2 retries X 5 second delay = 10).
+    async_status:
+      jid: "{{ r_sleep.ansible_job_id }}"
+    register: r_status
+    until: r_status.finished
+    retries: 2
+   
+
