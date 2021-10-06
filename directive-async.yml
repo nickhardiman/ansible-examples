@@ -2,6 +2,8 @@
 # run
 #   ansible-playbook -i inv-four-hosts-inventory.yml directive-async.yml
 #
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html
+#
 - name: async
   hosts: all
   connection: local
