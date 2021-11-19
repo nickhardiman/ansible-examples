@@ -1,5 +1,12 @@
 ---
 # when conditional
+# run
+#   ansible-playbook conditional-when.yml
+#
+# The when conditional directive is often used to test strings. 
+# For more information, see
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
+#
 # The code following "when: " is jinja2 code, not ansible. 
 # There are some gotchas to be wary of.
 #
@@ -12,10 +19,6 @@
 #    when: '"bar" == "bar"' 
 # This is not.
 #    when: "bar" == "bar" 
-#
-# run
-#   ansible-playbook -i inventory-localhost.yml conditional-when.yml
-#
 
 - name: first play 
   hosts: localhost 
@@ -26,6 +29,20 @@
     my_sentence: Well, hello there!
     my_word: hello
   tasks:
+
+
+  # boolean
+
+  - name: boolean true - A simple true or false boolean works. 
+    debug:
+      msg: "This task uses when: True"
+    when: true
+
+  - name: boolean false - this doesn't run
+    debug:
+      msg: "This task uses when: False"
+    when: false
+
 
   # text exact match
 
@@ -48,19 +65,6 @@
       msg: This task is the same, except one string is inside a variable.
     when: my_sentence == 'Well, hello there!'
 
-  - name: Compare a variable with a string using is match() 
-    debug:
-      msg: This task uses "is match('Well, hello there!')" 
-    when: my_sentence is match('Well, hello there!')
-    #
-    # This also works with quotes around the outside. 
-    #when: "my_sentence is match('Well, hello there!')"
-    #
-    # The "is" word looks like English, but don't try using a "this is that" structure. 
-    # This won't work: 
-    #    when: "my_sentence is 'Well, hello there!'"
-    # Missing out the match test causes the error 
-    #    expected token 'name', got 'string'
 
 
   # text substring match
@@ -81,23 +85,43 @@
       msg: This task uses strings and finds "bar" inside "foobar"
     when: " 'foobar' | regex_search('bar') == 'bar' "
 
-  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
+
+  # is match 
+
+  - name: Compare a variable with a string using is match() 
+    debug:
+      msg: This task uses "is match('Well, hello there!')" 
+    when: my_sentence is match('Well, hello there!')
+    #
+    # This also works with quotes around the outside. 
+    #when: "my_sentence is match('Well, hello there!')"
+    #
+    # The "is" word looks like English, but don't try using a "this is that" structure. 
+    # This won't work: 
+    #    when: "my_sentence is 'Well, hello there!'"
+    # Missing out the match test causes the error 
+    #    expected token 'name', got 'string'
 
   - name: Compare a variable with a string using is match() and a regex
     debug:
       msg: This task uses "is match('.*hello.*')". The regex matches the entire sentence. 
     when: my_sentence is match('.*hello.*')
 
+
+  # is search 
+
   - name: Compare a variable with a string using is search() and a string
     debug:
       msg: This task uses "is search('hello')". The string matches part of the sentence.
     when: my_sentence is search('hello')
 
+
+  # is regex
+
   - name: Compare a variable with a string using is regex() and a regex
     debug:
       msg: This task uses "is regex('.*hello')". The regex matches part of the sentence. 
     when: my_sentence is regex('.*hello')
-
 
 
   # stop the playbook
