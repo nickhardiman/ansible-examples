@@ -51,7 +51,7 @@
     #  - three
 
     - name: loop with include_tasks
-      include_tasks: loop-tasks.yml
+      include_tasks: directive-loop-tasks.yml
       loop:
         - one
         - two

@@ -1,0 +1,51 @@
+---
+# rearrange dictionaries into other dictionaries
+# run 
+#   ansible-playbook var-dict-append.yml 
+#  
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#dictionary-variables
+#
+#
+
+- name: append attribute/value pairs to a dictionary
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define dictionary variables
+  vars:
+    dictionary_variable_1: 
+      d1_key_1: d1_value_1
+      d1_key_2: d1_value_2
+      d1_key_3: d1_value_3
+    dictionary_variable_2: 
+      d2_key_1: d2_value_1
+      d2_key_2: d2_value_2
+      d2_key_3: d2_value_3
+
+  tasks:
+
+  - name: append a pair using filter "combine"
+    vars:
+      new_dict: "{{ dictionary_variable_1 | combine({'d1_key_4': 'd1_value_4'}) }}"
+    debug: 
+      var: new_dict
+
+  - name: overwrite a value using filter "combine"
+    vars:
+      new_dict: "{{ dictionary_variable_1 | combine({'d1_key_3': 'new value'}) }}"
+    debug: 
+      var: new_dict
+
+  - name: combine two dictionaries using filter "combine"
+    vars:
+      new_dict: "{{ dictionary_variable_1 | combine(dictionary_variable_2) }}"
+    debug: 
+      var: new_dict
+
+  - name: append a pair to a dictionary that may not exist
+    vars:
+      new_dict: "{{ nonexistant_dictionary | default({}) | combine({'a key': 'a value'}) }}"
+    debug: 
+      var: new_dict
+

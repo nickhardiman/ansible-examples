@@ -1,14 +1,14 @@
 ---
 # The play directive gather_facts
 # run
-#   ansible-playbook directive-gather_facts.yml
+#   ansible-playbook play-gather_facts.yml
 #
 # Gather facts and display a few.
 # Ansible collects hundreds of facts about a host.
 # This gather_facts directive and the gather_facts module do the same thing.
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/gather_facts_module.html
 #
-- name: first gather_facts play
+- name: the ansible_facts data structure
   hosts: localhost 
   gather_facts: yes
   become: no
@@ -31,7 +31,11 @@
     debug:
       var: ansible_facts['default_ipv4']['address']
 
-- name: second gather_facts play
+  - name: extract from dictionary and list
+    debug:
+      var: ansible_facts['interfaces'][0]
+
+- name: use a gather_facts task, not the directive
   hosts: localhost 
   # This line is different. 
   gather_facts: no
@@ -39,10 +43,48 @@
   connection: local
   tasks:
 
+  #  ansible.builtin.gather_facts runs ansible.builtin.setup
   - name: gather facts, even though this play says no above
     ansible.builtin.gather_facts:
 
   - name: display one fact, just like in the first play.
     debug:
       var: ansible_facts.default_ipv4.address
+
+
+- name: gather a subset using a setup task
+  hosts: localhost 
+  # This line is different. 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  # subsets are all, min, hardware, network, virtual, ohai, and facter. 
+  - name: gather some facts
+    ansible.builtin.setup:
+      gather_subset: hardware
+    register: r_hardware
+
+  # displaying ansible_facts here still shows everything
+  - name: 
+    debug:
+      var: r_hardware
+
+- name: filter facts using a setup task
+  hosts: localhost 
+  # This line is different. 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: filter facts
+    ansible.builtin.setup:
+      filter: ansible_mounts
+    register: r_ansible_mounts
+
+  - name: 
+    debug:
+      var: r_ansible_mounts
 

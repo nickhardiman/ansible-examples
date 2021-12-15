@@ -1,0 +1,63 @@
+---
+# list variable 
+# run 
+#   ansible-playbook var-list-append.yml
+#
+# For more list examples, see these playbooks. 
+# var-simple-to-list.yml - add values to a list
+# var-list-to-simple.yml - copy values from a list
+# var-list-nested.yml - read a list of lists
+# To find out more about list variables, see this documentation. 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
+#
+
+- name: add to a list variable
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the list variable
+  vars:
+    first_list: 
+      - a value
+      - another value
+      - a third value
+    second_list:
+      # This is assumed to be an int (a number), not a str (a character in the alphabet)
+      - 2
+      # This is assumed to be a str (a character)
+      - "2"
+    another_list:
+      - five
+      - six
+      - seven
+
+  tasks:
+
+  - name: join lists
+    vars:
+      new_list: "{{ first_list + second_list }}"
+    debug: 
+      var: new_list
+
+  - name: add an item to a list
+    vars:
+      new_list: "{{ first_list + ['value no.4'] }}"
+    debug: 
+      var: new_list
+
+  - name: add an item to a list that may not exist
+    vars:
+      new_list: "{{ nonexistant_list| default([]) + ['appended value'] }}"
+    debug: 
+      var: new_list
+
+
+  - name: build one list from another, item by item
+    set_fact:
+      new_list: "{{ new_list | default([]) + [item | upper] }}"
+    loop: "{{ another_list }}" 
+  - debug: 
+      var: new_list
+
+

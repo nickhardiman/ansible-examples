@@ -1,0 +1,26 @@
+#
+# run 
+#    ansible-playbook config-default_module_path.yml
+#
+# To see all config variables on the CLI, run 
+#   ansible-config list
+# and search for DEFAULT_MODULE_PATH.
+# On the web, view this page.
+# Ansible Configuration Settings
+# https://docs.ansible.com/ansible/2.9/reference_appendices/config.html#ansible-configuration-settings
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+
+  - name: How did Ansible set the ANSIBLE_LIBRARY path?
+    debug: 
+      msg: "DEFAULT_MODULE_PATH: {{ lookup('config', 'DEFAULT_MODULE_PATH')}}"
+
+  - name: The ANSIBLE_MODULE_UTILS path.
+    debug: 
+      msg: "DEFAULT_MODULE_UTILS_PATH: {{ lookup('config', 'DEFAULT_MODULE_UTILS_PATH')}}"
+
+
