@@ -1,0 +1,41 @@
+---
+# regex_escape
+# run
+#   ansible-playbook filter-regex_escape.yml
+#
+# The display has extra escape backslashes. 
+# ok: [localhost] => {
+#    "my_match": "\\ space\\ \\$\\ dollar\\ \\.\\ dot\\ \\ backslash\\ /\\ forward\\ slash"
+# }
+#
+# ansible regex filters that return text 
+#    regex_replace
+#    regex_escape
+#    regex_search
+#    regex_findall
+# ansible regex filters that return bool
+#    match
+#    regex
+#
+# See
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#searching-strings-with-regular-expressions
+# source 
+# https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/filter/core.py
+#
+#
+
+- name: regex_escape filter
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    found: no
+  tasks:
+
+  - name: space
+    vars:
+      my_match: "{{ ' space $ dollar . dot \ backslash / forward slash' | regex_escape() }}"
+    debug:
+      var: my_match
+
