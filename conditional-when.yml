@@ -6,6 +6,7 @@
 # The when conditional directive is often used to test strings. 
 # For more information, see
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
+# For more on boolean variables, see var-bool.yml.
 #
 # The code following "when: " is jinja2 code, not ansible. 
 # There are some gotchas to be wary of.
@@ -35,13 +36,33 @@
 
   - name: boolean true - A simple true or false boolean works. 
     debug:
-      msg: "This task uses when: True"
+      msg: "'when: true', 'when: True' and 'when: yes' all do the same thing."
+    # These are all the same. 
     when: true
+    #when: True
+    #when: yes
 
   - name: boolean false - this doesn't run
     debug:
       msg: "This task uses when: False"
     when: false
+
+  - name: boolean negation
+    debug:
+      msg: "This task uses when: not False"
+    when: not False
+
+  - name: Don't use an exclamation mark (!)
+    debug:
+      msg: "This task uses when: ! False"
+    # This is not the same as 'when: not False'
+    when: ! False
+    # This causes a syntax error
+    #when: !False
+    # These cause a template error
+    #when: "! False"
+    #when: (! False)
+
 
 
   # text exact match
