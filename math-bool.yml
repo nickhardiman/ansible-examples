@@ -1,0 +1,18 @@
+---
+# maths, math, mathematics
+# https://www.mydailytutorials.com/ansible-arithmetic-operations/
+#
+# run
+#   ansible-playbook math-bool.yml
+#
+
+- name: boolean comparisons
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - debug:
+      msg: "equivalence {{ 1 == 1 }}" # 
+

@@ -1,7 +1,7 @@
 ---
 # set_fact module
 # run
-#   ansible-playbook -i module-set_fact-inventory.yml module-set_fact.yml
+#   ansible-playbook module-set_fact.yml
 #
 # A fact is a variable containing data about a host. 
 # Facts are added to the current host's dictionary.
@@ -38,6 +38,11 @@
         some_key: some value
         another_key: another value
         and_another: last one
+
+  - name: does this work
+    set_fact:
+      a_var: a value
+      copy_var: "{{ a_var }}"
 
   - name: display facts
     debug:

@@ -3,7 +3,7 @@
 # https://www.mydailytutorials.com/ansible-arithmetic-operations/
 #
 # run
-#   ansible-playbook -i inventory-localhost.yml conditional-when.yml
+#   ansible-playbook math-arithmetic.yml
 #
 
 - name: arithmetic
