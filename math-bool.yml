@@ -5,6 +5,12 @@
 #
 # run
 #   ansible-playbook math-bool.yml
+# For more tasks, see:
+# * var-bool.yml                       - what counts as a boolean True or False
+# * math-bool.yml                      - equals, not equals, greater than, and lower than
+# * conditional-when.yml               - the when clause is an equivalence test
+# * conditional-when-empty-strings.yml - equivalence with ""
+# * conditional-when-null-string.yml   - equivalence with Null and None
 #
 
 - name: boolean comparisons
@@ -18,7 +24,11 @@
   - debug:
       msg: "equality, 1 == 1 is {{ 1 == 1 }}" 
   - debug:
-      msg: "inequality, 1 == 2 is {{ 1 == 2 }}" 
+      msg: "equality, 1 == 2 is {{ 1 == 2 }}" 
+  - debug:
+      msg: "equality, 1 != 1 is {{ 1 != 1 }}" 
+  - debug:
+      msg: "equality, 1 != 2 is {{ 1 != 2 }}" 
   - debug:
       msg: "greater than, 1 > 2 is {{ 1 > 2 }}" 
   - debug:
@@ -43,7 +53,9 @@
       msg: 'equality, "abc" == "abc" is {{ "abc" == "abc" }}' 
   - debug:
       msg: 'gotcha! True is a string, not a boolean value, "abc" == True is {{ "abc" == True }}' 
-  # one for devs - "string" and "" are not the equivalent of true and false
+  # one for devs - values "string" and "" are not the equivalent of true and false
+  # However, you can do something like this with a variable and "when" clause.
+  # See conditional-when.yml
   - debug:
       msg: 'gotcha! "string" is defined() is {{ "string" is defined() }}' 
   - debug:
@@ -51,8 +63,10 @@
 
 
   # when clause
+  # lots more examples elsewhere. 
+  # See conditional-when.yml
   - debug:     
       msg: "equality, 1 == 1"
-    when: "{{ 1 == 1 }}"
+    when: 1 == 1
 
 

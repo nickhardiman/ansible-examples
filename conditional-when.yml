@@ -4,9 +4,14 @@
 #   ansible-playbook conditional-when.yml
 #
 # The when conditional directive is often used to test strings. 
-# For more information, see
+# For more information, see:
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_tests.html#testing-strings
-# For more on boolean variables, see var-bool.yml.
+# For more tasks, see:
+# * var-bool.yml                       - what counts as a boolean True or False
+# * math-bool.yml                      - equals, not equals, greater than, and lower than
+# * conditional-when.yml               - the when clause is an equivalence test
+# * conditional-when-empty-strings.yml - equivalence with ""
+# * conditional-when-null-string.yml   - equivalence with Null and None
 #
 # The code following "when: " is jinja2 code, not ansible. 
 # There are some gotchas to be wary of.
