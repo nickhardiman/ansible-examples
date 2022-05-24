@@ -1,6 +1,7 @@
 ---
-# maths, math, mathematics
-# https://www.mydailytutorials.com/ansible-arithmetic-operations/
+# Uses boolean values, but not boolean algebra.
+# For a description of boolean algebra and logic gates, see
+# https://en.wikipedia.org/wiki/Boolean_algebra
 #
 # run
 #   ansible-playbook math-bool.yml
@@ -13,6 +14,45 @@
   connection: local
   tasks:
 
+  # integer
   - debug:
-      msg: "equivalence {{ 1 == 1 }}" # 
+      msg: "equality, 1 == 1 is {{ 1 == 1 }}" 
+  - debug:
+      msg: "inequality, 1 == 2 is {{ 1 == 2 }}" 
+  - debug:
+      msg: "greater than, 1 > 2 is {{ 1 > 2 }}" 
+  - debug:
+      msg: "greater than or equal to, 1 >= 2 is {{ 1 >= 2 }}" 
+  - debug:
+      msg: "lower than, 1 < 2 is {{ 1 < 2 }}" 
+  - debug:
+      msg: "lower than or equal to, 1 <= 2 is {{ 1 <= 2 }}" 
+  - debug:
+      msg: 'equality with type conversion, "1"|int == 1 is {{ "1"|int == 1 }}'
+  # one for devs - 1 and 0 are not the equivalent of true and false
+  - debug:
+      msg: 'gotcha! 1 is defined() is {{ 1 is defined() }}' 
+  - debug:
+      msg: 'gotcha! 0 is defined() is {{ 0 is defined() }}' 
+
+  # float
+  - debug:
+      msg: "equality, 1.0 == 1.0 is {{ 1.0 == 1.0 }}" 
+  # string
+  - debug:
+      msg: 'equality, "abc" == "abc" is {{ "abc" == "abc" }}' 
+  - debug:
+      msg: 'gotcha! True is a string, not a boolean value, "abc" == True is {{ "abc" == True }}' 
+  # one for devs - "string" and "" are not the equivalent of true and false
+  - debug:
+      msg: 'gotcha! "string" is defined() is {{ "string" is defined() }}' 
+  - debug:
+      msg: 'gotcha! "" is defined() is {{ "" is defined() }}' 
+
+
+  # when clause
+  - debug:     
+      msg: "equality, 1 == 1"
+    when: "{{ 1 == 1 }}"
+
 
