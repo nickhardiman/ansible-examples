@@ -61,16 +61,26 @@
       var: new_list
 
 
-  - name: copy items matching a regular expression (ends in "value")
+  - name: copy items matching a regular expression (attribute name ends in "value")
     ansible.builtin.set_fact:
       value_list: "{{  first_list | select('match', '.*value$') | list }}"
   - debug: 
       var: value_list
 
-  - name: fancy numbering: set options string for the next task
+  # Displaying sequence numbers like this is a little complicated. 
+  # ITEM_0=a value
+  # ITEM_1=another value
+  # ITEM_2=a third value
+  - name: "fancy numbering: count the number of items in first_list"
+    ansible.builtin.set_fact:
+      count_first_list: "{{ first_list | length | int }}"
+  - name: "fancy numbering: set options string for the next task"
     set_fact:
-      with_sequence_opts: "start=0 end={{ first_list | int - 1 }}"
-  - name: fancy numbering: display
+      with_sequence_opts: "start=0 end={{ (count_first_list | int) - 1 }}"
+  - name: "fancy numbering: these are the options passed to 'sequence'"
+    ansible.builtin.debug:
+      var: with_sequence_opts
+  - name: "fancy numbering: display lines"
     ansible.builtin.debug:
       msg: 'ITEM_{{ item }}={{ first_list[ item | int ] }}'
     with_sequence: "{{  with_sequence_opts }}"
