@@ -1,8 +1,8 @@
 ---
-# rearrange dictionaries into lists
 # run 
 #   ansible-playbook var-dict-to-list.yml 
 #  
+# rearrange dictionaries into lists
 # The final task uses the json_query filter, which has a dependency.
 # You need to install "jmespath" prior to running json_query filter
 # "pip install jmespath" should do it.

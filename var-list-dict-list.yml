@@ -1,5 +1,5 @@
 ---
-# lists inside dicts inside a list inside a dict
+# use a confusing data store, made of lists inside dicts inside a list inside a dict
 #
 #
 

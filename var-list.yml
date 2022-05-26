@@ -3,10 +3,16 @@
 # run 
 #   ansible-playbook var-list.yml
 #
+# An ordered sequence of items
 # For more list examples, see these playbooks. 
-# var-simple-to-list.yml - add values to a list
-# var-list-to-simple.yml - copy values from a list
-# var-list-nested.yml - read a list of lists
+# * var-dict-to-list.yml   - rearrange dictionaries into lists
+# * var-list-append.yml    - build a new list
+# * var-list-dict-list.yml - use a confusing data store, made of lists inside dicts inside a list inside a dict
+# * var-list-nested.yml    - read a list of lists
+# * var-list-to-simple.yml - copy values from a list
+# * var-list.yml           - an ordered sequence of items
+# * var-simple-to-list.yml - add values to a list
+
 # To find out more about list variables, see this documentation. 
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#list-variables
 #
@@ -58,9 +64,14 @@
       msg: "value: {{ item }}"
     loop: "{{ an_empty_list }}"
 
+  - name: count items in a list
+    debug: 
+      msg: "count: {{ list_variable | length }}"
+
+
 # using "defined" with a list
 
-  - name: An empty list is defined.
+  - name: "This task runs because an_empty_list (an empty list is []) is defined."
     debug: 
       msg: An empty array is not the same as an undefined array.
     when: 'an_empty_list is defined'
@@ -69,4 +80,5 @@
     debug: 
       msg: No such thing as a_nonexistant_list
     when: 'a_nonexistant_list is defined'
+
 

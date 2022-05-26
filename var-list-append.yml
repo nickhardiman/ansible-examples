@@ -61,3 +61,17 @@
       var: new_list
 
 
+  - name: copy items matching a regular expression (ends in "value")
+    ansible.builtin.set_fact:
+      value_list: "{{  first_list | select('match', '.*value$') | list }}"
+  - debug: 
+      var: value_list
+
+  - name: fancy numbering: set options string for the next task
+    set_fact:
+      with_sequence_opts: "start=0 end={{ first_list | int - 1 }}"
+  - name: fancy numbering: display
+    ansible.builtin.debug:
+      msg: 'ITEM_{{ item }}={{ first_list[ item | int ] }}'
+    with_sequence: "{{  with_sequence_opts }}"
+
