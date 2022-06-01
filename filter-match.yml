@@ -46,6 +46,14 @@
       msg: This task uses "match('Well')"
     when: my_sentence is match('Well')
 
+  # see
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#referencing-key-value-dictionary-variables
+  # https://docs.python.org/3/library/stdtypes.html#str.startswith
+  - name: Same thing with a Python string method, startswith
+    debug:
+      msg: This task doesn't use match, but does the same thing
+    when: my_sentence.startswith('Well')
+
   - name: Match the middle. This fails.
     debug:
       msg: This task uses "match('hello')". The regex matches the entire sentence.
