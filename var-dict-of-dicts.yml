@@ -1,0 +1,55 @@
+---
+# complex dictionary variable 
+# run 
+#   ansible-playbook var-dict-of-dicts.yml 
+#  
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#dictionary-variables
+#
+#
+
+- name: define and display a dictionary containing other nested dictionaries
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  # define the dictionary variable
+  vars:
+    dict_of_users:
+      jakec:
+        realname: Jake Can
+        group: jakec
+        uid: 1233
+      johnd:
+        realname: John Doe
+        group: johnd
+        uid: 1234
+      janee:
+        realname: Jane Egg
+        group: janee
+        uid: 1235
+
+  tasks:
+
+  - name: display the dictionary variable content, using a jinja2 substitution 
+    debug: 
+      msg: "This is what a JSON object looks like: {{ dict_of_users }}"
+
+  - name: display one value in the dictionary variable
+    debug: 
+      msg: "dict_of_users['johnd']['group']: {{ dict_of_users['johnd']['group'] }}"
+
+  - name: same thing, different format
+    debug: 
+      msg: "dict_of_users.johnd.group: {{ dict_of_users.johnd.group }}"
+
+  - name: display keys in the top-level dictionary variable
+    debug: 
+      msg: "value: {{ item }}"
+    loop: "{{ dict_of_users | list }}"
+
+  - name: use the lookup "dict" and a "when" clause to display one definition in the top-level dictionary
+    debug: 
+      msg: "{{ item.key }}: {{ item.value }}"
+    loop: "{{ lookup('dict', dict_of_users) }}"
+    when: '"johnd" in item.key'
+

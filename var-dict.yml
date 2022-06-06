@@ -28,11 +28,11 @@
 
   - name: display one value in the dictionary variable
     debug: 
-      msg: "another_key: {{ dictionary_variable['key with spaces'] }}"
+      msg: "dictionary_variable['key with spaces']:: {{ dictionary_variable['key with spaces'] }}"
 
   - name: display one value in the dictionary variable
     debug: 
-      msg: "another_key: {{ dictionary_variable.another_key }}"
+      msg: "dictionary_variable.another_key: {{ dictionary_variable.another_key }}"
 
   - name: display all keys in the dictionary variable
     debug: 
