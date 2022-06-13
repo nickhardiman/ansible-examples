@@ -26,39 +26,39 @@
   tasks:
 
   - name: gotcha! this assignment fails
-    set_fact:
+    ansible.builtin.set_fact:
       dict_original['a_key']: 'a new value'
     ignore_errors: yes
 
   - name: an exact copy, no changes
-    set_fact:
+    ansible.builtin.set_fact:
       dict_copy: "{{ dict_original }}"
-  - debug:
+  - ansible.builtin.debug:
       var: dict_copy
 
   - name: delete entry 'another_key'
-    set_fact:
+    ansible.builtin.set_fact:
       dict_minus_an_entry: "{{ dict_minus_an_entry | default({}) | combine( {item.key: item.value} ) }}"
     loop: "{{ dict_original | dict2items }}"
     when: item.key != 'another_key'
-  - debug:
+  - ansible.builtin.debug:
       var: dict_minus_an_entry
 
   - name: change entry 'another_key'
-    set_fact:
+    ansible.builtin.set_fact:
       dict_with_changed_entry: "{{ dict_original | combine({'another_key': 'NEW VALUE'}) }}"
-  - debug:
+  - ansible.builtin.debug:
       var: dict_with_changed_entry
 
   - name: same thing, locally scoped (the dictionary is not available to other tasks)
     vars:
       dict_locally_scoped: "{{ dict_original | combine({'another_key': 'NEW VALUE'}) }}"
-    debug:
+    ansible.builtin.debug:
       var: dict_locally_scoped
 
   - name: replace the original dictionary
-    set_fact: 
+    ansible.builtin.set_fact: 
       dict_original: "{{ dict_with_changed_entry }}"
-  - debug:
+  - ansible.builtin.debug:
       var: dict_original
       
