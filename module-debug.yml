@@ -1,0 +1,30 @@
+# The 'debug' module displays a message or variable's value.
+# run
+#   ansible-playbook module-debug.yml
+#   ansible-playbook -v module-debug.yml
+#
+# The 'debug' module is handy for development and debugging.
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html
+
+- name: 
+  hosts: all
+  gather_facts: no
+  become: no
+  vars:
+    my_variable: my_value
+  tasks:
+
+  - name: display a message
+    debug: 
+      msg: "The variable my_variable holds the value {{ my_variable }}."
+
+  - name: display a value
+    debug: 
+      var: my_variable
+
+  - name: display a message if verbosity is increased
+    debug: 
+      msg: I don't appear unless you add a -v
+      verbosity: 1
+
+
