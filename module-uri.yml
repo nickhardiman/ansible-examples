@@ -1,0 +1,29 @@
+# jinja2 and template
+# run
+#   ansible-playbook module-template.yml
+#
+# many APIs to try here:
+# https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
+
+- name: 
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  become: no
+  tasks:
+
+  - name: talk to IMDB
+    uri:
+      url: https://sg.media-imdb.com/suggests/a/aa.json
+      method: GET
+      headers: 
+        Accept: "application/json"
+      body_format: json
+      validate_certs: no
+      status_code: 201
+   register: r_imdb
+  
+  - name: view reply
+    debug:
+      var: r_imdb
+
