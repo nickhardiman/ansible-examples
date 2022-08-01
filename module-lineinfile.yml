@@ -2,19 +2,58 @@
 # run
 #   ansible-playbook module-lineinfile.yml
 #
+# todo
+#  add perm change. key file must be restricted, but github doesn't preserve perms.
+#  add clean up. remove changes to the file
+# SSHD is not usually enabled on a Mac.
+# Running with a command like this
+#   sshd -t -f ./module-lineinfile-sshd_config
+# probaby exits with this message. 
+#   sshd: no hostkeys available -- exiting.
+# Add a private key (a new key, not one being used) to avoid the error. 
+# Run:
+#   sshd -t -f ./module-lineinfile-sshd_config -h ./module-lineinfile-ssh_host_rsa_key
+#
+# problem
+# SSHD is not usually enabled on a Mac.
+# Running with a command like this
+#   sshd -t -f ./module-lineinfile-sshd_config
+# probaby exits with this message. 
+#   sshd: no hostkeys available -- exiting.
+#
+# fix
+# Add a private key (a new key, not one being used) to avoid the error. 
+# Run:
+#   chmod 600 module-lineinfile-ssh_host_rsa_key
+#   sshd -t -f ./module-lineinfile-sshd_config -h ./module-lineinfile-ssh_host_rsa_key
+#
+# validate
+# good ideas for validating changes:
+# SSHD config
+#   validate: /usr/sbin/sshd -tf %s
+# sudoers
+#   validate: /usr/sbin/visudo -csf %s
+# A temporary file path is used to validate, passed in through ‘%s’
+#
 # see
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/lineinfile_module.html
 
-- name: 
+- name: lineinfile play
   hosts: localhost
   gather_facts: no
   connection: local
   become: no
   tasks:
 
-  - name: change an SSH config file (not a real one)
+  - name: a successful change to an SSH config file (not a real one)
     lineinfile:
       path: ./module-lineinfile-sshd_config
-      line: my_attribute my_value
-    validate: sshd -t -f ./module-lineinfile-sshd_config -h ./module-lineinfile-ssh_host_rsa_key
+      line: X11Forwarding yes
+      validate: sshd -t -f %s -h ./module-lineinfile-ssh_host_rsa_key
+
+  - name: a failed change to an SSH config file (not a real one)
+    lineinfile:
+      path: ./module-lineinfile-sshd_config
+      line: Not_an_sshd_attribute  Some_value
+      validate: sshd -t -f %s -h ./module-lineinfile-ssh_host_rsa_key
 

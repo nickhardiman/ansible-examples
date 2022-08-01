@@ -2,16 +2,7 @@
 # see 
 #   man sshd_config
 #
-# SSHD is not usually enabled on a Mac.
-# Running with a command like this
-#   sshd -t -f ./module-lineinfile-sshd_config
-# probaby exits with this message. 
-#   sshd: no hostkeys available -- exiting.
-# Add a private key (a new key, not one being used) to avoid the error. 
-# Run:
-#   sshd -t -f ./module-lineinfile-sshd_config -h ./module-lineinfile-ssh_host_rsa_key
-
+#
 Include /etc/ssh/sshd_config.d/*.conf
 AuthorizedKeysFile	.ssh/authorized_keys
-#Subsystem	sftp	/usr/libexec/openssh/sftp-server
-
+# 
