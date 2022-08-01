@@ -1,29 +1,36 @@
-# the uri module
+# send a request to a REST API with the uri module
 # run
 #   ansible-playbook module-uri.yml
 #
-# many APIs to try here:
+# ask wikipedia about 'Tiger King' page views
+# page: https://en.wikipedia.org/wiki/Tiger_King
+# Pageview API documentation: https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews
+#
+# Many APIs that don't require authentication are listed here. 
 # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
+# There are plenty more APIs out there that may be free but require registration.
 
-- name: 
+- name: send a request to a REST API with the uri module
   hosts: localhost
   gather_facts: no
   connection: local
   become: no
   tasks:
 
-  - name: talk to IMDB
+  - name: ask wikipedia about 'Tiger King' page views on 1st, 2nd and 3rd November 2021.
     uri:
-      url: https://sg.media-imdb.com/suggests/a/aa.json
+      url: https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/Tiger_King/daily/20210901/20210903
       method: GET
       headers: 
         Accept: "application/json"
       body_format: json
       validate_certs: no
-      status_code: 201
-   register: r_imdb
+      status_code: 
+      - 200
+      - 201
+    register: r_reply
   
-  - name: view reply
+  - name: view reply content (not the reply headers)
     debug:
-      var: r_imdb
+      var: r_reply.json
 
