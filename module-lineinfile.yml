@@ -1,0 +1,20 @@
+# the lineinfile module
+# run
+#   ansible-playbook module-lineinfile.yml
+#
+# see
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/lineinfile_module.html
+
+- name: 
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  become: no
+  tasks:
+
+  - name: change an SSH config file (not a real one)
+    lineinfile:
+      path: ./module-lineinfile-sshd_config
+      line: my_attribute my_value
+    validate: sshd -t -f ./module-lineinfile-sshd_config -h ./module-lineinfile-ssh_host_rsa_key
+

@@ -1,6 +1,6 @@
-# jinja2 and template
+# the uri module
 # run
-#   ansible-playbook module-template.yml
+#   ansible-playbook module-uri.yml
 #
 # many APIs to try here:
 # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
