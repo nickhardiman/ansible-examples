@@ -20,6 +20,8 @@
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#searching-strings-with-regular-expressions
 # source 
 # https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/filter/core.py
+# For a description of the regular expression language, see
+# https://docs.python.org/3/library/re.html
 #
 #
 
@@ -47,6 +49,10 @@
   - name: more complicated regex match. "\w+" matches one or more word characters.
     debug:
       msg: "{{ 'foobar' | regex_search('\\w+') }}"
+
+  - name: something similar with digits
+    debug:
+      msg: "{{ 'foo123bar456baz789' | regex_search('\\d+', \\1) }}"
 
   - name: with a "when" conditional 
     vars:
