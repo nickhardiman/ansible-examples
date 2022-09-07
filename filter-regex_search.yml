@@ -50,9 +50,13 @@
     debug:
       msg: "{{ 'foobar' | regex_search('\\w+') }}"
 
-  - name: something similar with digits
+  - name: something similar with "\d" for digits and "\D" for not-digits.
     debug:
-      msg: "{{ 'foo123bar456baz789' | regex_search('\\d+', \\1) }}"
+      msg: "{{ 'foo123bar456baz789' | regex_search('\\d+\\D+') }}"
+      
+  - name: Brackets "( ... )" store matches. Store the first two sets of digits in a list
+    debug:
+      msg: "{{ 'foo123bar456baz789' | regex_search('(\\d+)\\D+(\\d+)', '\\1', '\\2') }}"
 
   - name: with a "when" conditional 
     vars:
