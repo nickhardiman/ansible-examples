@@ -45,10 +45,26 @@
        msg: "file content: {{ file_content }}"
     ignore_errors: yes
     
+  - name: same thing, with the default option (errors='strict') included. 
+    vars:
+      file_content: "{{ lookup('file', 'i-dont-exist', errors='strict' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+    ignore_errors: yes
+    
 
-  - name: nonexistant file, with another way of ignoring the error
+  - name: nonexistant file, with another way of ignoring the error (errors='warn')
     vars:
       file_content: "{{ lookup('file', 'i-dont-exist', errors='warn' ) }}"
     debug:
        msg: "file content: {{ file_content }}"
 
+  - name: and yet another way of ignoring the error (errors='ignore')
+    vars:
+      file_content: "{{ lookup('file', 'i-dont-exist', errors='ignore' ) }}"
+    debug:
+       msg: "file content: {{ file_content }}"
+
+  - name: end of play
+    debug:
+       msg: "That's it for lookup('file', 'FILE')"
