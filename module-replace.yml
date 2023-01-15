@@ -1,0 +1,20 @@
+# replace a line in a file
+# run
+#   ansible-playbook module-replace.yml
+#
+# difference from lineinfile?
+
+- name: replace a line in file
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  become: no
+  tasks:
+
+  - name: uncomment a line
+    ansible.builtin.replace:
+      dest: module-replace-example.cfg
+      regexp: '^#(.*I get uncommented.*)'
+      replace: '\1'
+
+ 
