@@ -1,0 +1,46 @@
+# https://tekunabe-hatenablog-jp.translate.goog/entry/2022/12/18/114227?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en
+# author: akira6592
+# Order of evaluation of vars from many sources.
+--- 
+- name : Test evaluating vars
+   hosts : localhost
+   gather_facts :  false 
+  connection : local
+
+  vars : 
+    now_play_vars :  "{{ now() }}"
+
+  vars_files : 
+    - files.yml
+
+  tasks : 
+    - name : set_fact
+       ansible.builtin.set_fact : 
+        now_set_fact :  "{{ now() }}"
+
+    - name : include_vars
+       ansible.builtin.include_vars : 
+        file : included.yml
+
+    - name : debug vars 1 
+      ansible.builtin.debug : 
+        msg : 
+          - "{{ now_host_vars }} now_host_vars" 
+          - "{{ now_play_vars }} now_play_vars" 
+          - "{{ now_vars_files }} now_vars_files" 
+          - "{{ now_set_fact }} now_set_fact" 
+          - "{{ now_include_vars }} now_include_vars"
+          
+    - name : pause
+       ansible.builtin.pause : 
+        seconds :  1
+
+    - name : debug vars 2 
+      ansible.builtin.debug : 
+        msg : 
+          - "{{ now_host_vars }} now_host_vars" 
+          - "{{ now_play_vars }} now_play_vars" 
+          - "{{ now_vars_files }} now_vars_files" 
+          - "{{ now_set_fact }} now_set_fact" 
+          - "{{ now_include_vars }} now_include_vars"
+

@@ -1,0 +1,2 @@
+--- 
+now_include_vars :  "{{ now() }}"
