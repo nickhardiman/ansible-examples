@@ -1,8 +1,22 @@
 ---
+# run
+#   AAP1
+#   ansible-playbook -i inventory-localhost.yml lookup-file.yml
+#   AAP2
+#   podman login registry.redhat.io
+#   ansible-navigator run lookup-file.yml
+# doc
+#   AAP1
+#   ansible-doc -t lookup file
+#   AAP2
+#   ansible-navigator doc -t lookup file
+#
 # A lookup plug-in is an Ansible extension to the Jinja2 templating language. 
 #
-# run
-#   ansible-playbook -i inventory-localhost.yml lookup-file.yml
+# query plug-in vs. lookup plug-in
+# The lookup plugin puts all files' content in one big string."
+# The query plugin makes a list and puts each file's content in a list item."
+
 #
 
 - name: 
