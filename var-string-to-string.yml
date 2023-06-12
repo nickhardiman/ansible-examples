@@ -1,0 +1,43 @@
+---
+# start with some strings, end up with a new string
+# run
+#   ansible-playbook var-string-to-string.yml
+#
+
+- name: fun with split
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: third octet of an IPv4 address
+    vars:
+      ipv4_address: 12.34.56.78
+      list_of_octets: "{{ ipv4_address | split('.') }}"
+      third_octet: "{{ list_of_octets[2] }}"
+    debug:
+      msg: "ipv4_address: {{ ipv4_address }}, third_octet: {{ third_octet }}"
+
+  - name: last octet of an IPv4 address
+    vars:
+      last_octet: "{{ '23.45.67.89'.split('.')[-1] }}"
+    debug:
+      var: last_octet
+
+  # plenty more examples like this in filter-regex_replace.yml 
+- name: fun with regex_replace
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: first part of an FQDN
+    vars:
+      fqdn: host.subdomain.domain.topleveldomain
+      second_half: domain.topleveldomain
+      first_half: "{{ fqdn | regex_replace('.' + second_half) }}"
+    debug:
+      var: first_half
+
