@@ -1,25 +1,33 @@
 ---
-# ipaddr filter
+# ansible.utils.ipaddr filter
 # run
 # ansible-playbook -i inventory-localhost.yml filter-ipaddr.yml 
 #
-# The ipaddr filter is one of those Ansible modules that requires optional Python libraries.
-# The ipaddr filter requires python's "netaddr" be installed on the ansible controller.
-# If this library is missing, the playbook ends with this error message. 
-#   fatal: [localhost]: FAILED! => {"msg": "The ipaddr filter requires python's netaddr be installed on the ansible controller"}
+# requirements
 #
+# collection ansible.netcommon
+# old
+# ansible-galaxy collection install ansible.netcommon
+# new
+# ansible-galaxy collection install ansible.utils
+#
+# ansible.utils.ipaddr filter
+# The ansible.utils.ipaddr filter is one of those Ansible modules that requires optional Python libraries.
+# The ansible.utils.ipaddr filter requires python's "netaddr" be installed on the ansible controller.
+# If this library is missing, the playbook ends with this error message. 
+#   fatal: [localhost]: FAILED! => {"msg": "The ansible.utils.ipaddr filter requires python's netaddr be installed on the ansible controller"}
 # RHEL and Fedora
 # Install RPM package "python3-netaddr".
 # Mac
 # Create a Python virtualenv, activate it, and pip install netaddr
 #
-# The ipaddr filter is designed to clean up an IP address, not to check it is valid.
+# The ansible.utils.ipaddr filter is designed to clean up an IP address, not to check it is valid.
 # If the IP address is good, it is returned. 
-# The code "1.2.3.4 | ipaddr" returns "1.2.3.4". 
+# The code "1.2.3.4 | ansible.utils.ipaddr" returns "1.2.3.4". 
 # It does not return true.
 #
 # This filter works with decimal numbers too, which may be a surprise.
-# "123 | ipaddr" returns "0.0.0.123". 
+# "123 | ansible.utils.ipaddr" returns "0.0.0.123". 
 # It does not return false.  
 #
 # https://docs.ansible.com/ansible/2.4/playbooks_filters_ipaddr.html
@@ -27,14 +35,14 @@
 #
 # ipv4()
 # ipv6()
-# ipaddr()
-# ipaddr('address')
-# ipaddr('network')
-# ipaddr('netmask') 
-# ipaddr('broadcast') 
-# ipaddr('bool') 
+# ansible.utils.ipaddr()
+# ansible.utils.ipaddr('address')
+# ansible.utils.ipaddr('network')
+# ansible.utils.ipaddr('netmask') 
+# ansible.utils.ipaddr('broadcast') 
+# ansible.utils.ipaddr('bool') 
 #
-- name: ipaddr filter
+- name: ansible.utils.ipaddr filter
   hosts: localhost 
   gather_facts: no
   become: no
@@ -63,31 +71,31 @@
 
   # tests with a string containing valid IP addresses 
 
-  - name: "The ipaddr filter can work with a string if it only contains one IP address."
+  - name: "The ansible.utils.ipaddr filter can work with a string if it only contains one IP address."
     debug:
-      msg: "can ipaddr read string_containing_only_one_IPv4_address? {{ string_containing_only_one_IPv4_address | ipaddr }}"
+      msg: "can ansible.utils.ipaddr read string_containing_only_one_IPv4_address? {{ string_containing_only_one_IPv4_address | ansible.utils.ipaddr }}"
         
-  - name: "This is too confusing for ipaddr"
+  - name: "This is too confusing for ansible.utils.ipaddr"
     debug:
-      msg: "can ipaddr read string_containing_one_IPv4_address_and_stuff? {{ string_containing_one_IPv4_address_and_stuff | ipaddr }}"
+      msg: "can ansible.utils.ipaddr read string_containing_one_IPv4_address_and_stuff? {{ string_containing_one_IPv4_address_and_stuff | ansible.utils.ipaddr }}"
         
-  - name: "The ipaddr filter can't find IP addresses in a complicated string"
+  - name: "The ansible.utils.ipaddr filter can't find IP addresses in a complicated string"
     debug:
-      msg: "can ipaddr read string_containing_many_IPv4_addresses? {{ string_containing_many_IPv4_addresses | ipaddr }}"
+      msg: "can ansible.utils.ipaddr read string_containing_many_IPv4_addresses? {{ string_containing_many_IPv4_addresses | ansible.utils.ipaddr }}"
         
   - name: Adding python's split fixes this example.
     debug:
-      msg: "can ipaddr read string_containing_many_IPv4_addresses? {{ string_containing_many_IPv4_addresses.split(',') | ipaddr }}"
+      msg: "can ansible.utils.ipaddr read string_containing_many_IPv4_addresses? {{ string_containing_many_IPv4_addresses.split(',') | ansible.utils.ipaddr }}"
         
   # tests with a list of valid IP addresses 
 
   - name: the whole IP address list at once
     debug:
-      msg: "Which ones are IP addresses? {{ valid | ipaddr }}"
+      msg: "Which ones are IP addresses? {{ valid | ansible.utils.ipaddr }}"
         
   - name: IP address
     debug:
-      msg: "{{ item }} is an IP address? {{ item | ipaddr }}"
+      msg: "{{ item }} is an IP address? {{ item | ansible.utils.ipaddr }}"
     loop: "{{ valid }}"
         
   - name: IPv4
@@ -108,41 +116,41 @@
 
   - name: IP address
     debug:
-      msg: "{{ item }} is an IP address? {{ item | ipaddr }}"
+      msg: "{{ item }} is an IP address? {{ item | ansible.utils.ipaddr }}"
     loop: "{{ invalid }}"
         
   - name: "keywords (I thought keywords were barewords): host/prefix, address, network, netmask and broadcast"
     vars: 
       ipv4_host: '1.2.3.4/8'
     debug: 
-      msg: "{{ ipv4_host }} translates to host/prefix: {{ ipv4_host | ipaddr('host/prefix') }}, address: {{ ipv4_host | ipaddr('address') }}, network: {{ ipv4_host | ipaddr('network') }}, netmask: {{ ipv4_host | ipaddr('netmask') }}, broadcast: {{ ipv4_host | ipaddr('broadcast') }}"
+      msg: "{{ ipv4_host }} translates to host/prefix: {{ ipv4_host | ansible.utils.ipaddr('host/prefix') }}, address: {{ ipv4_host | ansible.utils.ipaddr('address') }}, network: {{ ipv4_host | ansible.utils.ipaddr('network') }}, netmask: {{ ipv4_host | ansible.utils.ipaddr('netmask') }}, broadcast: {{ ipv4_host | ansible.utils.ipaddr('broadcast') }}"
 
   - name: "more keywords: prefix, net"
     vars: 
       ipv4_host: '1.2.3.4/8'
     debug: 
-      msg: "{{ ipv4_host }} translates to prefix: {{ ipv4_host | ipaddr('prefix') }}, net: {{ ipv4_host | ipaddr('net') }}"
+      msg: "{{ ipv4_host }} translates to prefix: {{ ipv4_host | ansible.utils.ipaddr('prefix') }}, net: {{ ipv4_host | ansible.utils.ipaddr('net') }}"
 
   - name: "conversions from octets (dotted quads) to decimal, from IPv4 to IPv6"
     vars: 
       ipv4_addr: '1.2.3.4'
     debug: 
-      msg: "{{ ipv4_addr }} translates to int: {{ ipv4_addr | ipaddr('int') }}, 6to4: {{ ipv4_addr | ipaddr('6to4') }}"
+      msg: "{{ ipv4_addr }} translates to int: {{ ipv4_addr | ansible.utils.ipaddr('int') }}, 6to4: {{ ipv4_addr | ansible.utils.ipaddr('6to4') }}"
 
 
-# ipaddr('address')
+# ansible.utils.ipaddr('address')
   - name: "address from 1.2.3.4/16"
     vars: 
       ipv4_addr_and_cidr: '1.2.3.4/16'
     debug: 
-      msg: "'{{ ipv4_addr_and_cidr }} | ipaddr('address')' returns {{ ipv4_addr_and_cidr | ipaddr('address') }}"
+      msg: "'{{ ipv4_addr_and_cidr }} | ansible.utils.ipaddr('address')' returns {{ ipv4_addr_and_cidr | ansible.utils.ipaddr('address') }}"
 
   - name: "address from 1.2.3.4/56. An IPv4 address has 32 bits, so a 56 bit mask makes no sense."
     vars: 
       ipv4_addr_and_cidr: '1.2.3.4/56'
     debug: 
-      msg: "'{{ ipv4_addr_and_cidr }} | ipaddr('address')' returns {{ ipv4_addr_and_cidr | ipaddr('address') }}"
+      msg: "'{{ ipv4_addr_and_cidr }} | ansible.utils.ipaddr('address')' returns {{ ipv4_addr_and_cidr | ansible.utils.ipaddr('address') }}"
 
-# ipaddr('network')
-# ipaddr('netmask') 
-# ipaddr('broadcast') 
+# ansible.utils.ipaddr('network')
+# ansible.utils.ipaddr('netmask') 
+# ansible.utils.ipaddr('broadcast') 

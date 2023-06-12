@@ -1,0 +1,25 @@
+---
+# string variable 
+# run
+#   ansible-playbook var-string.yml
+#
+- name: split a string into a list of strings
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: IP to octets
+    vars:
+      ipv4_address: 12.34.56.78
+      list_of_octets: "{{ ipv4_address | split('.') }}"
+    debug:
+      msg: "ipv4_address: {{ ipv4_address }}, list_of_octets: {{ list_of_octets }}"
+
+  - name: last octet of an IPv4 address
+    vars:
+      ipv4_address: 12.34.56.78
+      list_of_octets: "{{ ipv4_address | split('.') }}"
+    debug:
+      var: list_of_octets[3]
