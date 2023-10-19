@@ -1,0 +1,49 @@
+---
+# run 
+#   ansible-playbook var-stdout-to-dict.yml 
+#  
+# Some commands produce a list of attributes and values. 
+# Copy these to a dict.
+# eg. 
+#   $ ls -1i
+#    332763 LICENSE
+#   1075365 README.md
+#   1127773 ansible-1.cfg
+#   ...
+#   $ grep telnet /etc/services
+#   telnet           23/udp     # Telnet
+#   telnet           23/tcp     # Telnet
+#   rtelnet         107/udp     # Remote Telnet Service
+#   ...
+#   $ subscription-manager identity
+#   system identity: ad123456-8abc-4abc-a567-1bbbfbb93
+#   name: my.host.example.com
+#   org name: 12345678
+#   ...
+# If one column holds unique values, it can be used as a key in a dictionary.
+# The other column can be the value.
+# The STDOUT from these commands can be captured with "register:"
+# Selecting text from these lines requires a regex, which is tricky to get right.
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#dictionary-variables
+#
+#
+
+- name: copy "ls -1i" stdout to a dict
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+  - name: List inodes and file names
+    shell: ls -1i
+    register: r_ls
+
+  - name: Create a dictionary
+    ansible.builtin.set_fact:
+      ls_dict: "{{ ls_dict | default({}) | combine({item.split(' ')[0]: item.split(' ')[1]}) }}"
+    loop: "{{ r_ls['stdout_lines'] }}"
+
+  - name: Display the dictionary
+    debug:
+      var: ls_dict
+
