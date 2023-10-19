@@ -1,20 +1,24 @@
 ---
 # run 
-#   ansible-playbook var-stdout-to-dict.yml 
+#   ansible-playbook --ask-become-pass var-stdout-to-dict.yml 
 #  
 # Some commands produce a list of attributes and values. 
 # Copy these to a dict.
 # eg. 
-#   $ ls -1i
-#    332763 LICENSE
-#   1075365 README.md
-#   1127773 ansible-1.cfg
+#  This output is in fixed width columns.
+#   $ ls --inode --format=single-column /var/tmp/
+#   1662859171 dnf-nick-0i7gcynt
+#   1611289624 s.yml
+#        11744 systemd-private-12345-bluetooth.service-obbt8m
 #   ...
+#  This output is in fixed width columns.
 #   $ grep telnet /etc/services
 #   telnet           23/udp     # Telnet
 #   telnet           23/tcp     # Telnet
 #   rtelnet         107/udp     # Remote Telnet Service
 #   ...
+#  This output is in attribute: value format. 
+#  This command is only for RHEL and requires sudo password.
 #   $ subscription-manager identity
 #   system identity: ad123456-8abc-4abc-a567-1bbbfbb93
 #   name: my.host.example.com
@@ -23,27 +27,80 @@
 # If one column holds unique values, it can be used as a key in a dictionary.
 # The other column can be the value.
 # The STDOUT from these commands can be captured with "register:"
-# Selecting text from these lines requires a regex, which is tricky to get right.
+# These plays use regex_search, regex_findall and split to extract the good stuff. 
+#
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#dictionary-variables
 #
 #
-
-- name: copy "ls -1i" stdout to a dict
-  hosts: localhost 
+- name: copy  ls stdout to a dict
+  hosts: localhost
   gather_facts: no
   become: no
   connection: local
   tasks:
-  - name: List inodes and file names
-    shell: ls -1i
+
+  - name: Run the commmand and capture STDOUT
+    shell: ls --inode --format=single-column /var/tmp/
     register: r_ls
 
   - name: Create a dictionary
+    vars:
+      inode: "{{ item | regex_search('^\\s*(\\d+)', '\\0') | first | trim }}"
+      name:  "{{ item | regex_search('(\\S+)$', '\\0') | first }}"
     ansible.builtin.set_fact:
-      ls_dict: "{{ ls_dict | default({}) | combine({item.split(' ')[0]: item.split(' ')[1]}) }}"
+      ls_dict: "{{ ls_dict | default({}) | combine({ inode: name }) }}"
     loop: "{{ r_ls['stdout_lines'] }}"
 
   - name: Display the dictionary
     debug:
       var: ls_dict
+
+
+
+- name: copy telnet services to a dict
+  hosts: localhost
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: Run the commmand and capture STDOUT
+    shell: grep telnet /etc/services
+    register: r_grep
+
+  - name: Create a dictionary
+    vars:
+      fields: "{{ item | regex_findall('\\S+')  }}"
+    ansible.builtin.set_fact:
+      grep_dict: "{{ grep_dict | default({}) | combine({ fields[1]: fields[0] }) }}"
+    loop: "{{ r_grep['stdout_lines'] }}"
+
+  - name: Display the dictionary
+    debug:
+      var: grep_dict
+
+
+
+
+
+- name: copy subscription-manager stdout to a dict
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  tasks:
+
+  - name: Run the commmand and capture STDOUT
+    shell: subscription-manager identity
+    register: r_sm
+    become: true
+
+  - name: Create a dictionary
+    ansible.builtin.set_fact:
+      sm_dict: "{{ sm_dict | default({}) | combine({item.split(': ')[0]: item.split(': ')[1]}) }}"
+    loop: "{{ r_sm['stdout_lines'] }}"
+
+  - name: Display the dictionary
+    debug:
+      var: sm_dict
 
