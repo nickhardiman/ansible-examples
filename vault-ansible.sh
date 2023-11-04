@@ -15,7 +15,7 @@
 # Command to make this encrypted value is
 #   ansible-vault encrypt_string 
 
-add_rhsm_account_to_vault () {
+add_secrets_to_vault () {
      # Create a new vault file.
      touch ~/vault-credentials.yml
      cat << EOF >>  ~/vault-credentials.yml
@@ -28,5 +28,5 @@ EOF
      ansible-vault encrypt --vault-pass-file ~/my-vault-pass ~/vault-credentials.yml
 }
 
-add_rhsm_account_to_vault
+add_secrets_to_vault
 
