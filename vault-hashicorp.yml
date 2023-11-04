@@ -1,0 +1,76 @@
+---
+# docs
+# https://www.redhat.com/sysadmin/ansible-playbooks-secrets
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/env_lookup.html
+# requires 
+# a running Vault server
+# hvac - HashiCorp Vault API client for Python 3.x
+# 
+# get ready
+# Open a terminal.
+# as root
+# install and start a vault server
+#   dnf install yum-utils
+#   yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+#   yum -y install vault
+#   vault server -dev
+# 
+# Activity messages are displayed, followed by usage messages.
+# Read the usage messages.
+# Copy the root token and vault address.
+# Leave it running.
+# 
+# Open a second terminal.
+# set up the environment for a vault client
+#   root_token=hvs.ABCDiWsMR0ehBtRF7Bcabcd
+#   export VAULT_TOKEN=$root_token
+#   export VAULT_ADDR='http://127.0.0.1:8200'
+# 
+# Create a secret in Hashicorp Vault.
+# The secret contains one key/value pair. 
+#   vault kv put -mount=secret hello foo=world
+# 
+# Install code libraries
+#   dnf install python3-pip
+#   ansible-galaxy collection install community.hashi_vault
+#   dnf install python3-pip
+#   pip install hvac
+#
+# Finally, run this playbook
+#   ansible-playbook hashicorp-vault.yml
+#
+#
+- hosts: localhost
+  gather_facts: false
+  vars:
+    vault_token: "{{ lookup('ansible.builtin.env', 'VAULT_TOKEN') }}"
+    vault_address: "{{ lookup('ansible.builtin.env', 'VAULT_ADDR') }}"
+    vault_secret: hello
+    vault_secret_key: foo
+  tasks:
+
+    - name: Request what from where
+      ansible.builtin.debug:
+        msg:
+        - "Vault token: {{ vault_token }}"
+        - "Vault address: {{ vault_address }}"
+        - "Vault secret: {{ vault_secret }}"
+
+    - name: Read a kv2 secret with the default mount point
+      ansible.builtin.set_fact:
+        vault_reply: "{{ lookup('community.hashi_vault.vault_kv2_get', vault_secret, url=vault_address) }}"
+
+    - name: Display the key and value
+      ansible.builtin.debug:
+        msg:
+        - "Value of key '{{ vault_secret_key }}' in secret '{{ vault_secret }}': {{ vault_reply.secret.foo }}"
+
+    - name: Display the rest of the vault server's reply
+      ansible.builtin.debug:
+        msg:
+        - "Secret: {{ vault_reply.secret }}"
+        - "Data: {{ vault_reply.data }} (contains secret data & metadata in kv2)"
+        - "Metadata: {{ vault_reply.metadata }}"
+        - "Full response: {{ vault_reply.raw }}"
+
+
