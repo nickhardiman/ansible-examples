@@ -1,0 +1,65 @@
+---
+# use a template to create a data structure
+# run
+#  ansible-playbook lookup-template.yml 
+# 
+# The template "lookup-template.j2" creates text that looks like a list.
+# But it's not a list. 
+# When you assign it to variable "dog_list_dict", then it becomes a list. 
+# Playbook output shows this data structure in JSON form.
+#
+# TASK [show results] ************************************************************
+# ok: [localhost] => {
+#     "dog_list_dict": [
+#         {
+#             "dog": "chihuahua",
+#             "properties": [
+#                 "tiny",
+#                 "annoying",
+#                 "would lose a fight with a squirrel"
+#             ]
+#         },
+#
+# ...(more dogs)...
+#
+#         {
+#             "dog": "collie",
+#             "properties": [
+#                 "lovely",
+#                 "lovely",
+#                 "did I mention lovely"
+#             ]
+#         }
+#     ]
+# }
+#
+- name:  data structure from lookup template
+  hosts: localhost 
+  gather_facts: no
+  become: no
+  connection: local
+  vars:
+    silly_dog: 
+      - chihuahua
+      - pug
+      - miniature dachshund
+    silly_dog_problem: 
+      - tiny
+      - annoying
+      - would lose a fight with a squirrel
+    sensible_dog: 
+      - rescue
+      - labrador
+      - collie
+    sensible_dog_benefit: 
+      - lovely
+      - lovely
+      - did I mention lovely
+
+  tasks:
+    - name: list from template
+      ansible.builtin.set_fact:
+        dog_list_dict: "{{ lookup('ansible.builtin.template', './lookup-template.j2') | from_yaml }}"
+    - name: show results
+      ansible.builtin.debug:
+        var: dog_list_dict

@@ -1,0 +1,20 @@
+# The template creates text that looks like a list.
+# But it's not a list. 
+# When you assign it to a variable, then it becomes a list. 
+#
+{% for dog in silly_dog %}
+-
+  dog: {{ dog }}
+  properties: 
+{% for property in silly_dog_problem %}
+    - {{ property }}
+{% endfor %}
+{% endfor %}
+{% for dog in sensible_dog %}
+-
+  dog: {{ dog }}
+  properties: 
+{% for property in sensible_dog_benefit %}
+    - {{ property }}
+{% endfor %}
+{% endfor %}
