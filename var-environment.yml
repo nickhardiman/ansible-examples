@@ -1,0 +1,60 @@
+---
+# Set and get an environment variable.
+#
+# run
+#   ansible-playbook var-environment.yml
+#
+# Setting is ok with "environment:"
+# Getting is ok with "lookup('ansible.builtin.env', 'http_proxy')"
+# But when you mix the two, things get weird.
+# You have to gather facts and use "ansible_env".
+#
+# Setting the remote environment
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_environment.html
+#
+# Bash Guide for Beginners,	Chapter 3. The Bash environment, 3.2. Variables
+# https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_02.html
+
+- name: Play 1. Set and retrieve an env var with setup
+  hosts: localhost
+  become: false
+  connection: local
+  environment:
+    http_proxy: "http://gateway:3128"
+  #
+  tasks:
+    - name: Gather facts here
+      setup:
+      when: ansible_env is not defined
+
+    - name: Lookup does not work in play 1
+      ansible.builtin.debug: 
+        msg: "proxy is {{ lookup('ansible.builtin.env', 'http_proxy') }}"
+      ignore_errors: true
+
+    - name: Retrieve env var in play 1
+      ansible.builtin.debug: 
+        var: ansible_env['http_proxy']
+
+- name: Play 2. Set and retrieve an env var with gather_facts
+  hosts: localhost
+  become: false
+  connection: local
+  gather_facts: true
+  environment:
+    MY_USER: "franky"
+  #
+  tasks:
+    - name: Lookup does not work in play 2
+      ansible.builtin.debug: 
+        msg: "proxy is {{ lookup('ansible.builtin.env', 'http_proxy') }}"
+      ignore_errors: true
+
+    - name: Play 1's var is not accessible in play 2
+      ansible.builtin.debug: 
+        var: ansible_env['http_proxy']
+      ignore_errors: true
+
+    - name: Retrieve env var in play 2
+      ansible.builtin.debug: 
+        var: ansible_env['MY_USER']
